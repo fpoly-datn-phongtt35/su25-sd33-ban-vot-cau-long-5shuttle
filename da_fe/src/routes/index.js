@@ -11,6 +11,9 @@ import Stiff from '../pages/admin/Stiff';
 import Weight from '../pages/admin/Weight';
 import Home from '../pages/users/Home';
 import Product from '../pages/users/Product/Product';
+import ProductAdmin from '../pages/admin/Product';
+import AddProduct from '../pages/admin/Product/Add';
+import Cart from '../pages/users/Cart/Cart';
 
 // Public routes
 const publicRoutes = [
@@ -24,6 +27,10 @@ const publicRoutes = [
     { path: '/admin/quan-ly-san-pham/trong-luong', component: Weight, layout: AdminLayout },
     { path: '/admin/quan-ly-san-pham/do-cung', component: Stiff, layout: AdminLayout },
     { path: '/san-pham', component: Product },
+    { path: '/admin/quan-ly-san-pham/san-pham-ct', component: ProductAdmin, layout: AdminLayout },
+    { path: '/admin/quan-ly-san-pham/san-pham-ct/add', component: AddProduct, layout: AdminLayout },
+    { path: '/gio-hang', component: Cart },
+
 
 
 ];
