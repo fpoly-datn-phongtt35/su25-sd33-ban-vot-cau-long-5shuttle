@@ -1,5 +1,7 @@
+'use client';
 import ProductCard from './ProductCard';
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import {
     Dialog,
@@ -29,44 +31,108 @@ function classNames(...classes) {
 
 export default function Product() {
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-    const [brands] = useState([
-        { ten: 'Brand A' },
-        { ten: 'Brand B' },
-        { ten: 'Brand C' },
-    ]);
-    const [balances] = useState([
-        { ten: 'Balance A' },
-        { ten: 'Balance B' },
-    ]);
-    const [colors] = useState([
-        { ten: 'Red' },
-        { ten: 'Blue' },
-        { ten: 'Green' },
-    ]);
-    const [materials] = useState([
-        { ten: 'Material A' },
-        { ten: 'Material B' },
-    ]);
-    const [stiffs] = useState([
-        { ten: 'Soft' },
-        { ten: 'Medium' },
-        { ten: 'Hard' },
-    ]);
-    const [weights] = useState([
-        { ten: 'Light' },
-        { ten: 'Medium' },
-        { ten: 'Heavy' },
-    ]);
-    const [products] = useState([
-        { id: 1, sanPhamTen: 'Product 1', price: 100 },
-        { id: 2, sanPhamTen: 'Product 2', price: 200 },
-        { id: 3, sanPhamTen: 'Product 3', price: 300 },
-    ]);
-    const [loading, setLoading] = useState(false);
+    const [brands, setBrands] = useState([]);
+    const [balances, setBalances] = useState([]);
+    const [colors, setColors] = useState([]);
+    const [materials, setMaterials] = useState([]);
+    const [stiffs, setStiffs] = useState([]);
+    const [weights, setWeights] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true); // Thêm state loading
+
+    const loadBrands = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/thuong-hieu');
+            setBrands(response.data);
+        } catch (error) {
+            console.error('Failed to fetch brands', error);
+        }
+    };
+
+    const loadColors = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/mau-sac');
+            setColors(response.data);
+        } catch (error) {
+            console.error('Failed to fetch colors', error);
+        }
+    };
+
+    const loadStiffs = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/do-cung');
+            setStiffs(response.data);
+        } catch (error) {
+            console.error('Failed to fetch stiffs', error);
+        }
+    };
+
+    const loadWeights = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/trong-luong');
+            setWeights(response.data);
+        } catch (error) {
+            console.error('Failed to fetch weights', error);
+        }
+    };
+
+    const loadMaterials = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/chat-lieu');
+            setMaterials(response.data);
+        } catch (error) {
+            console.error('Failed to fetch materials', error);
+        }
+    };
+
+    const loadBalances = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/diem-can-bang');
+            setBalances(response.data);
+        } catch (error) {
+            console.error('Failed to fetch balances', error);
+        }
+    };
+
+    const loadProducts = async () => {
+        try {
+            setLoading(true); // Bắt đầu loading
+            const response = await axios.get('http://localhost:8080/api/san-pham-ct/with-images');
+            // Group products by name and take first variant of each product
+            const uniqueProducts = Object.values(
+                response.data.reduce((acc, product) => {
+                    if (!acc[product.sanPhamTen]) {
+                        acc[product.sanPhamTen] = product;
+                    }
+                    return acc;
+                }, {}),
+            );
+            setProducts(uniqueProducts);
+        } catch (error) {
+            console.error('Failed to fetch Products', error);
+        } finally {
+            setLoading(false); // Kết thúc loading
+        }
+    };
 
     useEffect(() => {
-        // Simulate loading data
-        setLoading(false);
+        const fetchData = async () => {
+            try {
+                await Promise.all([
+                    loadBalances(),
+                    loadBrands(),
+                    loadColors(),
+                    loadMaterials(),
+                    loadStiffs(),
+                    loadWeights(),
+                    loadProducts(),
+                ]);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        };
+
+        fetchData();
     }, []);
 
     const filters = [
@@ -157,7 +223,7 @@ export default function Product() {
                                     >
                                         <h3 className="-mx-2 -my-3 flow-root">
                                             <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                                <span className="font-medium text-gray-900">{section.name}</span>
+                                                <span className="font-medium text-gray-900">{section.ten}</span>
                                                 <span className="ml-6 flex items-center">
                                                     <PlusIcon
                                                         aria-hidden="true"
@@ -176,6 +242,7 @@ export default function Product() {
                                                     <div key={option.value} className="flex items-center">
                                                         <input
                                                             defaultValue={option.value}
+                                                            defaultChecked={option.checked}
                                                             id={`filter-mobile-${section.id}-${optionIdx}`}
                                                             name={`${section.id}[]`}
                                                             type="checkbox"
@@ -282,6 +349,7 @@ export default function Product() {
                                                     <div key={option.value} className="flex items-center">
                                                         <input
                                                             defaultValue={option.value}
+                                                            defaultChecked={option.checked}
                                                             id={`filter-${section.id}-${optionIdx}`}
                                                             name={`${section.id}[]`}
                                                             type="checkbox"

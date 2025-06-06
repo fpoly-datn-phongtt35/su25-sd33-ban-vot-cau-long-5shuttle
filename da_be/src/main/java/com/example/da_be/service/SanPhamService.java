@@ -17,7 +17,7 @@ public class SanPhamService {
         return sanPhamRepository.findAll();
     }
 
-    public SanPham getById(Long id) {
+    public SanPham getById(Integer id) {
         return sanPhamRepository.findById(id).orElse(null);
     }
 
@@ -25,7 +25,7 @@ public class SanPhamService {
         return sanPhamRepository.save(sanPham);
     }
 
-    public SanPham update(Long id, SanPham sanPhamMoi) {
+    public SanPham update(Integer id, SanPham sanPhamMoi) {
         return sanPhamRepository.findById(id)
                 .map(sp -> {
                     sp.setMa(sanPhamMoi.getMa());
@@ -36,7 +36,7 @@ public class SanPhamService {
                 .orElse(null);
     }
 
-    public void delete(Long id) {
+    public void delete(Integer id) {
         sanPhamRepository.deleteById(id);
     }
 }

@@ -22,7 +22,7 @@ public class SanPhamController {
     }
 
     @GetMapping("/{id}")
-    public SanPham getById(@PathVariable Long id) {
+    public SanPham getById(@PathVariable int id) {
         return sanPhamService.getById(id);
     }
 
@@ -32,12 +32,12 @@ public class SanPhamController {
     }
 
     @PutMapping("/{id}")
-    public SanPham update(@PathVariable Long id, @RequestBody SanPham sanPham) {
+    public SanPham update(@PathVariable int id, @RequestBody SanPham sanPham) {
         return sanPhamService.update(id, sanPham);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable int id) {
         sanPhamService.delete(id);
     }
 }
