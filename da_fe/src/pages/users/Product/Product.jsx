@@ -97,17 +97,8 @@ export default function Product() {
     const loadProducts = async () => {
         try {
             setLoading(true); // Bắt đầu loading
-            const response = await axios.get('http://localhost:8080/api/san-pham-ct/with-images');
-            // Group products by name and take first variant of each product
-            const uniqueProducts = Object.values(
-                response.data.reduce((acc, product) => {
-                    if (!acc[product.sanPhamTen]) {
-                        acc[product.sanPhamTen] = product;
-                    }
-                    return acc;
-                }, {}),
-            );
-            setProducts(uniqueProducts);
+            const response = await axios.get('http://localhost:8080/api/san-pham-ct/summary'); // Cập nhật endpoint mới
+            setProducts(response.data); // Dữ liệu trả về đã là danh sách sản phẩm tóm tắt
         } catch (error) {
             console.error('Failed to fetch Products', error);
         } finally {

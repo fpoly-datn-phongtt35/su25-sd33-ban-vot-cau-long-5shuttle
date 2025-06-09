@@ -1,15 +1,13 @@
 package com.example.da_be.service;
 
 
-import com.example.da_be.dto.SanPhamCTWithImagesDTO;
+import com.example.da_be.dto.SanPhamCTListDTO;
 import com.example.da_be.entity.HinhAnh;
-import com.example.da_be.entity.SanPham;
 import com.example.da_be.entity.SanPhamCT;
 import com.example.da_be.exception.ResourceNotFoundException;
 import com.example.da_be.repository.HinhAnhRepository;
 import com.example.da_be.repository.SanPhamCTRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,58 +45,11 @@ public class SanPhamCTService {
 
 
 
-    public SanPhamCTWithImagesDTO getSanPhamCTWithImages(Long id) {
-        SanPhamCT sanPhamCT = sanPhamCTRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("SanPhamCT not found with id " + id));
-
-        List<String> hinhAnhUrls = sanPhamCT.getHinhAnh().stream()
-                .map(HinhAnh::getLink)
-                .collect(Collectors.toList());
-
-        return new SanPhamCTWithImagesDTO(
-                sanPhamCT.getId(),
-                sanPhamCT.getSanPham().getTen(),
-                sanPhamCT.getMa(),
-                sanPhamCT.getSoLuong(),
-                sanPhamCT.getDonGia(),
-                sanPhamCT.getSanPham().getTen(),
-                sanPhamCT.getSanPham().getMa(),
-                sanPhamCT.getThuongHieu().getTen(),
-                sanPhamCT.getMauSac().getTen(),
-                sanPhamCT.getChatLieu().getTen(),
-                sanPhamCT.getTrongLuong().getTen(),
-                sanPhamCT.getDiemCanBang().getTen(),
-                hinhAnhUrls
-        );
-    }
+    
 
 
 
-    public List<SanPhamCTWithImagesDTO> getAllSanPhamCTWithImages() {
-        List<SanPhamCT> sanPhamCTList = sanPhamCTRepository.findAll(); // Lấy tất cả sản phẩm
 
-        return sanPhamCTList.stream().map(sanPhamCT -> {
-            List<String> hinhAnhUrls = sanPhamCT.getHinhAnh().stream()
-                    .map(HinhAnh::getLink)
-                    .collect(Collectors.toList());
-
-            return new SanPhamCTWithImagesDTO(
-                    sanPhamCT.getId(),
-                    sanPhamCT.getSanPham().getTen(),
-                    sanPhamCT.getMa(),
-                    sanPhamCT.getSoLuong(),
-                    sanPhamCT.getDonGia(),
-                    sanPhamCT.getSanPham().getTen(),
-                    sanPhamCT.getSanPham().getMa(),
-                    sanPhamCT.getThuongHieu().getTen(),
-                    sanPhamCT.getMauSac().getTen(),
-                    sanPhamCT.getChatLieu().getTen(),
-                    sanPhamCT.getTrongLuong().getTen(),
-                    sanPhamCT.getDiemCanBang().getTen(),
-                    hinhAnhUrls
-            );
-        }).collect(Collectors.toList()); // Trả về danh sách DTO
-    }
 
     public List<SanPhamCT> getSanPhamCTByProductId(Integer productId) {
         return sanPhamCTRepository.findBySanPham_Id(productId);
@@ -139,5 +90,25 @@ public class SanPhamCTService {
         // Cập nhật tạm thời (cho việc điều chỉnh số lượng trong đơn hàng)
         sanPhamCT.setSoLuong(soLuong);
         sanPhamCTRepository.save(sanPhamCT);
+    }
+
+
+
+
+    public List<SanPhamCTListDTO> getAllSanPhamCTSummary() {
+        List<SanPhamCT> sanPhamCTList = sanPhamCTRepository.findAll();
+        return sanPhamCTList.stream().map(spct -> {
+            String anhDaiDien = null;
+            if (spct.getHinhAnh() != null && !spct.getHinhAnh().isEmpty()) {
+                // lấy link ảnh đầu tiên làm ảnh đại diện
+                anhDaiDien = spct.getHinhAnh().get(0).getLink();
+            }
+            return new SanPhamCTListDTO(
+                    spct.getId(),
+                    spct.getSanPham() != null ? spct.getSanPham().getTen() : null,
+                    spct.getDonGia(),
+                    anhDaiDien
+            );
+        }).collect(Collectors.toList());
     }
 }

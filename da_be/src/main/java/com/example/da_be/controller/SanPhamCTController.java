@@ -1,7 +1,7 @@
 package com.example.da_be.controller;
 
 
-import com.example.da_be.dto.SanPhamCTWithImagesDTO;
+import com.example.da_be.dto.SanPhamCTListDTO;
 import com.example.da_be.entity.SanPham;
 import com.example.da_be.entity.SanPhamCT;
 import com.example.da_be.exception.ResourceNotFoundException;
@@ -94,18 +94,7 @@ public class SanPhamCTController {
     }
 
 
-    @GetMapping("/with-images/{id}")
-    public ResponseEntity<SanPhamCTWithImagesDTO> getSanPhamCTWithImages(@PathVariable Long id) {
-        SanPhamCTWithImagesDTO sanPhamCTWithImages = sanPhamCTService.getSanPhamCTWithImages(id);
-        return ResponseEntity.ok(sanPhamCTWithImages);
-    }
 
-
-    @GetMapping("/with-images")
-    public ResponseEntity<List<SanPhamCTWithImagesDTO>> getAllSanPhamCTWithImages() {
-        List<SanPhamCTWithImagesDTO> sanPhamCTWithImagesList = sanPhamCTService.getAllSanPhamCTWithImages();
-        return ResponseEntity.ok(sanPhamCTWithImagesList);
-    }
 
     @GetMapping("/sp")
     public List<SanPhamCT> getAllSanPhamCT(@RequestParam(required = false) Integer productId) {
@@ -143,6 +132,16 @@ public class SanPhamCTController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Có lỗi xảy ra: " + e.getMessage());
         }
+    }
+
+
+
+
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<SanPhamCTListDTO>> getAllSanPhamCTSummary() {
+        List<SanPhamCTListDTO> dtoList = sanPhamCTService.getAllSanPhamCTSummary();
+        return ResponseEntity.ok(dtoList);
     }
 
 }
