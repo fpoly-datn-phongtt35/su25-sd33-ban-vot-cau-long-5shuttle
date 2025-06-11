@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../../Assets/logo.png';
 import cart_icon from '../../../Assets/cart_icon.png';
@@ -6,6 +6,7 @@ import user_icon from '../../../Assets/user_icon.png';
 import { Avatar } from '@mui/material';
 import { Edit, LogOut, LogIn, User } from 'react-feather';
 import Swal from 'sweetalert2';
+import { CartContext } from '../../../../pages/users/Cart/CartContext';
 
 const Navbar = () => {
     const [menu, setMenu] = useState('trangchu');
@@ -21,7 +22,7 @@ const Navbar = () => {
         avatar: user_icon,
     };
 
-    const cartItemCount = 3; // dữ liệu cứng số lượng sản phẩm trong giỏ hàng
+    const { cartItemCount } = useContext(CartContext);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -35,6 +36,8 @@ const Navbar = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    console.log(cartItemCount)
 
     const handleAccount = () => {
         Swal.fire({

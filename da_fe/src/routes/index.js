@@ -15,6 +15,7 @@ import ProductAdmin from '../pages/admin/Product';
 import AddProduct from '../pages/admin/Product/Add';
 import Cart from '../pages/users/Cart/Cart';
 import Order from '../pages/admin/Order';
+import ProductDetail from '../pages/users/ProductDetail/ProductDetail';
 
 // Public routes
 const publicRoutes = [
@@ -31,6 +32,7 @@ const publicRoutes = [
     { path: '/admin/quan-ly-san-pham/san-pham-ct', component: ProductAdmin, layout: AdminLayout },
     { path: '/admin/quan-ly-san-pham/san-pham-ct/add', component: AddProduct, layout: AdminLayout },
     { path: '/gio-hang', component: Cart },
+    { path: '/san-pham/san-pham-ct/:id', component: ProductDetail },
     { path: '/admin/quan-ly-don-hang', component: Order, layout: AdminLayout },
 
 

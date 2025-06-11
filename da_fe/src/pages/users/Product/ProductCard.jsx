@@ -1,10 +1,16 @@
+import { useNavigate } from 'react-router-dom';
 import './ProductCard.css';
 
 function ProductCard({ product }) {
-    console.log(product);
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/san-pham/san-pham-ct/${product.id}`);
+    };
+
     return (
         <div className="flex flex-wrap">
-            <div className="productCard w-[195px] m-3 transition-all cursor-pointer">
+            <div className="productCard w-[195px] m-3 transition-all cursor-pointer" onClick={handleClick}>
                 <div className="h-[15rem]">
                     <img
                         className="w-full h-full object-cover"
@@ -18,10 +24,7 @@ function ProductCard({ product }) {
                         <p className="font-bold opacity-60">{product.tenSanPham}</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <p className="font-bold text-red-500">{product.donGia.toLocaleString()} ₫</p> 
-                        {/* Uncomment below if you have a sale price to show */}
-                        {/* <p className="line-through opacity-50">4.229.000 ₫</p>
-                            <p className="text-green-600 font-semibold">20% off</p> */}
+                        <p className="font-bold text-red-500">{product.donGia.toLocaleString()} ₫</p>
                     </div>
                 </div>
             </div>
