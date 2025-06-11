@@ -1,22 +1,15 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 const CheckOut = () => {
-    const [addressList, setAddressList] = useState([
-        { sdt: '0123456789', name: 'Nguyễn Văn A', detail: '123 Đường ABC, Phường 1', province: '1', district: '1', ward: '1' },
-        { sdt: '0987654321', name: 'Trần Thị B', detail: '456 Đường DEF, Phường 2', province: '2', district: '2', ward: '2' },
-    ]);
-    const [provinces] = useState([
-        { ProvinceID: '1', ProvinceName: 'TP.HCM' },
-        { ProvinceID: '2', ProvinceName: 'Hà Nội' },
-    ]);
-    const [districts] = useState([
-        { DistrictID: '1', DistrictName: 'Quận 1' },
-        { DistrictID: '2', DistrictName: 'Quận Hoàn Kiếm' },
-    ]);
-    const [wards] = useState([
-        { WardCode: '1', WardName: 'Phường Bến Nghé' },
-        { WardCode: '2', WardName: 'Phường Hàng Bạc' },
-    ]);
+    const [carts, setCarts] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const idTaiKhoan = 1;
+
+    const [addressList, setAddressList] = useState([]);
+    const [provinces, setProvinces] = useState([]);
+    const [districts, setDistricts] = useState([]);
+    const [wards, setWards] = useState([]);
 
     const [formData, setFormData] = useState({
         addressName: '',
@@ -27,6 +20,72 @@ const CheckOut = () => {
         mobile: ''
     });
     const [errors, setErrors] = useState({});
+
+    const fetchCart = async () => {
+        try {
+            const res = await axios.get(`http://localhost:8080/api/gio-hang/${idTaiKhoan}`);
+            setCarts(res.data);
+            const totalRes = await axios.get(`http://localhost:8080/api/gio-hang/${idTaiKhoan}/total`);
+            setTotalPrice(totalRes.data);
+        } catch (error) {
+            console.error('Lỗi lấy giỏ hàng:', error);
+        }
+    };
+
+    const fetchProvinces = async () => {
+        try {
+            const res = await axios.get('https://provinces.open-api.vn/api/');
+            setProvinces(res.data);
+        } catch (error) {
+            console.error('Lỗi lấy danh sách tỉnh:', error);
+        }
+    };
+
+       const fetchDistricts = async (provinceCode) => {
+    if (!provinceCode) return;
+    try {
+        const res = await axios.get(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
+        if (res.data && res.data.districts) {
+            setDistricts(res.data.districts);
+        }
+    } catch (error) {
+        console.error('Lỗi lấy danh sách quận/huyện:', error);
+    }
+};
+
+   
+
+       const fetchWards = async (districtCode) => {
+    if (!districtCode) return;
+    try {
+        const res = await axios.get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+        if (res.data && res.data.wards) {
+            setWards(res.data.wards);
+        }
+    } catch (error) {
+        console.error('Lỗi lấy danh sách xã/phường:', error);
+    }
+};
+
+   
+
+    useEffect(() => {
+        fetchCart();
+        fetchProvinces();
+    }, []);
+
+    useEffect(() => {
+        if (formData.province) {
+            fetchDistricts(formData.province);
+        }
+        console.log(formData)
+    }, [formData.province]);
+
+    useEffect(() => {
+        if (formData.district) {
+            fetchWards(formData.district);
+        }
+    }, [formData.district]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -51,7 +110,7 @@ const CheckOut = () => {
         if (!formData.district) newErrors.district = true;
         if (!formData.ward) newErrors.ward = true;
         if (!formData.mobile.trim()) newErrors.mobile = true;
-        
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -64,7 +123,7 @@ const CheckOut = () => {
             alert('Số điện thoại đã tồn tại trong danh sách địa chỉ.');
             return;
         }
-        
+
         const newAddress = {
             sdt: formData.mobile,
             name: formData.addressName,
@@ -73,7 +132,7 @@ const CheckOut = () => {
             district: formData.district,
             ward: formData.ward,
         };
-        
+
         setAddressList(prev => [...prev, newAddress]);
         setFormData({
             addressName: '',
@@ -84,29 +143,6 @@ const CheckOut = () => {
             mobile: ''
         });
     };
-
-    const orderItems = [
-        {
-            id: 1,
-            name: 'Vợt cầu lông Yonex nanoflare 700 pro',
-            price: 100000,
-            quantity: 2,
-            color: 'Đỏ',
-            weight: '4U',
-            image: 'https://cdn.shopvnb.com/uploads/gallery/vot-cau-long-yonex-nanoflare-700-pro-chinh-hang_1727042472.webp',
-        },
-        {
-            id: 2,
-            name: 'Vợt cầu lông Yonex nanoflare 1000z',
-            price: 150000,
-            quantity: 1,
-            color: 'Xanh',
-            weight: '3U',
-            image: 'https://cdn.shopvnb.com/uploads/gallery/vot-cau-long-yonex-nanoflare-1000z-chinh-hang_1724879816.webp',
-        },
-    ];
-
-    const totalAmount = orderItems.reduce((total, item) => total + item.price * item.quantity, 0);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-[#2f19ae] via-[#4c2eb5] to-[#6b46c1] py-8">
@@ -128,7 +164,7 @@ const CheckOut = () => {
                                     </div>
                                     <h2 className="text-2xl font-bold text-gray-800">Thông tin giao hàng</h2>
                                 </div>
-                                
+
                                 <div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                         <div className="col-span-2">
@@ -181,8 +217,8 @@ const CheckOut = () => {
                                             >
                                                 <option value="">Chọn tỉnh/thành phố</option>
                                                 {provinces.map((province) => (
-                                                    <option key={province.ProvinceID} value={province.ProvinceID}>
-                                                        {province.ProvinceName}
+                                                    <option key={province.code} value={province.code}>
+                                                        {province.name}
                                                     </option>
                                                 ))}
                                             </select>
@@ -205,8 +241,8 @@ const CheckOut = () => {
                                             >
                                                 <option value="">Chọn quận/huyện</option>
                                                 {districts.map((district) => (
-                                                    <option key={district.DistrictID} value={district.DistrictID}>
-                                                        {district.DistrictName}
+                                                    <option key={district.code} value={district.code}>
+                                                        {district.name}
                                                     </option>
                                                 ))}
                                             </select>
@@ -229,8 +265,8 @@ const CheckOut = () => {
                                             >
                                                 <option value="">Chọn xã/phường</option>
                                                 {wards.map((ward) => (
-                                                    <option key={ward.WardCode} value={ward.WardCode}>
-                                                        {ward.WardName}
+                                                    <option key={ward.code} value={ward.code}>
+                                                        {ward.name}
                                                     </option>
                                                 ))}
                                             </select>
@@ -284,30 +320,30 @@ const CheckOut = () => {
                                     </div>
 
                                     <div className="space-y-4 mb-6">
-                                        {orderItems.map(item => (
+                                        {carts.map(item => (
                                             <div key={item.id} className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors duration-300">
                                                 <div className="flex items-start space-x-4">
                                                     <div className="relative">
                                                         <img 
-                                                            src={item.image} 
-                                                            alt={item.name} 
+                                                            src={item.hinhAnhUrl} 
+                                                            alt={item.soLuong} 
                                                             className="w-20 h-20 object-cover rounded-lg shadow-md"
                                                         />
                                                         <span className="absolute -top-2 -right-2 bg-[#2f19ae] text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
-                                                            {item.quantity}
+                                                            {item.soLuong}
                                                         </span>
                                                     </div>
                                                     <div className="flex-grow">
-                                                        <h3 className="font-semibold text-gray-800 text-sm mb-1">{item.name}</h3>
+                                                        <h3 className="font-semibold text-gray-800 text-sm mb-1">{item.sanPhamCT.ten}</h3>
                                                         <div className="space-y-1 text-xs text-gray-600">
-                                                            <p>💰 Giá: <span className="font-semibold">{item.price.toLocaleString()} VNĐ</span></p>
-                                                            <p>🎨 Màu: <span className="font-semibold">{item.color}</span></p>
-                                                            <p>⚖️ Trọng lượng: <span className="font-semibold">{item.weight}</span></p>
+                                                            <p>💰 Giá: <span className="font-semibold">{item.sanPhamCT.donGia.toLocaleString()} VNĐ</span></p>
+                                                            <p>🎨 Màu: <span className="font-semibold">{item.sanPhamCT.mauSac.ten}</span></p>
+                                                            <p>⚖️ Trọng lượng: <span className="font-semibold">{item.sanPhamCT.trongLuong.ten}</span></p>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
                                                         <p className="font-bold text-[#2f19ae]">
-                                                            {(item.price * item.quantity).toLocaleString()} VNĐ
+                                                            {(item.sanPhamCT.donGia * item.soLuong).toLocaleString()} VNĐ
                                                         </p>
                                                     </div>
                                                 </div>
@@ -319,7 +355,7 @@ const CheckOut = () => {
                                         <div className="flex justify-between items-center mb-6">
                                             <span className="text-xl font-bold text-gray-800">Tổng tiền:</span>
                                             <span className="text-2xl font-bold text-[#2f19ae]">
-                                                {totalAmount.toLocaleString()} VNĐ
+                                                {totalPrice.toLocaleString()} VNĐ
                                             </span>
                                         </div>
 

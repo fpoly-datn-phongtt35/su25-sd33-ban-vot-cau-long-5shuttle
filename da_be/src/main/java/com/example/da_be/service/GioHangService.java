@@ -1,9 +1,6 @@
 package com.example.da_be.service;
 
-import com.example.da_be.dto.GioHangDTO;
-import com.example.da_be.dto.SanPhamCTDTO;
-import com.example.da_be.dto.ThuongHieuDTO;
-import com.example.da_be.dto.TrongLuongDTO;
+import com.example.da_be.dto.*;
 import com.example.da_be.entity.GioHang;
 import com.example.da_be.entity.HinhAnh;
 import com.example.da_be.entity.SanPhamCT;
@@ -114,6 +111,11 @@ public class GioHangService {
         trongLuongDTO.setId(sanPhamCT.getTrongLuong().getId());
         trongLuongDTO.setTen(sanPhamCT.getTrongLuong().getTen());
         sanPhamCTDTO.setTrongLuong(trongLuongDTO);
+        //Map Mau Sac
+        MauSacDTO mauSacDTO = new MauSacDTO();
+        mauSacDTO.setId(sanPhamCT.getMauSac().getId());
+        mauSacDTO.setTen(sanPhamCT.getMauSac().getTen());
+        sanPhamCTDTO.setMauSac(mauSacDTO);
         return dto;
     }
     public double calculateTotalPrice(Integer idTaiKhoan) {

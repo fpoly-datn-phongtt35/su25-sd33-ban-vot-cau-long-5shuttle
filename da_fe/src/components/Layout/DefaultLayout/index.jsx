@@ -32,7 +32,7 @@ function DefaultLayout({ children }) {
     return (
         <div className="DefaultLayout">
             <Navbar />
-            <div className="container">
+            <div className="container mt-[90px]">
                 <div className="content">{children}</div>
             </div>
             <Footer />

@@ -5,6 +5,7 @@ public class SanPhamCTDTO {
     private Double donGia;
     private Integer soLuong;
     private ThuongHieuDTO thuongHieu;
+    private MauSacDTO mauSac;
     private TrongLuongDTO trongLuong;
     // Các trường khác của SanPhamCT
 
@@ -12,12 +13,13 @@ public class SanPhamCTDTO {
     public SanPhamCTDTO() {
     }
 
-    public SanPhamCTDTO(Integer id, String ten, Double donGia, Integer soLuong, ThuongHieuDTO thuongHieu, TrongLuongDTO trongLuong) {
+    public SanPhamCTDTO(Integer id, String ten, Double donGia, Integer soLuong, ThuongHieuDTO thuongHieu, MauSacDTO mauSac, TrongLuongDTO trongLuong) {
         this.id = id;
         this.ten = ten;
         this.donGia = donGia;
         this.soLuong = soLuong;
         this.thuongHieu = thuongHieu;
+        this.mauSac = mauSac;
         this.trongLuong = trongLuong;
     }
 
@@ -59,6 +61,14 @@ public class SanPhamCTDTO {
 
     public void setThuongHieu(ThuongHieuDTO thuongHieu) {
         this.thuongHieu = thuongHieu;
+    }
+
+    public MauSacDTO getMauSac() {
+        return mauSac;
+    }
+
+    public void setMauSac(MauSacDTO mauSac) {
+        this.mauSac = mauSac;
     }
 
     public TrongLuongDTO getTrongLuong() {
