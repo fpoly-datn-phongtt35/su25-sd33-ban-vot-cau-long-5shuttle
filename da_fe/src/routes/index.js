@@ -16,6 +16,7 @@ import AddProduct from '../pages/admin/Product/Add';
 import Cart from '../pages/users/Cart/Cart';
 import Order from '../pages/admin/Order';
 import ProductDetail from '../pages/users/ProductDetail/ProductDetail';
+import CheckOut from '../pages/users/CheckOut/CheckOut';
 
 // Public routes
 const publicRoutes = [
@@ -34,6 +35,8 @@ const publicRoutes = [
     { path: '/gio-hang', component: Cart },
     { path: '/san-pham/san-pham-ct/:id', component: ProductDetail },
     { path: '/admin/quan-ly-don-hang', component: Order, layout: AdminLayout },
+    { path: '/gio-hang/checkout', component: CheckOut},
+
 
 
 
