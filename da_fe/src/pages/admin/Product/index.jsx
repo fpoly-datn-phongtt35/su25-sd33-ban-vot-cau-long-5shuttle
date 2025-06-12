@@ -6,10 +6,6 @@ import { Link } from 'react-router-dom';
 import { TbEyeEdit } from 'react-icons/tb';
 
 function Product() {
-
-    
-
-    
     const [showImageModal, setShowImageModal] = useState(false);
     const [imageList, setImageList] = useState([]);
 
@@ -19,21 +15,13 @@ function Product() {
         setImageList((prev) => [...prev, ...newImages]);
     };
 
-    
-
     const handleSaveImages = () => {
         setShowImageModal(false);
     };
 
-    
-
-  
-   
     return (
         <div>
-            <div className="font-bold text-sm">
-                Sản phẩm
-            </div>
+            <div className="font-bold text-sm">Sản phẩm</div>
             <div className="bg-white p-4 rounded-md shadow-md">
                 <div className="flex mb-4 justify-between items-center">
                     <input
@@ -50,28 +38,15 @@ function Product() {
                 <div className="flex items-center mr-4 mb-6">
                     <label className="mr-2 font-semibold">Trạng thái:</label>
                     <label className="mr-2">
-                        <input
-                            type="radio"
-                            name="status"
-                            value="all"
-                            className="mr-1"
-                        />
+                        <input type="radio" name="status" value="all" className="mr-1" />
                         Tất cả
                     </label>
                     <label className="mr-2">
-                        <input
-                            type="radio"
-                            name="status"
-                            className="mr-1"
-                        />
+                        <input type="radio" name="status" className="mr-1" />
                         Active
                     </label>
                     <label className="mr-2">
-                        <input
-                            type="radio"
-                            name="status"
-                            className="mr-1"
-                        />
+                        <input type="radio" name="status" className="mr-1" />
                         Inactive
                     </label>
                     <button className="ml-6 border border-blue-500 text-blue-500 font-medium py-2 px-4 rounded">
@@ -100,7 +75,7 @@ function Product() {
                     </tbody>
                 </table>
             </div>
-            
+
             {showImageModal && (
                 <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50">
                     <div className="bg-white rounded-lg shadow-lg p-6 w-[600px]">
@@ -109,7 +84,6 @@ function Product() {
                         <div className="mt-4 grid grid-cols-4 gap-2">
                             {imageList.map((image, index) => (
                                 <div key={index} className="relative">
-                                    
                                     <img src={image} alt="preview" className="w-full h-24 object-cover rounded" />
                                 </div>
                             ))}

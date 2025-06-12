@@ -1,8 +1,7 @@
 'use client';
+import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
-import { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import {
     Dialog,
     DialogBackdrop,
@@ -17,6 +16,7 @@ import {
 } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid';
+import { SparklesIcon } from 'lucide-react';
 
 const sortOptions = [
     { name: 'Phổ biến nhất', href: '#', current: true },
@@ -38,7 +38,7 @@ export default function Product() {
     const [stiffs, setStiffs] = useState([]);
     const [weights, setWeights] = useState([]);
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true); // Thêm state loading
+    const [loading, setLoading] = useState(true);
 
     const loadBrands = async () => {
         try {
@@ -96,13 +96,13 @@ export default function Product() {
 
     const loadProducts = async () => {
         try {
-            setLoading(true); // Bắt đầu loading
-            const response = await axios.get('http://localhost:8080/api/san-pham-ct/summary'); // Cập nhật endpoint mới
-            setProducts(response.data); // Dữ liệu trả về đã là danh sách sản phẩm tóm tắt
+            setLoading(true);
+            const response = await axios.get('http://localhost:8080/api/san-pham-ct/summary');
+            setProducts(response.data);
         } catch (error) {
             console.error('Failed to fetch Products', error);
         } finally {
-            setLoading(false); // Kết thúc loading
+            setLoading(false);
         }
     };
 
@@ -177,113 +177,165 @@ export default function Product() {
         },
     ];
 
-    return (
-        <div className="bg-white">
-            <div>
-                {/* Mobile filter dialog */}
-                <Dialog open={mobileFiltersOpen} onClose={setMobileFiltersOpen} className="relative z-40 lg:hidden">
-                    <DialogBackdrop
-                        transition
-                        className="fixed inset-0 bg-black bg-opacity-25 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
-                    />
+    const EnhancedProductListing = ({
+        products,
+        loading,
+        filters,
+        sortOptions,
+        mobileFiltersOpen,
+        setMobileFiltersOpen,
+    }) => {
+        const [viewMode, setViewMode] = useState('grid');
+        const [searchQuery, setSearchQuery] = useState('');
+        const [openDisclosures, setOpenDisclosures] = useState({});
 
-                    <div className="fixed inset-0 z-40 flex">
-                        <DialogPanel
-                            transition
-                            className="relative ml-auto flex h-full w-full max-w-xs transform flex-col overflow-y-auto bg-white py-4 pb-12 shadow-xl transition duration-300 ease-in-out data-[closed]:translate-x-full"
-                        >
-                            <div className="flex items-center justify-between px-4">
-                                <h2 className="text-lg font-medium text-gray-900">Filters</h2>
-                                <button
-                                    type="button"
-                                    onClick={() => setMobileFiltersOpen(false)}
-                                    className="-mr-2 flex h-10 w-10 items-center justify-center rounded-md bg-white p-2 text-gray-400"
-                                >
-                                    <span className="sr-only">Close menu</span>
-                                    <XMarkIcon aria-hidden="true" className="h-6 w-6" />
-                                </button>
+        const toggleDisclosure = (sectionId) => {
+            setOpenDisclosures((prev) => ({
+                ...prev,
+                [sectionId]: !prev[sectionId],
+            }));
+        };
+
+        return (
+            <div className="bg-gradient-to-br from-gray-50 via-white to-blue-50 min-h-screen">
+                {/* Enhanced Mobile Filter Dialog */}
+                {mobileFiltersOpen && (
+                    <div className="fixed inset-0 z-40 lg:hidden">
+                        <div
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300"
+                            onClick={() => setMobileFiltersOpen(false)}
+                        />
+                        <div className="fixed inset-y-0 right-0 z-50 flex">
+                            <div className="relative flex h-full w-full max-w-sm transform flex-col overflow-y-auto bg-white/95 backdrop-blur-xl py-4 pb-12 shadow-2xl transition duration-300 border-l border-gray-200">
+                                {/* Enhanced Header */}
+                                <div className="flex items-center justify-between px-6 pb-4 border-b border-gray-200">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
+                                            {/* <AdjustmentsHorizontalIcon className="h-5 w-5 text-white" /> */}
+                                        </div>
+                                        <h2 className="text-xl font-bold text-gray-900">Bộ lọc</h2>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => setMobileFiltersOpen(false)}
+                                        className="-mr-2 flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 p-2 text-gray-500 hover:text-gray-700 transition-colors"
+                                    >
+                                        <span className="sr-only">Đóng menu</span>
+                                        <XMarkIcon className="h-6 w-6" />
+                                    </button>
+                                </div>
+
+                                {/* Filters */}
+                                <div className="mt-4">
+                                    {filters.map((section) => (
+                                        <div key={section.id} className="border-b border-gray-100 px-6 py-6">
+                                            <h3 className="-mx-2 -my-3 flow-root">
+                                                <button
+                                                    onClick={() => toggleDisclosure(`mobile-${section.id}`)}
+                                                    className="group flex w-full items-center justify-between bg-transparent px-2 py-3 text-gray-600 hover:text-gray-900 transition-colors"
+                                                >
+                                                    <span className="font-semibold text-gray-900 text-base">
+                                                        {section.name}
+                                                    </span>
+                                                    <span className="ml-6 flex items-center">
+                                                        <div className="p-1 rounded-lg bg-gray-100 group-hover:bg-gray-200 transition-colors">
+                                                            {openDisclosures[`mobile-${section.id}`] ? (
+                                                                <MinusIcon className="h-4 w-4 text-gray-600" />
+                                                            ) : (
+                                                                <PlusIcon className="h-4 w-4 text-gray-600" />
+                                                            )}
+                                                        </div>
+                                                    </span>
+                                                </button>
+                                            </h3>
+                                            {openDisclosures[`mobile-${section.id}`] && (
+                                                <div className="pt-6">
+                                                    <div className="space-y-4">
+                                                        {section.options.map((option, optionIdx) => (
+                                                            <div key={option.value} className="flex items-center group">
+                                                                <input
+                                                                    defaultValue={option.value}
+                                                                    id={`filter-mobile-${section.id}-${optionIdx}`}
+                                                                    name={`${section.id}[]`}
+                                                                    type="checkbox"
+                                                                    className="h-5 w-5 rounded-lg border-2 border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2 transition-all"
+                                                                />
+                                                                <label
+                                                                    htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
+                                                                    className="ml-3 text-sm text-gray-600 group-hover:text-gray-900 cursor-pointer transition-colors"
+                                                                >
+                                                                    {option.label}
+                                                                </label>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <main className="mx-auto px-4 sm:px-6 lg:px-20 max-w-7xl">
+                    {/* Enhanced Header Section */}
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between border-b border-gray-200 pb-8 pt-24 gap-6 ">
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg">
+                                <SparklesIcon className="h-8 w-8 text-white" />
+                            </div>
+                            <div>
+                                <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                                    Sản phẩm mới
+                                </h1>
+                                <p className="text-gray-600 mt-2">Khám phá những sản phẩm công nghệ mới nhất</p>
+                            </div>
+                        </div>
+
+                        {/* Enhanced Controls */}
+                        <div className="flex items-center gap-3 flex-wrap">
+                            {/* Search Bar */}
+                            <div className="relative">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    {/* <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" /> */}
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Tìm kiếm sản phẩm..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="block w-64 pl-10 pr-3 py-2.5 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                />
                             </div>
 
-                            {/* Filters */}
-                            <form className="mt-4 border-t border-gray-200">
-                                {filters.map((section) => (
-                                    <Disclosure
-                                        key={section.id}
-                                        as="div"
-                                        className="border-t border-gray-200 px-4 py-6"
-                                    >
-                                        <h3 className="-mx-2 -my-3 flow-root">
-                                            <DisclosureButton className="group flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                                <span className="font-medium text-gray-900">{section.ten}</span>
-                                                <span className="ml-6 flex items-center">
-                                                    <PlusIcon
-                                                        aria-hidden="true"
-                                                        className="h-5 w-5 group-data-[open]:hidden"
-                                                    />
-                                                    <MinusIcon
-                                                        aria-hidden="true"
-                                                        className="h-5 w-5 [.group:not([data-open])_&]:hidden"
-                                                    />
-                                                </span>
-                                            </DisclosureButton>
-                                        </h3>
-                                        <DisclosurePanel className="pt-6">
-                                            <div className="space-y-6">
-                                                {section.options.map((option, optionIdx) => (
-                                                    <div key={option.value} className="flex items-center">
-                                                        <input
-                                                            defaultValue={option.value}
-                                                            defaultChecked={option.checked}
-                                                            id={`filter-mobile-${section.id}-${optionIdx}`}
-                                                            name={`${section.id}[]`}
-                                                            type="checkbox"
-                                                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                                        />
-                                                        <label
-                                                            htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                                                            className="ml-3 min-w-0 flex-1 text-gray-500"
-                                                        >
-                                                            {option.label}
-                                                        </label>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </DisclosurePanel>
-                                    </Disclosure>
-                                ))}
-                            </form>
-                        </DialogPanel>
-                    </div>
-                </Dialog>
-
-                <main className="mx-auto px-4 sm:px-6 lg:px-20">
-                    <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
-                        <h1 className="text-4xl font-bold tracking-tight text-gray-900">Sản phẩm mới</h1>
-
-                        <div className="flex items-center">
+                            {/* Sort Dropdown */}
                             <Menu as="div" className="relative inline-block text-left">
                                 <div>
-                                    <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
+                                    <MenuButton className="group inline-flex items-center justify-center px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-900 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
                                         Sắp xếp
                                         <ChevronDownIcon
                                             aria-hidden="true"
-                                            className="-mr-1 ml-1 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
+                                            className="-mr-1 ml-2 h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                                         />
                                     </MenuButton>
                                 </div>
 
                                 <MenuItems
                                     transition
-                                    className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                                    className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-xl bg-white shadow-xl ring-1 ring-black/5 border border-gray-200 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                                 >
-                                    <div className="py-1">
+                                    <div className="py-2">
                                         {sortOptions.map((option) => (
                                             <MenuItem key={option.name}>
                                                 <a
                                                     href={option.href}
                                                     className={classNames(
-                                                        option.current ? 'font-medium text-gray-900' : 'text-gray-500',
-                                                        'block px-4 py-2 text-sm data-[focus]:bg-gray-100',
+                                                        option.current
+                                                            ? 'bg-blue-50 text-blue-700 font-semibold'
+                                                            : 'text-gray-700 hover:bg-gray-50',
+                                                        'block px-4 py-2.5 text-sm transition-colors data-[focus]:bg-gray-50',
                                                     )}
                                                 >
                                                     {option.name}
@@ -294,79 +346,154 @@ export default function Product() {
                                 </MenuItems>
                             </Menu>
 
-                            <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
-                                <span className="sr-only">View grid</span>
-                                <Squares2X2Icon aria-hidden="true" className="h-5 w-5" />
-                            </button>
+                            {/* View Mode Toggle */}
+                            <div className="flex bg-gray-100 rounded-xl p-1">
+                                <button
+                                    type="button"
+                                    onClick={() => setViewMode('grid')}
+                                    className={classNames(
+                                        viewMode === 'grid'
+                                            ? 'bg-white text-gray-900 shadow-sm'
+                                            : 'text-gray-500 hover:text-gray-700',
+                                        'p-2 rounded-lg transition-all',
+                                    )}
+                                >
+                                    <Squares2X2Icon className="h-5 w-5" />
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setViewMode('list')}
+                                    className={classNames(
+                                        viewMode === 'list'
+                                            ? 'bg-white text-gray-900 shadow-sm'
+                                            : 'text-gray-500 hover:text-gray-700',
+                                        'p-2 rounded-lg transition-all',
+                                    )}
+                                >
+                                    {/* <ListBulletIcon className="h-5 w-5" /> */}
+                                </button>
+                            </div>
+
+                            {/* Mobile Filter Button */}
                             <button
                                 type="button"
                                 onClick={() => setMobileFiltersOpen(true)}
-                                className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
+                                className="lg:hidden inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 hover:text-gray-900 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                             >
-                                <span className="sr-only">Filters</span>
-                                <FunnelIcon aria-hidden="true" className="h-5 w-5" />
+                                <FunnelIcon className="h-5 w-5" />
+                                Bộ lọc
                             </button>
                         </div>
                     </div>
 
-                    <section aria-labelledby="products-heading" className="pb-24 pt-6">
+                    <section aria-labelledby="products-heading" className="pb-24 pt-8">
                         <h2 id="products-heading" className="sr-only">
-                            Products
+                            Sản phẩm
                         </h2>
 
                         <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
-                            {/* Filters */}
-                            <form className="hidden lg:block">
-                                {filters.map((section) => (
-                                    <Disclosure key={section.id} as="div" className="border-b border-gray-200 py-6">
-                                        <h3 className="-my-3 flow-root">
-                                            <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                                                <span className="font-medium text-gray-900">{section.name}</span>
-                                                <span className="ml-6 flex items-center">
-                                                    <PlusIcon
-                                                        aria-hidden="true"
-                                                        className="h-5 w-5 group-data-[open]:hidden"
-                                                    />
-                                                    <MinusIcon
-                                                        aria-hidden="true"
-                                                        className="h-5 w-5 [.group:not([data-open])_&]:hidden"
-                                                    />
-                                                </span>
-                                            </DisclosureButton>
-                                        </h3>
-                                        <DisclosurePanel className="pt-6">
-                                            <div className="space-y-4">
-                                                {section.options.map((option, optionIdx) => (
-                                                    <div key={option.value} className="flex items-center">
-                                                        <input
-                                                            defaultValue={option.value}
-                                                            defaultChecked={option.checked}
-                                                            id={`filter-${section.id}-${optionIdx}`}
-                                                            name={`${section.id}[]`}
-                                                            type="checkbox"
-                                                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                                                        />
-                                                        <label
-                                                            htmlFor={`filter-${section.id}-${optionIdx}`}
-                                                            className="ml-3 text-sm text-gray-600"
-                                                        >
-                                                            {option.label}
-                                                        </label>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </DisclosurePanel>
-                                    </Disclosure>
-                                ))}
+                            {/* Enhanced Desktop Filters */}
+                            <form className="hidden lg:block space-y-6">
+                                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 w-[222px]">
+                                    <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-3">
+                                        <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
+                                            {/* <AdjustmentsHorizontalIcon className="h-5 w-5 text-white" /> */}
+                                        </div>
+                                        Bộ lọc tìm kiếm
+                                    </h3>
+
+                                    {filters.map((section) => (
+                                        <Disclosure
+                                            key={section.id}
+                                            as="div"
+                                            className="border-b border-gray-100 py-6 last:border-b-0"
+                                        >
+                                            <h3 className="-my-3 flow-root">
+                                                <DisclosureButton className="group flex w-full items-center justify-between bg-transparent py-3 text-sm text-gray-600 hover:text-gray-900 transition-colors">
+                                                    <span className="font-semibold text-gray-900 text-base">
+                                                        {section.name}
+                                                    </span>
+                                                    <span className="ml-6 flex items-center">
+                                                        <div className="p-1 rounded-lg bg-gray-100 group-hover:bg-gray-200 transition-colors">
+                                                            <PlusIcon
+                                                                aria-hidden="true"
+                                                                className="h-4 w-4 group-data-[open]:hidden text-gray-600"
+                                                            />
+                                                            <MinusIcon
+                                                                aria-hidden="true"
+                                                                className="h-4 w-4 [.group:not([data-open])_&]:hidden text-gray-600"
+                                                            />
+                                                        </div>
+                                                    </span>
+                                                </DisclosureButton>
+                                            </h3>
+                                            <DisclosurePanel className="pt-6">
+                                                <div className="space-y-4">
+                                                    {section.options.map((option, optionIdx) => (
+                                                        <div key={option.value} className="flex items-center group">
+                                                            <input
+                                                                defaultValue={option.value}
+                                                                id={`filter-${section.id}-${optionIdx}`}
+                                                                name={`${section.id}[]`}
+                                                                type="checkbox"
+                                                                className="h-5 w-5 rounded-lg border-2 border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2 transition-all"
+                                                            />
+                                                            <label
+                                                                htmlFor={`filter-${section.id}-${optionIdx}`}
+                                                                className="ml-3 text-sm text-gray-600 group-hover:text-gray-900 cursor-pointer transition-colors"
+                                                            >
+                                                                {option.label}
+                                                            </label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </DisclosurePanel>
+                                        </Disclosure>
+                                    ))}
+                                </div>
                             </form>
 
-                            {/* Product grid */}
+                            {/* Enhanced Product Grid */}
                             <div className="lg:col-span-4 w-full">
-                                <div className="flex flex-wrap justify-center bg-white py-5">
+                                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                                     {loading ? (
-                                        <div>Loading...</div>
+                                        <div className="flex items-center justify-center py-20">
+                                            <div className="flex flex-col items-center gap-4">
+                                                <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent"></div>
+                                                <p className="text-gray-600 font-medium">Đang tải sản phẩm...</p>
+                                            </div>
+                                        </div>
                                     ) : (
-                                        products.map((product) => <ProductCard key={product.id} product={product} />)
+                                        <div
+                                            className={classNames(
+                                                viewMode === 'grid'
+                                                    ? 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6'
+                                                    : 'flex flex-col gap-4',
+                                                'w-full',
+                                            )}
+                                        >
+                                            {products?.length > 0 ? (
+                                                products.map((product) => (
+                                                    <ProductCard
+                                                        key={product.id}
+                                                        product={product}
+                                                        viewMode={viewMode}
+                                                    />
+                                                ))
+                                            ) : (
+                                                <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
+                                                    <div className="p-4 bg-gray-100 rounded-2xl mb-4">
+                                                        <SparklesIcon className="h-12 w-12 text-gray-400" />
+                                                    </div>
+                                                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                                        Không tìm thấy sản phẩm
+                                                    </h3>
+                                                    <p className="text-gray-600">
+                                                        Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm
+                                                    </p>
+                                                </div>
+                                            )}
+                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -374,6 +501,17 @@ export default function Product() {
                     </section>
                 </main>
             </div>
-        </div>
+        );
+    };
+
+    return (
+        <EnhancedProductListing
+            products={products}
+            loading={loading}
+            filters={filters}
+            sortOptions={sortOptions}
+            mobileFiltersOpen={mobileFiltersOpen}
+            setMobileFiltersOpen={setMobileFiltersOpen}
+        />
     );
 }

@@ -152,4 +152,16 @@ public class GioHangService {
         return gioHangList.stream().mapToInt(GioHang::getSoLuong).sum();
     }
 
+
+
+    public void xoaGioHangByTaiKhoan(Integer idTaiKhoan) {
+        TaiKhoan taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tài khoản với ID: " + idTaiKhoan));
+
+        List<GioHang> gioHangList = gioHangRepository.findByTaiKhoan(taiKhoan);
+        if (!gioHangList.isEmpty()) {
+            gioHangRepository.deleteAll(gioHangList);
+        }
+    }
+
 }

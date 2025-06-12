@@ -134,8 +134,6 @@ function Order() {
         { label: 'HOÀN THÀNH', value: '7' },
     ];
 
-    
-
     const indexOfLastOrder = currentPage * ordersPerPage;
     const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
     const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
@@ -203,7 +201,7 @@ function Order() {
                         Tại quầy
                     </label>
                 </div>
-                <button  className="border rounded p-2 bg-[#2f19ae] text-white">Export Excel</button>
+                <button className="border rounded p-2 bg-[#2f19ae] text-white">Export Excel</button>
             </div>
 
             <div className="border-b mb-4">
@@ -212,8 +210,9 @@ function Order() {
                         <li
                             key={status.value}
                             onClick={() => setSelectedStatus(status.value)}
-                            className={`mr-4 pb-2 text-xs cursor-pointer ${selectedStatus === status.value ? 'border-b-2 border-blue-500' : ''
-                                }`}
+                            className={`mr-4 pb-2 text-xs cursor-pointer ${
+                                selectedStatus === status.value ? 'border-b-2 border-blue-500' : ''
+                            }`}
                         >
                             {status.label}
                         </li>
@@ -252,10 +251,11 @@ function Order() {
                                 </td>
                                 <td className="py-1 px-2 border-b">
                                     <span
-                                        className={`${order.loaiHoaDon === 'Trực tuyến'
+                                        className={`${
+                                            order.loaiHoaDon === 'Trực tuyến'
                                                 ? 'bg-indigo-200 text-indigo-800'
                                                 : 'bg-green-200 text-green-800'
-                                            } py-0.5 px-2 rounded-full text-xs`}
+                                        } py-0.5 px-2 rounded-full text-xs`}
                                     >
                                         {order.loaiHoaDon}
                                     </span>
@@ -280,8 +280,9 @@ function Order() {
 
             <div className="flex justify-center mb-4 mt-7">
                 <button
-                    className={`${currentPage === 1 ? 'bg-gray-200 text-gray-800' : 'bg-white text-[#2f19ae]'
-                        } border border-[#2f19ae] hover:bg-[#2f19ae] hover:text-white font-medium py-1 px-2 rounded mx-1 transition duration-200`}
+                    className={`${
+                        currentPage === 1 ? 'bg-gray-200 text-gray-800' : 'bg-white text-[#2f19ae]'
+                    } border border-[#2f19ae] hover:bg-[#2f19ae] hover:text-white font-medium py-1 px-2 rounded mx-1 transition duration-200`}
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
                 >
@@ -293,8 +294,9 @@ function Order() {
                     .map((_, index) => (
                         <button
                             key={index}
-                            className={`${currentPage === index + 1 ? 'bg-[#2f19ae] text-white' : 'bg-white text-[#2f19ae]'
-                                } border border-[#2f19ae] hover:bg-[#2f19ae] hover:text-white font-medium py-1 px-2 rounded mx-1 transition duration-200`}
+                            className={`${
+                                currentPage === index + 1 ? 'bg-[#2f19ae] text-white' : 'bg-white text-[#2f19ae]'
+                            } border border-[#2f19ae] hover:bg-[#2f19ae] hover:text-white font-medium py-1 px-2 rounded mx-1 transition duration-200`}
                             onClick={() => setCurrentPage(index + 1)}
                         >
                             {index + 1}
@@ -302,8 +304,9 @@ function Order() {
                     ))}
 
                 <button
-                    className={`${currentPage === totalPages ? 'bg-gray-200 text-gray-800' : 'bg-white text-[#2f19ae]'
-                        } border border-[#2f19ae] hover:bg-[#2f19ae] hover:text-white font-medium py-1 px-2 rounded mx-1 transition duration-200`}
+                    className={`${
+                        currentPage === totalPages ? 'bg-gray-200 text-gray-800' : 'bg-white text-[#2f19ae]'
+                    } border border-[#2f19ae] hover:bg-[#2f19ae] hover:text-white font-medium py-1 px-2 rounded mx-1 transition duration-200`}
                     onClick={() => setCurrentPage(currentPage + 1)}
                     disabled={currentPage === totalPages}
                 >

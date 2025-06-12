@@ -11,7 +11,6 @@ function AddProduct() {
     const [hardness, setHardness] = useState('');
     const [status, setStatus] = useState('');
     const [description, setDescription] = useState('');
-    
 
     return (
         <div>
@@ -167,21 +166,21 @@ function AddProduct() {
 
             <div className="bg-white p-4 rounded-md shadow-lg mt-4">
                 <h2 className="text-xl text-center text-gray-500 font-bold mb-4">Màu sắc & Trọng lượng</h2>
-                <div className='pl-24'>
+                <div className="pl-24">
                     <div className="flex items-center">
                         <label className="block text-sm font-bold text-gray-700 w-28" htmlFor="description">
                             <span className="text-red-600">*</span>Màu sắc:
                         </label>
                         <div className="flex items-center flex-wrap">
-                                <button
-                                    className="border font-medium py-1 px-1 rounded w-9 h-6 flex items-center justify-center ml-2"
-                                    style={{
-                                        backgroundColor: 'red',
-                                        color: '#fff',
-                                        borderColor: 'white' ,
-                                    }}
-                                    disabled
-                                ></button>
+                            <button
+                                className="border font-medium py-1 px-1 rounded w-9 h-6 flex items-center justify-center ml-2"
+                                style={{
+                                    backgroundColor: 'red',
+                                    color: '#fff',
+                                    borderColor: 'white',
+                                }}
+                                disabled
+                            ></button>
                         </div>
                         <button
                             onClick={() => {}}
@@ -199,17 +198,17 @@ function AddProduct() {
                             <span className="text-red-600">*</span>Trọng lượng:
                         </label>
                         <div className="flex items-center flex-wrap">
-                                <button
-                                    className="border font-medium text-xs py-1 px-1 rounded w-9 h-6 flex items-center justify-center ml-2"
-                                    style={{
-                                        backgroundColor: 'white',
-                                        color: 'black',
-                                        borderColor: 'black',
-                                    }}
-                                    disabled
-                                >
-                                    3U
-                                </button>
+                            <button
+                                className="border font-medium text-xs py-1 px-1 rounded w-9 h-6 flex items-center justify-center ml-2"
+                                style={{
+                                    backgroundColor: 'white',
+                                    color: 'black',
+                                    borderColor: 'black',
+                                }}
+                                disabled
+                            >
+                                3U
+                            </button>
                         </div>
                         <button
                             onClick={() => {}}
@@ -223,7 +222,6 @@ function AddProduct() {
             </div>
 
             <div className="mt-6">
-                
                 <button
                     type="button"
                     onClick={() => {}}

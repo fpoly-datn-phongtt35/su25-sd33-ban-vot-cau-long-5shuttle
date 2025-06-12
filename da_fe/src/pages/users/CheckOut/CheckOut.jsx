@@ -1,15 +1,18 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import swal from 'sweetalert';
 
 const CheckOut = () => {
     const [carts, setCarts] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const idTaiKhoan = 1;
 
-    const [addressList, setAddressList] = useState([]);
+    // const [addressList, setAddressList] = useState([]);
     const [provinces, setProvinces] = useState([]);
     const [districts, setDistricts] = useState([]);
     const [wards, setWards] = useState([]);
+    const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         addressName: '',
@@ -17,9 +20,11 @@ const CheckOut = () => {
         province: '',
         district: '',
         ward: '',
-        mobile: ''
+        mobile: '',
     });
     const [errors, setErrors] = useState({});
+
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
 
     const fetchCart = async () => {
         try {
@@ -41,33 +46,29 @@ const CheckOut = () => {
         }
     };
 
-       const fetchDistricts = async (provinceCode) => {
-    if (!provinceCode) return;
-    try {
-        const res = await axios.get(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
-        if (res.data && res.data.districts) {
-            setDistricts(res.data.districts);
+    const fetchDistricts = async (provinceCode) => {
+        if (!provinceCode) return;
+        try {
+            const res = await axios.get(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
+            if (res.data && res.data.districts) {
+                setDistricts(res.data.districts);
+            }
+        } catch (error) {
+            console.error('Lỗi lấy danh sách quận/huyện:', error);
         }
-    } catch (error) {
-        console.error('Lỗi lấy danh sách quận/huyện:', error);
-    }
-};
+    };
 
-   
-
-       const fetchWards = async (districtCode) => {
-    if (!districtCode) return;
-    try {
-        const res = await axios.get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-        if (res.data && res.data.wards) {
-            setWards(res.data.wards);
+    const fetchWards = async (districtCode) => {
+        if (!districtCode) return;
+        try {
+            const res = await axios.get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
+            if (res.data && res.data.wards) {
+                setWards(res.data.wards);
+            }
+        } catch (error) {
+            console.error('Lỗi lấy danh sách xã/phường:', error);
         }
-    } catch (error) {
-        console.error('Lỗi lấy danh sách xã/phường:', error);
-    }
-};
-
-   
+    };
 
     useEffect(() => {
         fetchCart();
@@ -78,7 +79,6 @@ const CheckOut = () => {
         if (formData.province) {
             fetchDistricts(formData.province);
         }
-        console.log(formData)
     }, [formData.province]);
 
     useEffect(() => {
@@ -89,15 +89,15 @@ const CheckOut = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
         // Clear error when user starts typing
         if (errors[name]) {
-            setErrors(prev => ({
+            setErrors((prev) => ({
                 ...prev,
-                [name]: false
+                [name]: false,
             }));
         }
     };
@@ -115,33 +115,50 @@ const CheckOut = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!validateForm()) return;
 
-        const exists = addressList.some(addr => addr.sdt === formData.mobile);
-        if (exists) {
-            alert('Số điện thoại đã tồn tại trong danh sách địa chỉ.');
+        if (!selectedPaymentMethod) {
+            swal('Lỗi', 'Vui lòng chọn phương thức thanh toán.', 'error');
             return;
         }
 
-        const newAddress = {
-            sdt: formData.mobile,
-            name: formData.addressName,
-            detail: formData.addressDetail,
-            province: formData.province,
-            district: formData.district,
-            ward: formData.ward,
-        };
+        if (selectedPaymentMethod === 'cash') {
+            const newAddress = {
+                sdt: formData.mobile,
+                hoTen: formData.addressName,
+                diaChiCuThe: formData.addressDetail,
+                province: formData.province,
+                district: formData.district,
+                ward: formData.ward,
+            };
 
-        setAddressList(prev => [...prev, newAddress]);
-        setFormData({
-            addressName: '',
-            addressDetail: '',
-            province: '',
-            district: '',
-            ward: '',
-            mobile: ''
-        });
+            const orderData = {
+                idTaiKhoan: idTaiKhoan,
+                cartItems: carts.map((item) => ({
+                    sanPhamCTId: item.sanPhamCT.id,
+                    soLuong: item.soLuong,
+                })),
+                thongTinGiaoHang: newAddress,
+            };
+            console.log('blablaa: ', orderData);
+
+            try {
+                const response = await axios.post('http://localhost:8080/api/dat-hang', orderData);
+                if (response.status === 200) {
+                    swal('Thành công', 'Đặt hàng thành công!', 'success').then(async () => {
+                        // Xóa giỏ hàng sau khi đặt hàng thành công
+                        await axios.delete(`http://localhost:8080/api/gio-hang/xoa/${idTaiKhoan}`);
+                        navigate('/xac-nhan-don-hang');
+                    });
+                }
+            } catch (error) {
+                console.error('Lỗi đặt hàng:', error);
+                swal('Lỗi', 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.', 'error');
+            }
+        } else {
+            swal('Thông báo', 'Chức năng thanh toán qua VNPay chưa được triển khai.', 'info');
+        }
     };
 
     return (
@@ -296,14 +313,6 @@ const CheckOut = () => {
                                             )}
                                         </div>
                                     </div>
-
-                                    <button
-                                        type="button"
-                                        onClick={handleSubmit}
-                                        className="mt-6 w-full bg-gradient-to-r from-[#2f19ae] to-[#4c2eb5] text-white py-3 px-6 rounded-xl font-semibold hover:from-[#251589] hover:to-[#3d2491] transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl"
-                                    >
-                                        💾 Lưu địa chỉ
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -317,16 +326,25 @@ const CheckOut = () => {
                                             <span className="text-white font-bold">2</span>
                                         </div>
                                         <h2 className="text-2xl font-bold text-gray-800">Đơn hàng của bạn</h2>
+                                        <button
+                                            onClick={() => navigate('/gio-hang')} // Sử dụng navigate thay vì history.push
+                                            className="ml-4 bg-[#19aea4] text-white py-2 px-4 rounded-lg flex items-center"
+                                        >
+                                            <span className="mr-2">✏️</span> Sửa giỏ hàng
+                                        </button>
                                     </div>
 
                                     <div className="space-y-4 mb-6">
-                                        {carts.map(item => (
-                                            <div key={item.id} className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors duration-300">
+                                        {carts.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors duration-300"
+                                            >
                                                 <div className="flex items-start space-x-4">
                                                     <div className="relative">
-                                                        <img 
-                                                            src={item.hinhAnhUrl} 
-                                                            alt={item.soLuong} 
+                                                        <img
+                                                            src={item.hinhAnhUrl}
+                                                            alt={item.soLuong}
                                                             className="w-20 h-20 object-cover rounded-lg shadow-md"
                                                         />
                                                         <span className="absolute -top-2 -right-2 bg-[#2f19ae] text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
@@ -334,16 +352,34 @@ const CheckOut = () => {
                                                         </span>
                                                     </div>
                                                     <div className="flex-grow">
-                                                        <h3 className="font-semibold text-gray-800 text-sm mb-1">{item.sanPhamCT.ten}</h3>
+                                                        <h3 className="font-semibold text-gray-800 text-sm mb-1">
+                                                            {item.sanPhamCT.ten}
+                                                        </h3>
                                                         <div className="space-y-1 text-xs text-gray-600">
-                                                            <p>💰 Giá: <span className="font-semibold">{item.sanPhamCT.donGia.toLocaleString()} VNĐ</span></p>
-                                                            <p>🎨 Màu: <span className="font-semibold">{item.sanPhamCT.mauSac.ten}</span></p>
-                                                            <p>⚖️ Trọng lượng: <span className="font-semibold">{item.sanPhamCT.trongLuong.ten}</span></p>
+                                                            <p>
+                                                                💰 Giá:{' '}
+                                                                <span className="font-semibold">
+                                                                    {item.sanPhamCT.donGia.toLocaleString()} VNĐ
+                                                                </span>
+                                                            </p>
+                                                            <p>
+                                                                🎨 Màu:{' '}
+                                                                <span className="font-semibold">
+                                                                    {item.sanPhamCT.mauSac.ten}
+                                                                </span>
+                                                            </p>
+                                                            <p>
+                                                                ⚖️ Trọng lượng:{' '}
+                                                                <span className="font-semibold">
+                                                                    {item.sanPhamCT.trongLuong.ten}
+                                                                </span>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                     <div className="text-right">
                                                         <p className="font-bold text-[#2f19ae]">
-                                                            {(item.sanPhamCT.donGia * item.soLuong).toLocaleString()} VNĐ
+                                                            {(item.sanPhamCT.donGia * item.soLuong).toLocaleString()}{' '}
+                                                            VNĐ
                                                         </p>
                                                     </div>
                                                 </div>
@@ -360,19 +396,42 @@ const CheckOut = () => {
                                         </div>
 
                                         <div className="mb-6">
-                                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Phương thức thanh toán</h3>
+                                            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                                                Phương thức thanh toán
+                                            </h3>
                                             <div className="space-y-3">
-                                                <button className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
+                                                <label
+                                                    className={`w-full flex items-center justify-center py-3 px-6 rounded-xl font-semibold transition-all duration-300 shadow-lg ${selectedPaymentMethod === 'cash' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        value="cash"
+                                                        checked={selectedPaymentMethod === 'cash'}
+                                                        onChange={() => setSelectedPaymentMethod('cash')}
+                                                        className="hidden"
+                                                    />
                                                     🚚 Thanh toán khi nhận hàng
-                                                </button>
-                                                <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-blue-600 hover:to-blue-700 transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
+                                                </label>
+                                                <label
+                                                    className={`w-full flex items-center justify-center py-3 px-6 rounded-xl font-semibold transition-all duration-300 shadow-lg ${selectedPaymentMethod === 'vnpay' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800 hover:bg-gray-300'}`}
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        value="vnpay"
+                                                        checked={selectedPaymentMethod === 'vnpay'}
+                                                        onChange={() => setSelectedPaymentMethod('vnpay')}
+                                                        className="hidden"
+                                                    />
                                                     💳 Thanh toán qua VNPay
-                                                </button>
+                                                </label>
                                             </div>
                                         </div>
 
-                                        <button className="w-full bg-gradient-to-r from-[#2f19ae] to-[#4c2eb5] text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-[#251589] hover:to-[#3d2491] transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl">
-                                            🛒 Hoàn tất đơn hàng
+                                        <button
+                                            onClick={handleSubmit}
+                                            className="w-full bg-gradient-to-r from-[#ae1919] to-[#b52e6f] text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-[#251589] hover:to-[#3d2491] transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl"
+                                        >
+                                            🛒 Đặt hàng
                                         </button>
                                     </div>
                                 </div>

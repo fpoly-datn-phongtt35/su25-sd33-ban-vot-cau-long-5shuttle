@@ -1,7 +1,6 @@
 import Navbar from './Navbar/Navbar';
 import Footer from './Footer/Footer';
 
-
 function DefaultLayout({ children }) {
     // const { setCartItemCount } = useContext(CartContext);
 
@@ -32,7 +31,7 @@ function DefaultLayout({ children }) {
     return (
         <div className="DefaultLayout">
             <Navbar />
-            <div className="container mt-[90px]">
+            <div className="container mt-[70px]">
                 <div className="content">{children}</div>
             </div>
             <Footer />

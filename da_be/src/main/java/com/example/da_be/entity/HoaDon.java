@@ -1,30 +1,70 @@
 package com.example.da_be.entity;
 
-
 import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
 @Table(name = "HoaDon")
 public class HoaDon {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private Integer idTaiKhoan;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdTaiKhoan", nullable = false)
+    private TaiKhoan taiKhoan;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "IdVoucher")
+    private Voucher voucher;
+
+    @Column(name = "Ma", length = 255)
     private String ma;
-    private String tenNguoiNhan;
-    private String sdtNguoiNhan;
-    private String diaChiNguoiNhan;
-    private String phuongThucThanhToan;
+
+    @Column(name = "SoLuong")
+    private Integer soLuong;
+
+    @Column(name = "LoaiHoaDon", length = 255)
     private String loaiHoaDon;
+
+    @Column(name = "PhuongThucThanhToan", length = 255)
+    private String phuongThucThanhToan;
+
+    @Column(name = "TenNguoiNhan", length = 255)
+    private String tenNguoiNhan;
+
+    @Column(name = "SdtNguoiNhan", length = 255)
+    private String sdtNguoiNhan;
+
+    @Column(name = "EmailNguoiNhan", length = 255)
+    private String emailNguoiNhan;
+
+    @Column(name = "DiaChiNguoiNhan", length = 255)
+    private String diaChiNguoiNhan;
+
+    @Column(name = "PhiShip", precision = 10, scale = 2)
+    private BigDecimal phiShip;
+
+    @Column(name = "TongTien", precision = 10, scale = 2)
     private BigDecimal tongTien;
+
+    @Column(name = "NgayTao")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date ngayTao;
+
+    @Column(name = "NgaySua")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date ngaySua;
+
+    @Column(name = "TrangThai")
     private Integer trangThai;
 
+    public HoaDon() {
+    }
+
+    // Getters and Setters
     public Integer getId() {
         return id;
     }
@@ -33,12 +73,20 @@ public class HoaDon {
         this.id = id;
     }
 
-    public Integer getIdTaiKhoan() {
-        return idTaiKhoan;
+    public TaiKhoan getTaiKhoan() {
+        return taiKhoan;
     }
 
-    public void setIdTaiKhoan(Integer idTaiKhoan) {
-        this.idTaiKhoan = idTaiKhoan;
+    public void setTaiKhoan(TaiKhoan taiKhoan) {
+        this.taiKhoan = taiKhoan;
+    }
+
+    public Voucher getVoucher() {
+        return voucher;
+    }
+
+    public void setVoucher(Voucher voucher) {
+        this.voucher = voucher;
     }
 
     public String getMa() {
@@ -47,6 +95,30 @@ public class HoaDon {
 
     public void setMa(String ma) {
         this.ma = ma;
+    }
+
+    public Integer getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(Integer soLuong) {
+        this.soLuong = soLuong;
+    }
+
+    public String getLoaiHoaDon() {
+        return loaiHoaDon;
+    }
+
+    public void setLoaiHoaDon(String loaiHoaDon) {
+        this.loaiHoaDon = loaiHoaDon;
+    }
+
+    public String getPhuongThucThanhToan() {
+        return phuongThucThanhToan;
+    }
+
+    public void setPhuongThucThanhToan(String phuongThucThanhToan) {
+        this.phuongThucThanhToan = phuongThucThanhToan;
     }
 
     public String getTenNguoiNhan() {
@@ -65,6 +137,14 @@ public class HoaDon {
         this.sdtNguoiNhan = sdtNguoiNhan;
     }
 
+    public String getEmailNguoiNhan() {
+        return emailNguoiNhan;
+    }
+
+    public void setEmailNguoiNhan(String emailNguoiNhan) {
+        this.emailNguoiNhan = emailNguoiNhan;
+    }
+
     public String getDiaChiNguoiNhan() {
         return diaChiNguoiNhan;
     }
@@ -73,20 +153,12 @@ public class HoaDon {
         this.diaChiNguoiNhan = diaChiNguoiNhan;
     }
 
-    public String getPhuongThucThanhToan() {
-        return phuongThucThanhToan;
+    public BigDecimal getPhiShip() {
+        return phiShip;
     }
 
-    public void setPhuongThucThanhToan(String phuongThucThanhToan) {
-        this.phuongThucThanhToan = phuongThucThanhToan;
-    }
-
-    public String getLoaiHoaDon() {
-        return loaiHoaDon;
-    }
-
-    public void setLoaiHoaDon(String loaiHoaDon) {
-        this.loaiHoaDon = loaiHoaDon;
+    public void setPhiShip(BigDecimal phiShip) {
+        this.phiShip = phiShip;
     }
 
     public BigDecimal getTongTien() {

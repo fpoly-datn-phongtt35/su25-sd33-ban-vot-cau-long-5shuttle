@@ -6,7 +6,9 @@ import { CartProvider } from './pages/users/Cart/CartContext';
 
 function App() {
     return (
-        <CartProvider> {/* Bọc toàn bộ ứng dụng trong CartProvider */}
+        <CartProvider>
+            {' '}
+            {/* Bọc toàn bộ ứng dụng trong CartProvider */}
             <Router>
                 <div className="App">
                     <Routes>

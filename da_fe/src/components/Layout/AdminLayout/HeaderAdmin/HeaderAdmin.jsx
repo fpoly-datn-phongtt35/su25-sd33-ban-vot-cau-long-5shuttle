@@ -10,13 +10,19 @@ function HeaderAdmin() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isNotificationOpen, setIsNotificationOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(true);
-    const [userRole, setUserRole] = useState("Admin");
+    const [userRole, setUserRole] = useState('Admin');
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [notifications] = useState([
         { id: 1, title: 'Đơn hàng mới', message: 'Có 3 đơn hàng mới cần xử lý', time: '5 phút trước', unread: true },
         { id: 2, title: 'Sản phẩm hết hàng', message: 'Sản phẩm ABC sắp hết hàng', time: '1 giờ trước', unread: true },
-        { id: 3, title: 'Đánh giá mới', message: 'Có đánh giá 5 sao từ khách hàng', time: '2 giờ trước', unread: false },
+        {
+            id: 3,
+            title: 'Đánh giá mới',
+            message: 'Có đánh giá 5 sao từ khách hàng',
+            time: '2 giờ trước',
+            unread: false,
+        },
     ]);
 
     const menuRef = useRef(null);
@@ -25,17 +31,17 @@ function HeaderAdmin() {
 
     // Thông tin giả lập cho admin
     const admin = {
-        hoTen: "Nguyễn Văn A",
-        email: "admin@example.com",
-        sdt: "0123456789",
-        ngaySinh: "1990-01-01",
+        hoTen: 'Nguyễn Văn A',
+        email: 'admin@example.com',
+        sdt: '0123456789',
+        ngaySinh: '1990-01-01',
         gioiTinh: 1,
-        vaiTro: "Admin",
+        vaiTro: 'Admin',
         avatar: user_icon,
-        lastLogin: "Hôm nay 14:30"
+        lastLogin: 'Hôm nay 14:30',
     };
 
-    const unreadCount = notifications.filter(n => n.unread).length;
+    const unreadCount = notifications.filter((n) => n.unread).length;
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -55,19 +61,19 @@ function HeaderAdmin() {
 
     const handleAccount = () => {
         Swal.fire({
-            title: "Xác nhận đăng xuất tài khoản?",
-            text: "Bạn sẽ cần đăng nhập lại để tiếp tục sử dụng",
-            icon: "warning",
+            title: 'Xác nhận đăng xuất tài khoản?',
+            text: 'Bạn sẽ cần đăng nhập lại để tiếp tục sử dụng',
+            icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: "#2f19ae",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Đăng xuất",
-            cancelButtonText: "Hủy",
+            confirmButtonColor: '#2f19ae',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Đăng xuất',
+            cancelButtonText: 'Hủy',
             customClass: {
                 popup: 'rounded-xl',
                 confirmButton: 'rounded-lg px-6 py-2',
-                cancelButton: 'rounded-lg px-6 py-2'
-            }
+                cancelButton: 'rounded-lg px-6 py-2',
+            },
         }).then((result) => {
             if (result.isConfirmed) {
                 handleConfirm();
@@ -112,13 +118,15 @@ function HeaderAdmin() {
                             </button>
                         )}
                     </div>
-                    
+
                     {/* Search suggestions could go here */}
                     {searchQuery && (
                         <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 py-2 opacity-0 animate-in slide-in-from-top-2 duration-200 opacity-100">
                             <div className="px-4 py-2 text-sm text-gray-500">Tìm kiếm gần đây</div>
                             <div className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm">Đơn hàng #12345</div>
-                            <div className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm">Khách hàng Nguyễn Văn B</div>
+                            <div className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm">
+                                Khách hàng Nguyễn Văn B
+                            </div>
                         </div>
                     )}
                 </form>
@@ -164,11 +172,13 @@ function HeaderAdmin() {
                     {isNotificationOpen && (
                         <div className="absolute right-0 mt-3 bg-white shadow-2xl rounded-2xl w-80 py-3 text-gray-700 z-50 border border-gray-100 animate-in slide-in-from-top-2 duration-200 max-h-96 overflow-y-auto">
                             <div className="absolute top-0 right-4 w-3 h-3 bg-white transform rotate-45 -translate-y-1/2 border-l border-t border-gray-100"></div>
-                            
+
                             <div className="px-4 py-3 border-b border-gray-100">
                                 <h3 className="font-semibold text-gray-800 flex items-center justify-between">
                                     Thông báo
-                                    <span className="text-xs bg-[#2f19ae] text-white px-2 py-1 rounded-full">{unreadCount}</span>
+                                    <span className="text-xs bg-[#2f19ae] text-white px-2 py-1 rounded-full">
+                                        {unreadCount}
+                                    </span>
                                 </h3>
                             </div>
 
@@ -177,14 +187,16 @@ function HeaderAdmin() {
                                     <div
                                         key={notification.id}
                                         className={`px-4 py-3 hover:bg-gray-50 cursor-pointer border-l-4 transition-all duration-200 ${
-                                            notification.unread 
-                                                ? 'border-[#2f19ae] bg-gradient-to-r from-[#2f19ae]/5 to-purple-500/5' 
+                                            notification.unread
+                                                ? 'border-[#2f19ae] bg-gradient-to-r from-[#2f19ae]/5 to-purple-500/5'
                                                 : 'border-transparent'
                                         }`}
                                     >
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
-                                                <h4 className={`text-sm font-medium ${notification.unread ? 'text-gray-800' : 'text-gray-600'}`}>
+                                                <h4
+                                                    className={`text-sm font-medium ${notification.unread ? 'text-gray-800' : 'text-gray-600'}`}
+                                                >
                                                     {notification.title}
                                                 </h4>
                                                 <p className="text-xs text-gray-500 mt-1">{notification.message}</p>
@@ -225,15 +237,15 @@ function HeaderAdmin() {
 
                     {/* Avatar Dropdown */}
                     <div className="relative" ref={menuRef}>
-                        <button 
+                        <button
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                             className="flex items-center space-x-2 p-2 rounded-xl transition-all duration-300 hover:bg-gradient-to-r hover:from-[#2f19ae]/10 hover:to-purple-500/10 hover:shadow-md group"
                         >
                             <div className="relative">
-                                <Avatar 
-                                    src={admin.avatar} 
+                                <Avatar
+                                    src={admin.avatar}
                                     alt={admin.hoTen}
-                                    className="w-10 h-10 ring-2 ring-transparent group-hover:ring-[#2f19ae]/30 transition-all duration-300" 
+                                    className="w-10 h-10 ring-2 ring-transparent group-hover:ring-[#2f19ae]/30 transition-all duration-300"
                                 />
                                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
                             </div>
@@ -243,7 +255,7 @@ function HeaderAdmin() {
                         {isMenuOpen && (
                             <div className="absolute right-0 mt-3 bg-white shadow-2xl rounded-2xl w-72 py-3 text-gray-700 z-50 border border-gray-100 animate-in slide-in-from-top-2 duration-200">
                                 <div className="absolute top-0 right-4 w-3 h-3 bg-white transform rotate-45 -translate-y-1/2 border-l border-t border-gray-100"></div>
-                                
+
                                 {/* User Info Header */}
                                 <div className="px-4 py-4 border-b border-gray-100">
                                     <div className="flex items-center space-x-3">
@@ -253,19 +265,21 @@ function HeaderAdmin() {
                                             <p className="text-sm text-gray-500">{admin.email}</p>
                                             <div className="flex items-center space-x-1 mt-1">
                                                 <Shield className="w-3 h-3 text-[#2f19ae]" />
-                                                <span className="text-xs text-[#2f19ae] font-medium">{admin.vaiTro}</span>
+                                                <span className="text-xs text-[#2f19ae] font-medium">
+                                                    {admin.vaiTro}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 {isLoggedIn ? (
                                     <>
-                                        {userRole === "Admin" && (
+                                        {userRole === 'Admin' && (
                                             <li className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#2f19ae]/5 hover:to-purple-500/5 transition-all duration-200 group cursor-pointer">
-                                                <User  className="h-5 w-5 text-gray-500 group-hover:text-[#2f19ae] transition-colors duration-200" />
-                                                <Link 
-                                                    to="/profile/user" 
+                                                <User className="h-5 w-5 text-gray-500 group-hover:text-[#2f19ae] transition-colors duration-200" />
+                                                <Link
+                                                    to="/profile/user"
                                                     onClick={() => setIsMenuOpen(false)}
                                                     className="ml-3 text-gray-700 group-hover:text-[#2f19ae] font-medium transition-colors duration-200 flex-1"
                                                 >
@@ -273,17 +287,17 @@ function HeaderAdmin() {
                                                 </Link>
                                             </li>
                                         )}
-                                        
+
                                         <li className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#2f19ae]/5 hover:to-purple-500/5 transition-all duration-200 group cursor-pointer">
                                             <Settings className="h-5 w-5 text-gray-500 group-hover:text-[#2f19ae] transition-colors duration-200" />
                                             <span className="ml-3 text-gray-700 group-hover:text-[#2f19ae] font-medium transition-colors duration-200">
                                                 Cài đặt
                                             </span>
                                         </li>
-                                        
+
                                         <li className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 transition-all duration-200 group cursor-pointer border-t border-gray-100 mt-2">
                                             <LogOut className="w-5 h-5 text-gray-500 group-hover:text-red-500 transition-colors duration-200" />
-                                            <button 
+                                            <button
                                                 onClick={handleAccount}
                                                 className="ml-3 text-gray-700 group-hover:text-red-500 font-medium transition-colors duration-200 flex-1 text-left"
                                             >
@@ -294,8 +308,8 @@ function HeaderAdmin() {
                                 ) : (
                                     <li className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#2f19ae]/5 hover:to-purple-500/5 transition-all duration-200 group cursor-pointer">
                                         <LogIn className="w-5 h-5 text-gray-500 group-hover:text-[#2f19ae] transition-colors duration-200" />
-                                        <Link 
-                                            to="/login" 
+                                        <Link
+                                            to="/login"
                                             onClick={() => setIsMenuOpen(false)}
                                             className="ml-3 text-gray-700 group-hover:text-[#2f19ae] font-medium transition-colors duration-200"
                                         >

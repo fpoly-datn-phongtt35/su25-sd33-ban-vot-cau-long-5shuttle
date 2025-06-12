@@ -1,4 +1,3 @@
-
 // Pages
 import AdminLayout from '../components/Layout/AdminLayout';
 import Admin from '../pages/admin';
@@ -17,6 +16,7 @@ import Cart from '../pages/users/Cart/Cart';
 import Order from '../pages/admin/Order';
 import ProductDetail from '../pages/users/ProductDetail/ProductDetail';
 import CheckOut from '../pages/users/CheckOut/CheckOut';
+import SuccessOrder from '../pages/users/SuccessOrder/SuccessOrder';
 
 // Public routes
 const publicRoutes = [
@@ -33,14 +33,10 @@ const publicRoutes = [
     { path: '/admin/quan-ly-san-pham/san-pham-ct', component: ProductAdmin, layout: AdminLayout },
     { path: '/admin/quan-ly-san-pham/san-pham-ct/add', component: AddProduct, layout: AdminLayout },
     { path: '/gio-hang', component: Cart },
+    { path: '/xac-nhan-don-hang', component: SuccessOrder },
     { path: '/san-pham/san-pham-ct/:id', component: ProductDetail },
     { path: '/admin/quan-ly-don-hang', component: Order, layout: AdminLayout },
-    { path: '/gio-hang/checkout', component: CheckOut},
-
-
-
-
-
+    { path: '/gio-hang/checkout', component: CheckOut },
 ];
 
 const privateRoutes = [];

@@ -10,7 +10,7 @@ function ProductCard({ product }) {
 
     return (
         <div className="flex justify-center p-4 hover:scale-105 transition-transform">
-            <div 
+            <div
                 className="productCard w-[195px] m-3 rounded-lg shadow-lg border border-gray-200 transition-shadow hover:shadow-xl cursor-pointer"
                 onClick={handleClick}
             >
@@ -25,9 +25,7 @@ function ProductCard({ product }) {
                 <div className="textPart bg-white p-4 rounded-b-lg">
                     <h3 className="text-lg font-semibold text-gray-700 line-clamp-2">{product.tenSanPham}</h3>
                     <div className="mt-2 flex items-center justify-between">
-                        <span className="text-xl font-bold text-red-600">
-                            {product.donGia.toLocaleString()} ₫
-                        </span>
+                        <span className="text-xl font-bold text-red-600">{product.donGia.toLocaleString()} ₫</span>
                     </div>
                 </div>
             </div>

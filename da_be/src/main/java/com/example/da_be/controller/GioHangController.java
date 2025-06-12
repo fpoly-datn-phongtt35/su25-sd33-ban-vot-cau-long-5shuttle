@@ -62,6 +62,20 @@ public class GioHangController {
     }
 
 
+    @DeleteMapping("/xoa/{idTaiKhoan}")
+    public ResponseEntity<?> xoaGioHangByTaiKhoan(@PathVariable Integer idTaiKhoan) {
+        try {
+            gioHangService.xoaGioHangByTaiKhoan(idTaiKhoan);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+
+
     @PutMapping("/{id}")
     public ResponseEntity<?> capNhatSoLuong(
             @PathVariable Integer id,
