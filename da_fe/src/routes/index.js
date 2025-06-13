@@ -17,6 +17,7 @@ import Order from '../pages/admin/Order';
 import ProductDetail from '../pages/users/ProductDetail/ProductDetail';
 import CheckOut from '../pages/users/CheckOut/CheckOut';
 import SuccessOrder from '../pages/users/SuccessOrder/SuccessOrder';
+import OrderStatus from '../pages/admin/Order/OrderStatus';
 
 // Public routes
 const publicRoutes = [
@@ -36,6 +37,7 @@ const publicRoutes = [
     { path: '/xac-nhan-don-hang', component: SuccessOrder },
     { path: '/san-pham/san-pham-ct/:id', component: ProductDetail },
     { path: '/admin/quan-ly-don-hang', component: Order, layout: AdminLayout },
+    { path: '/admin/quan-ly-don-hang/order-status', component: OrderStatus, layout: AdminLayout },
     { path: '/gio-hang/checkout', component: CheckOut },
 ];
 

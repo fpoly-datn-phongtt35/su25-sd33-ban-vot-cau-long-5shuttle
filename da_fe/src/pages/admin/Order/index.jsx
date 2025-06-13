@@ -16,42 +16,33 @@ function Order() {
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
 
-    // Dữ liệu cứng thay thế cho API
-    const mockOrders = [
-        {
-            id: 1,
-            ma: 'HD001',
-            soLuong: 3,
-            tongTien: 150000,
-            taiKhoan: { hoTen: 'Nguyễn Văn A' },
-            ngayTao: '2025-06-01',
-            loaiHoaDon: 'Trực tuyến',
-            trangThai: 1,
-        },
-        {
-            id: 2,
-            ma: 'HD002',
-            soLuong: 5,
-            tongTien: 250000,
-            taiKhoan: { hoTen: 'Trần Thị B' },
-            ngayTao: '2025-06-02',
-            loaiHoaDon: 'Tại quầy',
-            trangThai: 2,
-        },
-        // Thêm nhiều đơn hàng khác ở đây
-    ];
-
-    const loadOrders = () => {
-        const sortedOrders = mockOrders.sort((a, b) => new Date(b.ngayTao) - new Date(a.ngayTao));
-        setOrders(sortedOrders);
-        setFilteredOrders(sortedOrders);
+    // Hàm để tải đơn hàng từ API
+    const loadOrders = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/api/hoa-don');
+            const data = await response.json();
+            const sortedOrders = data.sort((a, b) => new Date(b.ngayTao) - new Date(a.ngayTao));
+            setOrders(sortedOrders);
+            setFilteredOrders(sortedOrders);
+        } catch (error) {
+            console.error('Error fetching orders:', error);
+        }
     };
 
-    const handleViewOrder = (order) => {
-        navigate('/admin/quan-ly-don-hang/order-history', {
-            state: { order: order || null },
+    const handleViewOrder = async (order) => {
+    try {
+        const response = await fetch(`http://localhost:8080/api/hoa-don/${order.id}`);
+        const orderDetails = await response.json();
+        const response2 = await fetch(`http://localhost:8080/api/hoa-don-ct/${order.id}`);
+        const orderDetails2 = await response2.json();
+        navigate('/admin/quan-ly-don-hang/order-status', {
+            state: { order: orderDetails, orderDetails: orderDetails2 },
         });
-    };
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+    }
+};
+
 
     useEffect(() => {
         loadOrders();
@@ -140,181 +131,212 @@ function Order() {
     const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
     return (
-        <div className="p-4">
-            <h1 className="text-xl font-bold mb-4">Quản lý đơn hàng</h1>
-            <div className="flex items-center mb-4">
-                <input
-                    type="text"
-                    placeholder="Tìm kiếm hoá đơn"
-                    className="border rounded p-2 flex-grow mr-2"
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                />
+    <div className="p-2 bg-gray-50 min-h-screen">
+        <div className="bg-white rounded-lg shadow-sm border p-3">
+            {/* Header */}
+            <div className="mb-3">
+                <h1 className="text-lg font-bold text-gray-800 mb-1">Quản lý đơn hàng</h1>
+                <p className="text-xs text-gray-500">Theo dõi và quản lý tất cả đơn hàng của bạn</p>
             </div>
-            <div className="flex items-center mb-4">
-                <div className="flex items-center mr-4">
-                    <label className="mr-2 font-semibold">Từ ngày</label>
-                    <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="border rounded p-2"
-                    />
-                </div>
-                <div className="flex items-center mr-4">
-                    <label className="mr-2 font-semibold">Đến ngày</label>
-                    <input type="date" value={endDate} onChange={handleEndDateChange} className="border rounded p-2" />
-                </div>
-                <div className="flex items-center mr-4">
-                    <label className="mr-2 font-semibold">Loại:</label>
-                    <label className="mr-2">
+            
+            {/* Search and Filters */}
+            <div className="bg-gray-50 rounded-lg p-2 mb-3 space-y-2">
+                {/* Search bar */}
+                <div className="flex items-center">
+                    <div className="relative flex-grow">
                         <input
-                            type="radio"
-                            name="type"
-                            value="all"
-                            checked={selectedType === 'all'}
-                            onChange={handleTypeChange}
-                            className="mr-1"
+                            type="text"
+                            placeholder="Tìm kiếm hoá đơn..."
+                            className="w-full border border-gray-300 rounded-lg p-1.5 pl-6 text-xs focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
                         />
-                        Tất cả
-                    </label>
-                    <label className="mr-2">
-                        <input
-                            type="radio"
-                            name="type"
-                            value="online"
-                            checked={selectedType === 'online'}
-                            onChange={handleTypeChange}
-                            className="mr-1"
-                        />
-                        Trực tuyến
-                    </label>
-                    <label className="mr-2">
-                        <input
-                            type="radio"
-                            name="type"
-                            value="in-store"
-                            checked={selectedType === 'in-store'}
-                            onChange={handleTypeChange}
-                            className="mr-1"
-                        />
-                        Tại quầy
-                    </label>
+                        <svg className="absolute left-2 top-2 h-3 w-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
                 </div>
-                <button className="border rounded p-2 bg-[#2f19ae] text-white">Export Excel</button>
+
+                {/* Date range and filters */}
+                <div className="flex flex-wrap items-center gap-2 text-xs">
+                    <div className="flex items-center gap-1">
+                        <label className="text-xs font-medium text-gray-600">Từ:</label>
+                        <input
+                            type="date"
+                            value={startDate}
+                            onChange={(e) => setStartDate(e.target.value)}
+                            className="border border-gray-300 rounded-md p-1 text-xs focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                        />
+                    </div>
+                    <div className="flex items-center gap-1">
+                        <label className="text-xs font-medium text-gray-600">Đến:</label>
+                        <input
+                            type="date"
+                            value={endDate}
+                            onChange={handleEndDateChange}
+                            className="border border-gray-300 rounded-md p-1 text-xs focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                        />
+                    </div>
+                    
+                    {/* Type filter */}
+                    <div className="flex items-center gap-2 bg-white rounded-lg p-1.5 border">
+                        <span className="text-xs font-medium text-gray-600">Loại:</span>
+                        <label className="flex items-center gap-1 text-xs cursor-pointer">
+                            <input
+                                type="radio"
+                                name="type"
+                                value="all"
+                                checked={selectedType === 'all'}
+                                onChange={handleTypeChange}
+                                className="text-blue-600 focus:ring-blue-500 w-3 h-3"
+                            />
+                            <span>Tất cả</span>
+                        </label>
+                        <label className="flex items-center gap-1 text-xs cursor-pointer">
+                            <input
+                                type="radio"
+                                name="type"
+                                value="online"
+                                checked={selectedType === 'online'}
+                                onChange={handleTypeChange}
+                                className="text-blue-600 focus:ring-blue-500 w-3 h-3"
+                            />
+                            <span>Trực tuyến</span>
+                        </label>
+                        <label className="flex items-center gap-1 text-xs cursor-pointer">
+                            <input
+                                type="radio"
+                                name="type"
+                                value="in-store"
+                                checked={selectedType === 'in-store'}
+                                onChange={handleTypeChange}
+                                className="text-blue-600 focus:ring-blue-500 w-3 h-3"
+                            />
+                            <span>Tại quầy</span>
+                        </label>
+                    </div>
+                    
+                    <button className="ml-auto bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-1">
+                        <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Export Excel
+                    </button>
+                </div>
             </div>
 
-            <div className="border-b mb-4">
-                <ul className="flex">
+            {/* Status tabs */}
+            <div className="border-b border-gray-200 mb-2">
+                <nav className="flex space-x-4 overflow-x-auto">
                     {statusOptions.map((status) => (
-                        <li
+                        <button
                             key={status.value}
                             onClick={() => setSelectedStatus(status.value)}
-                            className={`mr-4 pb-2 text-xs cursor-pointer ${
-                                selectedStatus === status.value ? 'border-b-2 border-blue-500' : ''
+                            className={`py-1.5 px-1 text-xs font-medium border-b-2 transition-colors duration-200 whitespace-nowrap flex-shrink-0 ${
+                                selectedStatus === status.value
+                                    ? 'border-blue-500 text-blue-600'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                             }`}
                         >
                             {status.label}
-                        </li>
-                    ))}
-                </ul>
-            </div>
-
-            <table className="min-w-full bg-white text-xs">
-                <thead>
-                    <tr>
-                        <th className="py-1 px-2 border-b text-left">#</th>
-                        <th className="py-1 px-2 border-b text-left">Mã</th>
-                        <th className="py-1 px-2 border-b text-left">Tổng SP</th>
-                        <th className="py-1 px-2 border-b text-left">Tổng số tiền</th>
-                        <th className="py-1 px-2 border-b text-left">Tên khách hàng</th>
-                        <th className="py-1 px-2 border-b text-left">Ngày tạo</th>
-                        <th className="py-1 px-2 border-b text-left">Loại hoá đơn</th>
-                        <th className="py-1 px-2 border-b text-left">Trạng thái</th>
-                        <th className="py-1 px-2 border-b text-left">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {currentOrders.map((order, index) => {
-                        const { label, color } = getStatusLabel(order.trangThai);
-                        return (
-                            <tr key={order.id}>
-                                <td className="py-1 px-2 border-b">{index + 1}</td>
-                                <td className="py-1 px-2 border-b">{order.ma}</td>
-                                <td className="py-1 px-2 border-b">{order.soLuong}</td>
-                                <td className="py-1 px-2 border-b">{order.tongTien.toLocaleString() + ' VNĐ'}</td>
-                                <td className="py-1 px-2 border-b">
-                                    {order.taiKhoan ? order.taiKhoan.hoTen : 'Khách lẻ'}
-                                </td>
-                                <td className="py-1 px-2 border-b">
-                                    {new Date(order.ngayTao).toLocaleDateString('vi-VN')}
-                                </td>
-                                <td className="py-1 px-2 border-b">
-                                    <span
-                                        className={`${
-                                            order.loaiHoaDon === 'Trực tuyến'
-                                                ? 'bg-indigo-200 text-indigo-800'
-                                                : 'bg-green-200 text-green-800'
-                                        } py-0.5 px-2 rounded-full text-xs`}
-                                    >
-                                        {order.loaiHoaDon}
-                                    </span>
-                                </td>
-
-                                <td className="py-1 px-2 border-b">
-                                    <span className={`${color} py-0.5 px-2 rounded-full text-xs`}>{label}</span>
-                                </td>
-                                <td className="py-1 px-2 border-b">
-                                    <button
-                                        onClick={() => handleViewOrder(order)}
-                                        className="hover:bg-gray-400 font-medium py-2 px-4 rounded"
-                                    >
-                                        <RemoveRedEyeIcon className="h-4 w-4" />
-                                    </button>
-                                </td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-
-            <div className="flex justify-center mb-4 mt-7">
-                <button
-                    className={`${
-                        currentPage === 1 ? 'bg-gray-200 text-gray-800' : 'bg-white text-[#2f19ae]'
-                    } border border-[#2f19ae] hover:bg-[#2f19ae] hover:text-white font-medium py-1 px-2 rounded mx-1 transition duration-200`}
-                    onClick={() => setCurrentPage(currentPage - 1)}
-                    disabled={currentPage === 1}
-                >
-                    <SkipPreviousIcon />
-                </button>
-
-                {Array(totalPages)
-                    .fill(0)
-                    .map((_, index) => (
-                        <button
-                            key={index}
-                            className={`${
-                                currentPage === index + 1 ? 'bg-[#2f19ae] text-white' : 'bg-white text-[#2f19ae]'
-                            } border border-[#2f19ae] hover:bg-[#2f19ae] hover:text-white font-medium py-1 px-2 rounded mx-1 transition duration-200`}
-                            onClick={() => setCurrentPage(index + 1)}
-                        >
-                            {index + 1}
                         </button>
                     ))}
-
-                <button
-                    className={`${
-                        currentPage === totalPages ? 'bg-gray-200 text-gray-800' : 'bg-white text-[#2f19ae]'
-                    } border border-[#2f19ae] hover:bg-[#2f19ae] hover:text-white font-medium py-1 px-2 rounded mx-1 transition duration-200`}
-                    onClick={() => setCurrentPage(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                >
-                    <SkipNextIcon />
-                </button>
+                </nav>
             </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
+                <table className="min-w-full bg-white table-fixed">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th className="py-2 px-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide w-8">#</th>
+                            <th className="py-2 px-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide w-20 whitespace-nowrap">Mã</th>
+                            <th className="py-2 px-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide w-16 whitespace-nowrap">Tổng SP</th>
+                            <th className="py-2 px-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide w-24 whitespace-nowrap">Tổng tiền</th>
+                            <th className="py-2 px-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide w-32 whitespace-nowrap">Tên khách hàng</th>
+                            <th className="py-2 px-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide w-20 whitespace-nowrap">Ngày tạo</th>
+                            <th className="py-2 px-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide w-24 whitespace-nowrap">Loại HĐ</th>
+                            <th className="py-2 px-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide w-24 whitespace-nowrap">Trạng thái</th>
+                            <th className="py-2 px-2 text-left text-xs font-semibold text-gray-600 uppercase tracking-wide w-16 whitespace-nowrap">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                        {currentOrders.map((order, index) => {
+                            const { label, color } = getStatusLabel(order.trangThai);
+                            return (
+                                <tr key={order.id} className="hover:bg-gray-50 transition-colors duration-150">
+                                    <td className="py-2 px-2 text-xs text-gray-600 whitespace-nowrap">{index + 1}</td>
+                                    <td className="py-2 px-2 text-xs font-medium text-gray-900 whitespace-nowrap truncate">{order.ma}</td>
+                                    <td className="py-2 px-2 text-xs text-gray-600 whitespace-nowrap">{order.soLuong}</td>
+                                    <td className="py-2 px-2 text-xs font-medium text-gray-900 whitespace-nowrap">
+                                        {order.tongTien ? order.tongTien.toLocaleString() + ' VNĐ' : 'Chưa xác định'}
+                                    </td>
+                                    <td className="py-2 px-2 text-xs text-gray-600 whitespace-nowrap truncate" title={order.tenNguoiNhan || 'Khách lẻ'}>{order.tenNguoiNhan || 'Khách lẻ'}</td>
+                                    <td className="py-2 px-2 text-xs text-gray-600 whitespace-nowrap">
+                                        {new Date(order.ngayTao).toLocaleDateString('vi-VN')}
+                                    </td>
+                                    <td className="py-2 px-2 whitespace-nowrap">
+                                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 whitespace-nowrap">
+                                            {order.loaiHoaDon || 'Không xác định'}
+                                        </span>
+                                    </td>
+                                    <td className="py-2 px-2 whitespace-nowrap">
+                                        <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${color} whitespace-nowrap`}>
+                                            {label}
+                                        </span>
+                                    </td>
+                                    <td className="py-2 px-2 whitespace-nowrap">
+                                        <button
+                                            onClick={() => handleViewOrder(order)}
+                                            className="inline-flex items-center justify-center w-6 h-6 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-200"
+                                        >
+                                            <RemoveRedEyeIcon className="h-3 w-3" />
+                                        </button>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+
+             {/* Pagination */}
+                <div className="flex justify-center mb-2 mt-4">
+                    <button
+                        className={`${
+                            currentPage === 1 ? 'bg-gray-200 text-gray-800' : 'bg-white text-blue-600'
+                        } border border-blue-200 hover:bg-blue-600 hover:text-white font-medium py-1 px-2 rounded mx-1`}
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    >
+                        <SkipPreviousIcon />
+                    </button>
+                    {Array(totalPages)
+                        .fill(0)
+                        .map((_, index) => (
+                            <button
+                                key={index}
+                                className={`${
+                                    currentPage === index + 1 ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'
+                                } border border-blue-200 hover:bg-blue-600 hover:text-white font-medium py-1 px-2 rounded mx-1`}
+                                onClick={() => setCurrentPage(index + 1)}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                    <button
+                        className={`${
+                            currentPage === totalPages ? 'bg-gray-200 text-gray-800' : 'bg-white text-blue-600'
+                        } border border-blue-200 hover:bg-blue-600 hover:text-white font-medium py-1 px-2 rounded mx-1`}
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                    >
+                        <SkipNextIcon />
+                    </button>
+                </div>
         </div>
-    );
+    </div>
+);
 }
 
 export default Order;

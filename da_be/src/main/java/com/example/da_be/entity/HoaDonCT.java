@@ -11,11 +11,13 @@ public class HoaDonCT {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "IdSanPhamCT")
-    private Integer idSanPhamCT;
+    @ManyToOne
+    @JoinColumn(name = "IdSanPhamCT")
+    private SanPhamCT sanPhamCT;
 
-    @Column(name = "IdHoaDon")
-    private Integer idHoaDon;
+    @ManyToOne
+    @JoinColumn(name = "IdHoaDon")
+    private HoaDon hoaDon;
 
     @Column(name = "SoLuong")
     private Integer soLuong;
@@ -37,20 +39,20 @@ public class HoaDonCT {
         this.id = id;
     }
 
-    public Integer getIdSanPhamCT() {
-        return idSanPhamCT;
+    public SanPhamCT getSanPhamCT() {
+        return sanPhamCT;
     }
 
-    public void setIdSanPhamCT(Integer idSanPhamCT) {
-        this.idSanPhamCT = idSanPhamCT;
+    public void setSanPhamCT(SanPhamCT sanPhamCT) {
+        this.sanPhamCT = sanPhamCT;
     }
 
-    public Integer getIdHoaDon() {
-        return idHoaDon;
+    public HoaDon getHoaDon() {
+        return hoaDon;
     }
 
-    public void setIdHoaDon(Integer idHoaDon) {
-        this.idHoaDon = idHoaDon;
+    public void setHoaDon(HoaDon hoaDon) {
+        this.hoaDon = hoaDon;
     }
 
     public Integer getSoLuong() {

@@ -88,6 +88,9 @@ public class DatHangController {
             hoaDon.setSdtNguoiNhan(orderRequest.getThongTinGiaoHang().getSdt());
             hoaDon.setEmailNguoiNhan(orderRequest.getThongTinGiaoHang().getEmail());
             hoaDon.setDiaChiNguoiNhan(orderRequest.getThongTinGiaoHang().getDiaChiCuThe());
+            hoaDon.setLoaiHoaDon("Trực tuyến");
+//            hoaDon.setVoucher();
+//            hoaDon.setPhiShip(0);
 //            hoaDon.setTongTien(tongTien);
             hoaDon.setNgayTao(new Date());
             hoaDon.setTrangThai(1); // trạng thái mới tạo
@@ -104,8 +107,8 @@ public class DatHangController {
                 sanPhamCTRepository.save(spct);
 
                 HoaDonCT hoaDonCT = new HoaDonCT();
-                hoaDonCT.setIdHoaDon(hoaDon.getId());
-                hoaDonCT.setIdSanPhamCT(spct.getId());
+                hoaDonCT.setHoaDon(hoaDon);
+                hoaDonCT.setSanPhamCT(spct);
                 hoaDonCT.setSoLuong(item.getSoLuong());
                 hoaDonCT.setGiaBan(BigDecimal.valueOf(spct.getDonGia()));
                 hoaDonCT.setTrangThai(1);
