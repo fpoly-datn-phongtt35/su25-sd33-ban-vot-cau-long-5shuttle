@@ -35,8 +35,10 @@ function Order() {
         const orderDetails = await response.json();
         const response2 = await fetch(`http://localhost:8080/api/hoa-don-ct/${order.id}`);
         const orderDetails2 = await response2.json();
+        const response3 = await fetch(`http://localhost:8080/api/thanh-toan/hoa-don/${order.id}`);
+        const checkOut = await response3.json();
         navigate('/admin/quan-ly-don-hang/order-status', {
-            state: { order: orderDetails, orderDetails: orderDetails2 },
+            state: { order: orderDetails, orderDetails: orderDetails2, checkOut: checkOut},
         });
     } catch (error) {
         console.error('Error fetching order details:', error);
@@ -100,13 +102,12 @@ function Order() {
                 return { label: 'Đã giao hàng', color: 'bg-gray-200 text-green-800' };
             case 5:
                 return { label: 'Đã thanh toán', color: 'bg-teal-200 text-teal-800' };
+            
             case 6:
-                return { label: 'Chờ thanh toán', color: 'bg-orange-200 text-orange-800' };
-            case 7:
                 return { label: 'Hoàn thành', color: 'bg-pink-200 text-gray-800' };
-            case 8:
+            case 7:
                 return { label: 'Đã hủy', color: 'bg-red-200 text-red-800' };
-            case 9:
+            case 8:
                 return { label: 'Trả hàng', color: 'bg-red-400 text-white' };
             default:
                 return { label: 'Không xác định', color: 'bg-gray-200 text-gray-800' };

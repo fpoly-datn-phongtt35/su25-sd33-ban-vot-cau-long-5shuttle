@@ -1,6 +1,5 @@
 package com.example.da_be.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -13,12 +12,11 @@ public class HoaDon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "IdTaiKhoan", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "IdTaiKhoan")
     private TaiKhoan taiKhoan;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "IdVoucher")
     private Voucher voucher;
 

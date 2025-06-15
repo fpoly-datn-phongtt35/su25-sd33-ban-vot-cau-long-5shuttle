@@ -28,4 +28,15 @@ public class HoaDonService {
     public void deleteHoaDonById(int id) {
         hoaDonRepository.deleteById(id);
     }
+
+
+    public HoaDon updateHoaDonStatus(int id, int newStatus) {
+        HoaDon hoaDon = hoaDonRepository.findById(id).orElse(null);
+        if (hoaDon != null) {
+            hoaDon.setTrangThai(newStatus);
+            return hoaDonRepository.save(hoaDon);
+        }
+        return null;
+    }
+
 }

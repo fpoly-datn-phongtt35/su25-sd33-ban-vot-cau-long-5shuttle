@@ -13,11 +13,11 @@ import Product from '../pages/users/Product/Product';
 import ProductAdmin from '../pages/admin/Product';
 import AddProduct from '../pages/admin/Product/Add';
 import Cart from '../pages/users/Cart/Cart';
-import Order from '../pages/admin/Order';
 import ProductDetail from '../pages/users/ProductDetail/ProductDetail';
 import CheckOut from '../pages/users/CheckOut/CheckOut';
 import SuccessOrder from '../pages/users/SuccessOrder/SuccessOrder';
 import OrderStatus from '../pages/admin/Order/OrderStatus';
+import Order from '../pages/admin/Order';
 
 // Public routes
 const publicRoutes = [

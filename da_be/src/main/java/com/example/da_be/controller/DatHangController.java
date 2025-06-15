@@ -89,6 +89,7 @@ public class DatHangController {
             hoaDon.setEmailNguoiNhan(orderRequest.getThongTinGiaoHang().getEmail());
             hoaDon.setDiaChiNguoiNhan(orderRequest.getThongTinGiaoHang().getDiaChiCuThe());
             hoaDon.setLoaiHoaDon("Trực tuyến");
+            hoaDon.setTongTien(tongTien);
 //            hoaDon.setVoucher();
 //            hoaDon.setPhiShip(0);
 //            hoaDon.setTongTien(tongTien);
