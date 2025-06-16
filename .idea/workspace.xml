@@ -5,17 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1fbebf94-5295-406f-9147-391720987b96" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/da_fe/src/pages/admin/Giảm Giá/Phiếu Giảm Giá/add.jsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/da_fe/src/pages/admin/Giảm Giá/Phiếu Giảm Giá/update.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/da_fe/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/da_fe/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/da_fe/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/src/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/da_fe/src/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/src/routes/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/da_be/src/main/java/com/example/da_be/controller/PhieuGiamGiaController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/da_be/src/main/java/com/example/da_be/dto/request/PhieuGiamGiaRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/da_be/src/main/java/com/example/da_be/dto/response/PhieuGiamGiaResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/da_be/src/main/java/com/example/da_be/entity/PhieuGiamGia.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/da_be/src/main/java/com/example/da_be/repository/PhieuGiamGiaRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/da_be/src/main/java/com/example/da_be/service/PhieuGiamGiaService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/da_be/src/main/java/com/example/da_be/service/impl/PhieuGiamGiaServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/da_be/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/da_be/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/da_be/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/da_be/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -44,22 +57,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Hoàng&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/su25-sd33-ban-vot-cau-long-5shuttle&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.DaBeApplication.executor": "Run",
+    "git-widget-placeholder": "Hoàng",
+    "last_opened_file_path": "D:/su25-sd33-ban-vot-cau-long-5shuttle",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="DaBeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="da_be" />
@@ -72,7 +86,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.26775.11" />
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.25410.129" />
+        <option value="bundled-js-predefined-d6986cc7102b-6a121458b545-JavaScript-IU-251.25410.129" />
       </set>
     </attachedChunks>
   </component>
@@ -90,6 +105,7 @@
       <workItem from="1748612642500" duration="10810000" />
       <workItem from="1748662403042" duration="1095000" />
       <workItem from="1749771573000" duration="2537000" />
+      <workItem from="1750087232146" duration="1104000" />
     </task>
     <servers />
   </component>
