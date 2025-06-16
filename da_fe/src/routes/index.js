@@ -5,6 +5,10 @@ import Admin from '../pages/admin';
 import Index from '../pages/admin/Giảm Giá/Phiếu Giảm Giá/index.jsx';
 import Add from '../pages/admin/Giảm Giá/Phiếu Giảm Giá/add.jsx';
 import Update from '../pages/admin/Giảm Giá/Phiếu Giảm Giá/update.jsx';
+import ModalKhachHang from '../pages/admin/khuyenmai/ModalKhachHang';
+import Index from '../pages/admin/nhanvien';
+import Add from '../pages/admin/nhanvien/add';
+import Edit from '../pages/admin/nhanvien/edit';
 import Home from '../pages/users/Home';
 
 // Public routes
@@ -14,6 +18,10 @@ const publicRoutes = [
     { path: '/admin/giam-gia/phieu-giam-gia', component: Index, layout: AdminLayout },
     { path: '/admin/giam-gia/phieu-giam-gia/add', component: Add, layout: AdminLayout },
     { path: `/admin/giam-gia/phieu-giam-gia/:id/detail`, component: Update, layout: AdminLayout },
+
+    { path: '/admin/tai-khoan/nhan-vien', component: Index, layout: AdminLayout },
+    { path: '/admin/tai-khoan/nhan-vien/add', component: Add, layout: AdminLayout },
+    { path: '/admin/tai-khoan/nhan-vien/edit/:id', component: Edit, layout: AdminLayout }
 ];
 
 const privateRoutes = [];
