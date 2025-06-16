@@ -2,6 +2,7 @@ package com.example.da_be.controller;
 
 
 import com.example.da_be.dto.SanPhamCTDetailDTO;
+import com.example.da_be.dto.SanPhamCTFullDTO;
 import com.example.da_be.dto.SanPhamCTListDTO;
 import com.example.da_be.entity.SanPham;
 import com.example.da_be.entity.SanPhamCT;
@@ -151,6 +152,12 @@ public class SanPhamCTController {
     public ResponseEntity<SanPhamCTDetailDTO> getSanPhamCTDetail(@PathVariable int id) {
         SanPhamCTDetailDTO detailDTO = sanPhamCTService.getSanPhamCTDetail(id);
         return new ResponseEntity<>(detailDTO, HttpStatus.OK);
+    }
+
+    @GetMapping("/all-with-image")
+    public ResponseEntity<List<SanPhamCTFullDTO>> getAllSanPhamCTWithImage() {
+        List<SanPhamCTFullDTO> dtoList = sanPhamCTService.getAllSanPhamCTWithImage();
+        return ResponseEntity.ok(dtoList);
     }
 }
 

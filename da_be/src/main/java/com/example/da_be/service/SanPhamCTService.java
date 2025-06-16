@@ -1,6 +1,7 @@
 package com.example.da_be.service;
 
 import com.example.da_be.dto.SanPhamCTDetailDTO;
+import com.example.da_be.dto.SanPhamCTFullDTO;
 import com.example.da_be.dto.SanPhamCTListDTO;
 import com.example.da_be.dto.VariantDTO;
 import com.example.da_be.entity.HinhAnh;
@@ -192,4 +193,29 @@ public class SanPhamCTService {
     }
 
 
+    public List<SanPhamCTFullDTO> getAllSanPhamCTWithImage() {
+        List<SanPhamCT> sanPhamCTList = sanPhamCTRepository.findAll();
+        return sanPhamCTList.stream().map(spct -> {
+            String anhDaiDien = null;
+            if (spct.getHinhAnh() != null && !spct.getHinhAnh().isEmpty()) {
+                anhDaiDien = spct.getHinhAnh().get(0).getLink();
+            }
+            return new SanPhamCTFullDTO(
+                    spct.getId(),
+                    spct.getMa(),
+                    spct.getMoTa(),
+                    spct.getSoLuong(),
+                    spct.getDonGia(),
+                    spct.getTrangThai(),
+                    spct.getSanPham() != null ? spct.getSanPham().getTen() : null,
+                    spct.getThuongHieu() != null ? spct.getThuongHieu().getTen() : null,
+                    spct.getMauSac() != null ? spct.getMauSac().getTen() : null,
+                    spct.getChatLieu() != null ? spct.getChatLieu().getTen() : null,
+                    spct.getTrongLuong() != null ? spct.getTrongLuong().getTen() : null,
+                    spct.getDiemCanBang() != null ? spct.getDiemCanBang().getTen() : null,
+                    spct.getDoCung() != null ? spct.getDoCung().getTen() : null,
+                    anhDaiDien
+            );
+        }).collect(Collectors.toList());
+    }
 }

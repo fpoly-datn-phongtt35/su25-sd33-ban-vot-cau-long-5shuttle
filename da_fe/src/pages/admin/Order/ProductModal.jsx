@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Receipt, Search, Filter, Plus, Tag } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Receipt, Search, Filter, Plus } from 'lucide-react';
 
 const ProductModal = ({ showProductModal, handleCloseProductModal }) => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -7,62 +7,30 @@ const ProductModal = ({ showProductModal, handleCloseProductModal }) => {
     const [colorFilter, setColorFilter] = useState('');
     const [weightFilter, setWeightFilter] = useState('');
     const [priceFilter, setPriceFilter] = useState('');
+    const [products, setProducts] = useState([]);
 
-    // Dữ liệu sản phẩm cứng
-    const products = [
-        {
-            id: 1,
-            sanPhamTen: 'Cây vợt Yonex',
-            trongLuongTen: '3U',
-            donGia: 2000000,
-            soLuong: 10,
-            hinhAnhUrls: ['https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop'],
-        },
-        {
-            id: 2,
-            sanPhamTen: 'Giày Lining',
-            trongLuongTen: '2U',
-            donGia: 1500000,
-            soLuong: 5,
-            hinhAnhUrls: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop'],
-        },
-        {
-            id: 3,
-            sanPhamTen: 'Vợt Victor',
-            trongLuongTen: '4U',
-            donGia: 1800000,
-            soLuong: 8,
-            hinhAnhUrls: ['https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop'],
-        },
-        {
-            id: 4,
-            sanPhamTen: 'Giày Mizuno',
-            trongLuongTen: '3U',
-            donGia: 2200000,
-            soLuong: 3,
-            hinhAnhUrls: ['https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=300&fit=crop'],
-        },
-    ];
+    // Gọi API để lấy dữ liệu sản phẩm
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://localhost:8080/api/san-pham-ct/all-with-image');
+                const data = await response.json();
+                setProducts(data);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
 
-    const productPromotions = {
-        1: { khuyenMai: { giaTri: 10 } },
-        2: { khuyenMai: { giaTri: 0 } },
-        3: { khuyenMai: { giaTri: 15 } },
-        4: { khuyenMai: { giaTri: 5 } },
-    };
+        fetchProducts();
+    }, []);
 
     // Lọc sản phẩm
-    const filteredProducts = products.filter(product => {
-        const matchesSearch = searchTerm === '' || 
-            product.sanPhamTen.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesBrand = brandFilter === '' || 
-            product.sanPhamTen.toLowerCase().includes(brandFilter.toLowerCase());
-        const matchesColor = colorFilter === '' || 
-            product.sanPhamTen.toLowerCase().includes(colorFilter.toLowerCase());
-        const matchesWeight = weightFilter === '' || 
-            product.trongLuongTen === weightFilter;
-        const matchesPrice = priceFilter === '' || 
-            product.donGia <= priceFilter;
+    const filteredProducts = products.filter((product) => {
+        const matchesSearch = searchTerm === '' || product.tenSanPham.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesBrand = brandFilter === '' || product.thuongHieu.toLowerCase().includes(brandFilter.toLowerCase());
+        const matchesColor = colorFilter === '' || product.mauSac.toLowerCase().includes(colorFilter.toLowerCase());
+        const matchesWeight = weightFilter === '' || product.trongLuong === weightFilter;
+        const matchesPrice = priceFilter === '' || product.donGia <= priceFilter;
 
         return matchesSearch && matchesBrand && matchesColor && matchesWeight && matchesPrice;
     });
@@ -78,7 +46,7 @@ const ProductModal = ({ showProductModal, handleCloseProductModal }) => {
             />
 
             {/* Modal Container */}
-            <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-7xl  max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100">
+            <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-7xl max-h-[90vh] overflow-hidden transform transition-all duration-300 scale-100">
                 {/* Header */}
                 <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white p-6 h-[80px]">
                     <div className="flex items-center justify-between">
@@ -100,7 +68,7 @@ const ProductModal = ({ showProductModal, handleCloseProductModal }) => {
                 </div>
 
                 {/* Content */}
-                <div className="p-6 overflow-y-auto max-h-[calc(115vh-120px)]">
+                <div className="p-6 overflow-y-auto max-h-[80vh]"> {/* Thay đổi max-h thành 80vh */}
                     {/* Search and Filters */}
                     <div className="mb-8 space-y-4">
                         {/* Search Bar */}
@@ -122,7 +90,7 @@ const ProductModal = ({ showProductModal, handleCloseProductModal }) => {
                                 <span className="font-medium">Bộ lọc:</span>
                             </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             <select
                                 value={brandFilter}
@@ -176,83 +144,63 @@ const ProductModal = ({ showProductModal, handleCloseProductModal }) => {
 
                     {/* Products Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {filteredProducts.map((product) => {
-                            const promotion = productPromotions[product.id];
-                            const hasPromotion = promotion && promotion.khuyenMai.giaTri > 0;
-                            const discountedPrice = hasPromotion 
-                                ? product.donGia * (1 - promotion.khuyenMai.giaTri / 100)
-                                : product.donGia;
-
-                            return (
-                                <div key={product.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200 transform hover:-translate-y-1">
-                                    {/* Product Image */}
-                                    <div className="relative overflow-hidden">
-                                        {hasPromotion && (
-                                            <div className="absolute top-3 left-3 z-10">
-                                                <div className="bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg flex items-center space-x-1">
-                                                    <Tag className="w-3 h-3" />
-                                                    <span>−{promotion.khuyenMai.giaTri}%</span>
-                                                </div>
-                                            </div>
-                                        )}
-                                        
-                                        <div className="absolute top-3 right-3 z-10">
-                                            <button className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-blue-500 hover:text-white transition-all duration-200 group-hover:scale-110">
-                                                <Plus className="w-5 h-5" />
-                                            </button>
-                                        </div>
-
-                                        <img
-                                            src={product.hinhAnhUrls[0]}
-                                            alt={product.sanPhamTen}
-                                            className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                                        />
+                        {filteredProducts.map((product) => (
+                            <div
+                                key={product.id}
+                                className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200 transform hover:-translate-y-1"
+                            >
+                                {/* Product Image */}
+                                <div className="relative overflow-hidden">
+                                    <div className="absolute top-3 right-3 z-10">
+                                        <button className="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-blue-500 hover:text-white transition-all duration-200 group-hover:scale-110">
+                                            <Plus className="w-5 h-5" />
+                                        </button>
                                     </div>
 
-                                    {/* Product Info */}
-                                    <div className="p-5">
-                                        <h3 className="font-bold text-gray-800 text-lg mb-2 group-hover:text-blue-600 transition-colors duration-200">
-                                            {product.sanPhamTen}
-                                        </h3>
-                                        
-                                        <div className="flex items-center justify-between mb-3">
-                                            <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
-                                                {product.trongLuongTen}
-                                            </span>
-                                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                                product.soLuong > 5 
+                                    <img
+                                        src={product.anhDaiDien || 'https://via.placeholder.com/400'} // Placeholder nếu không có ảnh
+                                        alt={product.tenSanPham}
+                                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                </div>
+
+                                {/* Product Info */}
+                                <div className="p-5">
+                                    <h3 className="font-bold text-gray-800 text-lg mb-1 group-hover:text-blue-600 transition-colors duration-200">
+                                        {product.tenSanPham}
+                                    </h3>
+
+                                    {/* Hiển thị màu sắc */}
+                                    {product.mauSac && (
+                                        <div className="mb-2 text-sm text-gray-600">
+                                            Màu sắc: <span className="font-medium">{product.mauSac}</span>
+                                        </div>
+                                    )}
+
+                                    <div className="flex items-center justify-between mb-3">
+                                        <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium">
+                                            {product.trongLuong}
+                                        </span>
+                                        <span
+                                            className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                                product.soLuong > 5
                                                     ? 'bg-green-100 text-green-700'
                                                     : product.soLuong > 0
-                                                        ? 'bg-yellow-100 text-yellow-700'
-                                                        : 'bg-red-100 text-red-700'
-                                            }`}>
-                                                SL: {product.soLuong}
-                                            </span>
-                                        </div>
-
-                                        {/* Price */}
-                                        <div className="space-y-1">
-                                            {hasPromotion ? (
-                                                <div className="flex flex-col space-y-1">
-                                                    <div className="flex items-center space-x-2">
-                                                        <span className="text-2xl font-bold text-red-500">
-                                                            {discountedPrice.toLocaleString()}₫
-                                                        </span>
-                                                    </div>
-                                                    <span className="text-gray-400 line-through text-sm">
-                                                        {product.donGia.toLocaleString()}₫
-                                                    </span>
-                                                </div>
-                                            ) : (
-                                                <span className="text-2xl font-bold text-gray-700">
-                                                    {product.donGia.toLocaleString()}₫
-                                                </span>
-                                            )}
-                                        </div>
+                                                      ? 'bg-yellow-100 text-yellow-700'
+                                                      : 'bg-red-100 text-red-700'
+                                            }`}
+                                        >
+                                            SL: {product.soLuong}
+                                        </span>
                                     </div>
+
+                                    {/* Giá tiền màu đỏ */}
+                                    <span className="text-2xl font-bold text-red-600">
+                                        {product.donGia.toLocaleString()}₫
+                                    </span>
                                 </div>
-                            );
-                        })}
+                            </div>
+                        ))}
                     </div>
 
                     {/* No products found */}
