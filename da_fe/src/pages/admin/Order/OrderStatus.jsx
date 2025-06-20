@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckCircle, Clock, Package, Truck, CreditCard, XCircle, RotateCcw, AlertCircle } from 'lucide-react';
 import { Plus, Minus, ShoppingCart, Star, Heart } from 'lucide-react';
 import { Calculator, Percent, Receipt } from 'lucide-react';
@@ -20,8 +20,7 @@ function OrderStatus() {
     const [discountCode, setDiscountCode] = useState('');
     const [discountPercent, setDiscountPercent] = useState(0);
 
-    const subtotal = 137500;
-    const discountAmount = (subtotal * discountPercent) / 100;
+    
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [customerMoney, setCustomerMoney] = useState(0);
@@ -30,6 +29,9 @@ function OrderStatus() {
 
     const [isAnimating, setIsAnimating] = useState(false);
     const [showProductModal, setShowProductModal] = useState(false);
+
+    
+
 
     const updateQuantity = async (orderDetailId, newQuantity) => {
         try {
@@ -76,14 +78,47 @@ function OrderStatus() {
     const [checkOut, setCheckOuts] = useState(location.state?.checkOut || []);
     const [currentOrderStatus, setCurrentOrderStatus] = useState(orderData.trangThai || 3);
 
-    const calculateTotalAmount = () => {
-        const shippingFee = 30000; // Phí ship mặc định
-        const totalAmount = orderDetailDatas.reduce((total, orderDetail) => {
-            return total + orderDetail.sanPhamCT.donGia * orderDetail.soLuong; // Cộng giá bán của từng sản phẩm
-        }, 0);
-        return totalAmount + shippingFee; // Cộng phí ship
-    };
-    const total = calculateTotalAmount();
+    useEffect(() => {
+        if (orderData.voucher) {
+            setDiscountCode(orderData.voucher.ma); // Thiết lập mã giảm giá
+            setDiscountPercent(orderData.voucher.giaTri); // Thiết lập giá trị giảm giá
+        }
+    }, [orderData]);
+
+    console.log("hahahah", orderData);
+    // const calculateTotalAmount = () => {
+    //     const shippingFee = 30000; // Phí ship mặc định
+    //     const totalAmount = orderDetailDatas.reduce((total, orderDetail) => {
+    //         return total + orderDetail.sanPhamCT.donGia * orderDetail.soLuong; // Cộng giá bán của từng sản phẩm
+    //     }, 0);
+    //     return totalAmount + shippingFee; // Cộng phí ship
+    // };
+    // const total = calculateTotalAmount();
+
+
+
+
+const calculateDiscountAmount = (subtotal, discountPercent) => {
+    return (subtotal * discountPercent) / 100;
+};
+const calculateTotalAmount = (subtotal, discountAmount) => {
+    const shippingFee = 30000; // Phí ship mặc định
+    return subtotal - discountAmount + shippingFee; // Cộng phí ship
+};
+// Tính toán tổng tiền hàng
+const subtotal = orderDetailDatas.reduce((total, orderDetail) => {
+    return total + orderDetail.sanPhamCT.donGia * orderDetail.soLuong; // Cộng giá bán của từng sản phẩm
+}, 0);
+// Tính toán giá trị giảm giá
+const discountAmount = calculateDiscountAmount(subtotal, discountPercent);
+// Tính toán tổng tiền
+const total = calculateTotalAmount(subtotal, discountAmount);
+
+
+
+
+
+
 
     // Hàm mở ProductModal
     const handleOpenProductModal = () => {

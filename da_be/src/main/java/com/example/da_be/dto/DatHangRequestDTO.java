@@ -6,6 +6,7 @@ public class DatHangRequestDTO {
     private Integer idTaiKhoan;
     private List<CartItemDTO> cartItems;
     private ThongTinGiaoHangDTO thongTinGiaoHang;
+    private Integer discountId;
 
     public static class CartItemDTO {
         private Integer sanPhamCTId;
@@ -89,5 +90,13 @@ public class DatHangRequestDTO {
 
     public void setThongTinGiaoHang(ThongTinGiaoHangDTO thongTinGiaoHang) {
         this.thongTinGiaoHang = thongTinGiaoHang;
+    }
+
+    public Integer getDiscountId() {
+        return discountId;
+    }
+
+    public void setDiscountId(Integer discountId) {
+        this.discountId = discountId;
     }
 }

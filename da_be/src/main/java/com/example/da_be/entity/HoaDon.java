@@ -18,7 +18,7 @@ public class HoaDon {
 
     @ManyToOne
     @JoinColumn(name = "IdVoucher")
-    private Voucher voucher;
+    private PhieuGiamGia voucher;
 
     @Column(name = "Ma", length = 255)
     private String ma;
@@ -81,11 +81,11 @@ public class HoaDon {
         this.taiKhoan = taiKhoan;
     }
 
-    public Voucher getVoucher() {
+    public PhieuGiamGia getVoucher() {
         return voucher;
     }
 
-    public void setVoucher(Voucher voucher) {
+    public void setVoucher(PhieuGiamGia voucher) {
         this.voucher = voucher;
     }
 
