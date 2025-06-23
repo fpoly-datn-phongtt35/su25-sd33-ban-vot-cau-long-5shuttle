@@ -39,7 +39,14 @@ function Sidebar() {
                                             ? 'bg-gray-200 border-l-4 border-x-blue-800 text-gray-800'
                                             : 'bg-white text-gray-700 hover:bg-gray-200 hover:text-gray-900'
                                     }`}
-                                    onClick={() => hasSubItems && toggleSubMenu(index)}
+                                    onClick={() => {
+                                        if (hasSubItems) {
+                                            toggleSubMenu(index); // Toggle submenu
+                                        } else {
+                                            // Navigate to the link if no submenu
+                                            window.location.href = item.link; // Navigate to the link
+                                        }
+                                    }}
                                 >
                                     <div className="flex-[20%] text-xl">{item.icon ?? null}</div>
                                     <div className="flex-[80%] text-base">{item.title}</div>
