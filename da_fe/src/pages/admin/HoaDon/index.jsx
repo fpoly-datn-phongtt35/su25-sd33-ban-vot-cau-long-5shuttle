@@ -1,1 +1,0 @@
-<h1>This is Hóa Đơn</h1>
