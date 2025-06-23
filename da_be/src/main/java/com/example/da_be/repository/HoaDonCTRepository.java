@@ -8,4 +8,8 @@ import java.util.List;
 
 public interface HoaDonCTRepository extends JpaRepository<HoaDonCT, Integer> {
     List<HoaDonCT> findByHoaDon(HoaDon hoaDon);
+
+    List<HoaDonCT> findByHoaDonId(Integer hoaDonId);
+
+    List<HoaDonCT> findBySanPhamCTId(Integer sanPhamCTId);
 }

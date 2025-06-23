@@ -95,4 +95,32 @@ public class HoaDonCTService {
         sanPhamCT.setSoLuong(updatedStock);
         sanPhamCTRepository.save(sanPhamCT);
     }
+
+
+    public List<HoaDonCT> getAllHoaDonCT() {
+        return hoaDonCTRepository.findAll();
+    }
+    public HoaDonCT getHoaDonCTById(int id) {
+        return hoaDonCTRepository.findById(id).orElse(null);
+    }
+    public HoaDonCT saveOrUpdateHoaDonCT(HoaDonCT hoaDonCT) {
+        return hoaDonCTRepository.save(hoaDonCT);
+    }
+    public void deleteHoaDonCTById(int id) {
+        hoaDonCTRepository.deleteById(id);
+    }
+    public List<HoaDonCT> getHoaDonCTByHoaDonId(int hoaDonId) {
+        return hoaDonCTRepository.findByHoaDonId(hoaDonId);
+    }
+    public List<HoaDonCT> getHoaDonCTBySanPhamCTId(int sanPhamCTId) {
+        return hoaDonCTRepository.findBySanPhamCTId(sanPhamCTId);
+    }
+    public HoaDonCT updateHoaDonCTStatus(int id, int newStatus) {
+        HoaDonCT hoaDonCT = hoaDonCTRepository.findById(id).orElse(null);
+        if (hoaDonCT != null) {
+            hoaDonCT.setTrangThai(newStatus);
+            return hoaDonCTRepository.save(hoaDonCT);
+        }
+        return null;
+    }
 }

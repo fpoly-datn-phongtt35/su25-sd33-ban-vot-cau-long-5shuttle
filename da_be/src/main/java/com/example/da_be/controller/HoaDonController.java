@@ -1,9 +1,13 @@
 package com.example.da_be.controller;
 
+import com.example.da_be.dto.ThanhToanRequestDTO;
 import com.example.da_be.entity.HoaDon;
+import com.example.da_be.exception.ResourceNotFoundException;
 import com.example.da_be.service.HoaDonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,6 +59,29 @@ public class HoaDonController {
             return ResponseEntity.ok(updatedHoaDon);
         }
         return ResponseEntity.notFound().build();
+    }
+
+
+    @PostMapping("/thanh-toan")
+    @Transactional
+    public ResponseEntity<?> xacNhanThanhToan(@RequestBody ThanhToanRequestDTO request) {
+        try {
+            HoaDon hoaDon = hoaDonService.xacNhanThanhToan(
+                    request.getIdHoaDon(),
+                    request.getTongTien(),
+                    request.getKhachThanhToan(),
+                    request.getIdVoucher(),
+                    request.getPhuongThucThanhToan()
+            );
+            return ResponseEntity.ok(hoaDon);
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi xác nhận thanh toán: " + e.getMessage());
+        }
     }
 
 }

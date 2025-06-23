@@ -25,11 +25,13 @@ import OrderStatus from '../pages/admin/Order/OrderStatus';
 import Order from '../pages/admin/Order';
 import Indexx from '../pages/admin/Giảm Giá/PhieuGiamGia/index.jsx';
 import AddVoucher from '../pages/admin/Giảm Giá/PhieuGiamGia/add.jsx';
+import OfflineSale from '../pages/admin/Sale/index.jsx';
 
 // Public routes
 const publicRoutes = [
     { path: '/', component: Home },
     { path: '/admin', component: Admin, layout: AdminLayout },
+    { path: '/admin/ban-hang-tai-quay', component: OfflineSale, layout: AdminLayout },
     { path: '/admin/quan-ly-san-pham/mau-sac', component: Color, layout: AdminLayout },
     { path: '/admin/quan-ly-san-pham/san-pham', component: SanPham, layout: AdminLayout },
     { path: '/admin/quan-ly-san-pham/diem-can-bang', component: Balance, layout: AdminLayout },

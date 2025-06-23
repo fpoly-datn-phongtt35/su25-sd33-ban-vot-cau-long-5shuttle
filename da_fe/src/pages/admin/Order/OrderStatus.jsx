@@ -20,8 +20,6 @@ function OrderStatus() {
     const [discountCode, setDiscountCode] = useState('');
     const [discountPercent, setDiscountPercent] = useState(0);
 
-    
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [customerMoney, setCustomerMoney] = useState(0);
     const [note, setNote] = useState('');
@@ -30,8 +28,14 @@ function OrderStatus() {
     const [isAnimating, setIsAnimating] = useState(false);
     const [showProductModal, setShowProductModal] = useState(false);
 
-    
+    const location = useLocation();
+    const orderData = location.state?.order || {}; // Lấy dữ liệu đơn hàng từ state
+    // const orderDetailDatas = location.state?.orderDetails || {};
+    const [orderDetailDatas, setOrderDetailDatas] = useState(location.state?.orderDetails || []);
+    const [checkOut, setCheckOuts] = useState(location.state?.checkOut || []);
+    const [currentOrderStatus, setCurrentOrderStatus] = useState(orderData.trangThai || 3);
 
+    console.log("blabal: ", orderDetailDatas)
 
     const updateQuantity = async (orderDetailId, newQuantity) => {
         try {
@@ -71,13 +75,6 @@ function OrderStatus() {
         setQuantity(newQuantity);
     };
 
-    const location = useLocation();
-    const orderData = location.state?.order || {}; // Lấy dữ liệu đơn hàng từ state
-    // const orderDetailDatas = location.state?.orderDetails || {};
-    const [orderDetailDatas, setOrderDetailDatas] = useState(location.state?.orderDetails || []);
-    const [checkOut, setCheckOuts] = useState(location.state?.checkOut || []);
-    const [currentOrderStatus, setCurrentOrderStatus] = useState(orderData.trangThai || 3);
-
     useEffect(() => {
         if (orderData.voucher) {
             setDiscountCode(orderData.voucher.ma); // Thiết lập mã giảm giá
@@ -85,7 +82,7 @@ function OrderStatus() {
         }
     }, [orderData]);
 
-    console.log("hahahah", orderData);
+    console.log('hahahah', orderData);
     // const calculateTotalAmount = () => {
     //     const shippingFee = 30000; // Phí ship mặc định
     //     const totalAmount = orderDetailDatas.reduce((total, orderDetail) => {
@@ -95,30 +92,21 @@ function OrderStatus() {
     // };
     // const total = calculateTotalAmount();
 
-
-
-
-const calculateDiscountAmount = (subtotal, discountPercent) => {
-    return (subtotal * discountPercent) / 100;
-};
-const calculateTotalAmount = (subtotal, discountAmount) => {
-    const shippingFee = 30000; // Phí ship mặc định
-    return subtotal - discountAmount + shippingFee; // Cộng phí ship
-};
-// Tính toán tổng tiền hàng
-const subtotal = orderDetailDatas.reduce((total, orderDetail) => {
-    return total + orderDetail.sanPhamCT.donGia * orderDetail.soLuong; // Cộng giá bán của từng sản phẩm
-}, 0);
-// Tính toán giá trị giảm giá
-const discountAmount = calculateDiscountAmount(subtotal, discountPercent);
-// Tính toán tổng tiền
-const total = calculateTotalAmount(subtotal, discountAmount);
-
-
-
-
-
-
+    const calculateDiscountAmount = (subtotal, discountPercent) => {
+        return (subtotal * discountPercent) / 100;
+    };
+    const calculateTotalAmount = (subtotal, discountAmount) => {
+        const shippingFee = 30000; // Phí ship mặc định
+        return subtotal - discountAmount + shippingFee; // Cộng phí ship
+    };
+    // Tính toán tổng tiền hàng
+    const subtotal = orderDetailDatas.reduce((total, orderDetail) => {
+        return total + orderDetail.sanPhamCT.donGia * orderDetail.soLuong; // Cộng giá bán của từng sản phẩm
+    }, 0);
+    // Tính toán giá trị giảm giá
+    const discountAmount = calculateDiscountAmount(subtotal, discountPercent);
+    // Tính toán tổng tiền
+    const total = calculateTotalAmount(subtotal, discountAmount);
 
     // Hàm mở ProductModal
     const handleOpenProductModal = () => {
@@ -215,7 +203,7 @@ const total = calculateTotalAmount(subtotal, discountAmount);
                 return 'Xác nhận lấy hàng';
             case 4:
                 // Nếu đã lấy hàng xong thì không hiện nút ở đây nữa
-                return  'Thanh toán';
+                return 'Thanh toán';
             case 5:
                 return 'Hoàn thành';
             case 6:
@@ -342,7 +330,7 @@ const total = calculateTotalAmount(subtotal, discountAmount);
     };
 
     const getActionButtonStyle = (status) => {
-        if (status === 4 ) {
+        if (status === 4) {
             return 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700';
         }
         if (status === 6) {
@@ -365,7 +353,6 @@ const total = calculateTotalAmount(subtotal, discountAmount);
         }
     };
 
-    
     const ORDER_STEPS = [1, 2, 3, 4, 5, 6];
     const generateTimeline = (currentStatus) => {
         const timeline = [];
