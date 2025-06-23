@@ -60,24 +60,39 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "Spring Boot.DaBeApplication.executor": "Run",
-    "git-widget-placeholder": "Hoàng",
-    "last_opened_file_path": "D:/su25-sd33-ban-vot-cau-long-5shuttle",
+    "Spring Boot.da_beApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "/Users/hoang/Documents/GitHub/su25-sd33-ban-vot-cau-long-5shuttle",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
     "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.da_beApplication">
     <configuration name="DaBeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="da_be" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.da_be.DaBeApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="da_beApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="da_be" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.da_be.da_beApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -106,6 +121,7 @@
       <workItem from="1748662403042" duration="1095000" />
       <workItem from="1749771573000" duration="2537000" />
       <workItem from="1750087232146" duration="1104000" />
+      <workItem from="1750698448843" duration="641000" />
     </task>
     <servers />
   </component>

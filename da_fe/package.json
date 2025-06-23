@@ -17,15 +17,8 @@
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
     "@mui/icons-material": "^7.1.0",
-<<<<<<< HEAD
     "@mui/x-charts": "^8.5.2",
-    "@mui/x-date-pickers": "^8.5.2",
     "@mui/x-date-pickers-pro": "^8.5.2",
-    "@tailwindcss/vite": "^4.1.7",
-    "axios": "^1.10.0",
-    "customize-cra": "^1.0.0",
-    "dayjs": "^1.11.13",
-=======
     "@mui/material": "^7.1.0",
     "@mui/x-date-pickers": "^8.5.0",
     "@mui/x-data-grid": "^8.5.0",
@@ -36,7 +29,6 @@
     "dayjs": "^1.11.13",
     "exceljs": "^4.4.0",
     "numeral": "^2.0.6",
->>>>>>> main
     "react": "^19.1.0",
     "react-alice-carousel": "^2.9.1",
     "react-app-rewired": "^2.2.1",
