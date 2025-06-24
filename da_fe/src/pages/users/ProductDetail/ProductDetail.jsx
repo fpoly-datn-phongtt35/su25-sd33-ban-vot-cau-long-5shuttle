@@ -436,7 +436,7 @@ export default function ProductDetail() {
                                                 d="M3 3h2l.4 2M7 13h10l4-8H5.4m2.6 8L6 7H3M7 13v8a2 2 0 002 2h6a2 2 0 002-2v-8m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v4m-6 0h6"
                                             />
                                         </svg>
-                                        <span>Thêm vào giỏ</span>
+                                        <span>Thêm vào giỏ hàng</span>
                                     </div>
                                 </button>
                             </form>

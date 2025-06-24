@@ -1,35 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import AddAttributeModal from './AddAttributeModal'; // Import modal component
+import AddAttributeModal from './AddAttributeModal';
 
-const ProductInfo = ({ status, setStatus, description, setDescription }) => {
-    const [productName, setProductName] = useState('');
-    const [productNames, setProductNames] = useState([]);
-
+const ProductInfo = ({ status, setStatus, description, setDescription, productName, setProductName }) => {
     const [brand, setBrand] = useState('');
     const [brands, setBrands] = useState([]);
-
     const [material, setMaterial] = useState('');
     const [materials, setMaterials] = useState([]);
-
     const [balancePoint, setBalancePoint] = useState('');
     const [balances, setBalances] = useState([]);
-
     const [hardness, setHardness] = useState('');
     const [stiffs, setStiffs] = useState([]);
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentAttribute, setCurrentAttribute] = useState('');
-
-    const loadProductNames = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/san-pham');
-            console.log('Product names loaded:', response.data);
-            setProductNames(response.data);
-        } catch (error) {
-            console.error('Failed to fetch product names', error);
-        }
-    };
 
     const loadBrands = async () => {
         try {
@@ -72,14 +55,9 @@ const ProductInfo = ({ status, setStatus, description, setDescription }) => {
         loadMaterials();
         loadBalances();
         loadStiffs();
-        loadProductNames();
     }, []);
 
     const handleAddAttribute = (newAttribute) => {
-        // Logic to add the new attribute to the corresponding state
-        console.log('New attribute added:', newAttribute);
-
-        // Update the corresponding state based on the current attribute
         switch (currentAttribute) {
             case 'Thương hiệu':
                 setBrands(prev => [...prev, newAttribute]);
@@ -107,19 +85,12 @@ const ProductInfo = ({ status, setStatus, description, setDescription }) => {
                         <label className="block text-sm font-bold text-gray-700" htmlFor="productName">
                             <span className="text-red-600">*</span>Tên sản phẩm
                         </label>
-                        <select
+                        <input
                             id="productName"
                             value={productName}
                             onChange={(e) => setProductName(e.target.value)}
                             className="mt-1 block w-full h-10 border border-gray-300 rounded-md p-2 text-sm"
-                        >
-                            <option value="">Chọn sản phẩm</option>
-                            {productNames.map((b, index) => (
-                                <option key={index} value={b.ten}>
-                                    {b.ten}
-                                </option>
-                            ))}
-                        </select>
+                        />
                     </div>
                 </div>
                 <div className="mb-2 grid grid-cols-2 gap-4 w-[85%] mx-auto">
@@ -286,7 +257,6 @@ const ProductInfo = ({ status, setStatus, description, setDescription }) => {
                 </div>
             </form>
 
-            {/* Modal for adding attributes */}
             <AddAttributeModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}

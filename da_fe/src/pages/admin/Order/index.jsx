@@ -33,7 +33,7 @@ function Order() {
     try {
         const response = await fetch(`http://localhost:8080/api/hoa-don/${order.id}`);
         const orderDetails = await response.json();
-        const response2 = await fetch(`http://localhost:8080/api/hoa-don-ct/${order.id}`);
+        const response2 = await fetch(`http://localhost:8080/api/hoa-don-ct/hoa-don/${order.id}`);
         const orderDetails2 = await response2.json();
         const response3 = await fetch(`http://localhost:8080/api/thanh-toan/hoa-don/${order.id}`);
         const checkOut = await response3.json();

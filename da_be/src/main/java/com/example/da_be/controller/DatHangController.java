@@ -39,6 +39,11 @@ public class DatHangController {
     @Autowired
     private ThongBaoRepository thongBaoRepository;
 
+    @Autowired
+    private VoucherRepository voucherRepository;
+    @Autowired
+    private PhieuGiamGiaRepository phieuGiamGiaRepository;
+
     @Transactional
     @PostMapping
     public ResponseEntity<?> datHang(@RequestBody DatHangRequestDTO orderRequest) {
@@ -61,21 +66,19 @@ public class DatHangController {
             for (DatHangRequestDTO.CartItemDTO item : cartItems) {
                 SanPhamCT spct = sanPhamCTRepository.findById(item.getSanPhamCTId())
                         .orElseThrow(() -> new ResourceNotFoundException("Sản phẩm không tồn tại: " + item.getSanPhamCTId()));
-
                 if (item.getSoLuong() > spct.getSoLuong()) {
                     return ResponseEntity.badRequest().body("Số lượng sản phẩm vượt quá tồn kho: " + spct.getSanPham().getTen());
                 }
-
                 BigDecimal gia = BigDecimal.valueOf(spct.getDonGia());
                 if (gia == null) {
                     log.error("Giá sản phẩm không hợp lệ cho sản phẩm ID: {}", spct.getId());
                     return ResponseEntity.badRequest().body("Giá sản phẩm không hợp lệ.");
                 }
-
                 BigDecimal thanhTien = gia.multiply(BigDecimal.valueOf(item.getSoLuong()));
                 tongTien = tongTien.add(thanhTien);
                 log.info("Tính toán thành tiền cho sản phẩm ID: {}, thành tiền: {}", spct.getId(), thanhTien);
             }
+
 
 
             // 3. Tạo hóa đơn chính
@@ -89,10 +92,27 @@ public class DatHangController {
             hoaDon.setEmailNguoiNhan(orderRequest.getThongTinGiaoHang().getEmail());
             hoaDon.setDiaChiNguoiNhan(orderRequest.getThongTinGiaoHang().getDiaChiCuThe());
             hoaDon.setLoaiHoaDon("Trực tuyến");
-            hoaDon.setTongTien(tongTien);
-//            hoaDon.setVoucher();
-//            hoaDon.setPhiShip(0);
-//            hoaDon.setTongTien(tongTien);
+            // Kiểm tra và áp dụng phiếu giảm giá nếu có
+            if (orderRequest.getDiscountId() != null) {
+                // Lấy voucher từ cơ sở dữ liệu
+                PhieuGiamGia voucher = phieuGiamGiaRepository.findById(orderRequest.getDiscountId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Voucher không tồn tại: " + orderRequest.getDiscountId()));
+                // Tính toán giá trị giảm giá
+                BigDecimal discountAmount = tongTien.multiply(BigDecimal.valueOf(voucher.getGiaTri())).divide(BigDecimal.valueOf(100));
+                BigDecimal tongTienSauGiam = tongTien.subtract(discountAmount);
+                hoaDon.setTongTien(tongTienSauGiam); // Lưu tổng tiền sau khi giảm
+                log.info("Áp dụng phiếu giảm giá: {}, giảm giá: {}, tổng tiền sau giảm: {}", voucher.getMa(), discountAmount, tongTienSauGiam);
+            } else {
+                hoaDon.setTongTien(tongTien); // Lưu tổng tiền gốc nếu không có phiếu giảm giá
+            }
+
+            // Kiểm tra và gán voucher nếu có
+            if (orderRequest.getDiscountId() != null) {
+                PhieuGiamGia voucher = phieuGiamGiaRepository.findById(orderRequest.getDiscountId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Voucher không tồn tại: " + orderRequest.getDiscountId()));
+                hoaDon.setVoucher(voucher); // Gán voucher cho hóa đơn
+            }
+
             hoaDon.setNgayTao(new Date());
             hoaDon.setTrangThai(1); // trạng thái mới tạo
             hoaDonRepository.save(hoaDon);

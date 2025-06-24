@@ -10,7 +10,7 @@ import numeral from 'numeral';
 import dayjs from 'dayjs';
 import swal from 'sweetalert';
 
-function Add() {
+function AddVoucher() {
     const initialVoucher = {
         ma: '',
         ten: '',
@@ -498,4 +498,4 @@ function Add() {
     );
 }
 
-export default Add;
+export default AddVoucher;

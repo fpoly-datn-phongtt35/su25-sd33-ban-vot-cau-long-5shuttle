@@ -4,18 +4,23 @@ package com.example.da_be.controller;
 import com.example.da_be.dto.SanPhamCTDetailDTO;
 import com.example.da_be.dto.SanPhamCTFullDTO;
 import com.example.da_be.dto.SanPhamCTListDTO;
+import com.example.da_be.dto.VariantDTO;
+import com.example.da_be.entity.HinhAnh;
 import com.example.da_be.entity.SanPham;
 import com.example.da_be.entity.SanPhamCT;
 import com.example.da_be.exception.ResourceNotFoundException;
-import com.example.da_be.repository.SanPhamCTRepository;
+import com.example.da_be.repository.*;
 import com.example.da_be.service.SanPhamCTService;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -27,6 +32,22 @@ public class SanPhamCTController {
 
     @Autowired
     private SanPhamCTRepository sanPhamCTRepository;
+    @Autowired
+    private SanPhamRepository sanPhamRepository;
+    @Autowired
+    private ThuongHieuRepository thuongHieuRepository;
+    @Autowired
+    private ChatLieuRepository chatLieuRepository;
+    @Autowired
+    private DiemCanBangRepository diemCanBangRepository;
+    @Autowired
+    private DoCungRepository doCungRepository;
+    @Autowired
+    private MauSacRepository mauSacRepository;
+    @Autowired
+    private TrongLuongRepository trongLuongRepository;
+    @Autowired
+    private HinhAnhRepository hinhAnhRepository;
 
     // Lấy danh sách tất cả sản phẩm chi tiết
     @GetMapping
@@ -159,5 +180,77 @@ public class SanPhamCTController {
         List<SanPhamCTFullDTO> dtoList = sanPhamCTService.getAllSanPhamCTWithImage();
         return ResponseEntity.ok(dtoList);
     }
+
+    private String generateProductCode() {
+        // Sử dụng UUID để tạo mã sản phẩm duy nhất
+        return "SP-" + UUID.randomUUID().toString();
+    }
+
+    @PostMapping("/add-with-variants")
+    public ResponseEntity<?> addProductWithVariants(@RequestBody AddProductRequest request) {
+        try {
+            // 1. Tạo sản phẩm chính
+            SanPham sanPham = new SanPham();
+            sanPham.setTen(request.getProductName());
+            sanPham.setTrangThai(1); // Active
+            // Lưu sản phẩm chính (nếu chưa có repository cho SanPham, bạn cần tạo)
+            sanPhamRepository.save(sanPham);
+
+            // 2. Tạo các biến thể sản phẩm
+            List<SanPhamCT> createdVariants = new ArrayList<>();
+            for (VariantDTO variant : request.getVariants()) {
+                SanPhamCT sanPhamCT = new SanPhamCT();
+                sanPhamCT.setSanPham(sanPham);
+
+                // Lấy các thuộc tính từ request
+                sanPhamCT.setThuongHieu(thuongHieuRepository.findByTen(request.getBrand()).orElse(null));
+                sanPhamCT.setChatLieu(chatLieuRepository.findByTen(request.getMaterial()).orElse(null));
+                sanPhamCT.setDiemCanBang(diemCanBangRepository.findByTen(request.getBalancePoint()).orElse(null));
+                sanPhamCT.setDoCung(doCungRepository.findByTen(request.getHardness()).orElse(null));
+
+                // Lấy màu sắc và trọng lượng
+                sanPhamCT.setMauSac(mauSacRepository.findByTen(variant.getMauSacTen()).orElse(null));
+                sanPhamCT.setTrongLuong(trongLuongRepository.findByTen(variant.getTrongLuongTen()).orElse(null));
+
+                // Các thông tin khác
+                sanPhamCT.setMa(generateProductCode()); // Hàm tự tạo mã sản phẩm
+                sanPhamCT.setSoLuong(variant.getSoLuong());
+                sanPhamCT.setDonGia(variant.getDonGia());
+                sanPhamCT.setMoTa(request.getDescription());
+                sanPhamCT.setTrangThai(1); // Active
+
+                // Lưu biến thể
+                SanPhamCT savedVariant = sanPhamCTRepository.save(sanPhamCT);
+                createdVariants.add(savedVariant);
+
+                // 3. Lưu hình ảnh cho biến thể
+                for (String imageUrl : variant.getHinhAnhUrls()) {
+                    HinhAnh hinhAnh = new HinhAnh();
+                    hinhAnh.setSanPhamCT(savedVariant);
+                    hinhAnh.setLink(imageUrl);
+                    hinhAnh.setTrangThai(1);
+                    hinhAnhRepository.save(hinhAnh);
+                }
+            }
+
+            return ResponseEntity.ok(createdVariants);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error adding product: " + e.getMessage());
+        }
+    }
+
+    // Thêm DTO cho request
+    @Data
+    public static class AddProductRequest {
+        private String productName;
+        private String brand;
+        private String material;
+        private String balancePoint;
+        private String hardness;
+        private String description;
+        private List<VariantDTO> variants;
+    }
+
 }
 
