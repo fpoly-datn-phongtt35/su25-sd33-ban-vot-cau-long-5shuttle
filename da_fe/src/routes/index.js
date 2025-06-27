@@ -28,6 +28,9 @@ import CheckOut from '../pages/users/CheckOut/CheckOut';
 import SuccessOrder from '../pages/users/SuccessOrder/SuccessOrder';
 import OrderStatus from '../pages/admin/Order/OrderStatus';
 import Order from '../pages/admin/Order';
+import DotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/index.jsx';
+import AddDotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/add.jsx';
+import UpdateDotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/update.jsx';
 
 
 // Public routes
@@ -54,6 +57,9 @@ const publicRoutes = [
     { path: '/admin/giam-gia/phieu-giam-gia', component: PhieuGiamGia, layout: AdminLayout },
     { path: '/admin/giam-gia/phieu-giam-gia/add', component: AddPhieuGiamGia, layout: AdminLayout },
     { path: `/admin/giam-gia/phieu-giam-gia/:id/detail`, component: Update, layout: AdminLayout },
+    { path: '/admin/giam-gia/dot-giam-gia', component: DotGiamGia, layout: AdminLayout },
+    { path: '/admin/giam-gia/dot-giam-gia/add', component: AddDotGiamGia, layout: AdminLayout },
+    { path: '/admin/giam-gia/dot-giam-gia/:id/detail', component: UpdateDotGiamGia, layout: AdminLayout },
     { path: '/admin/tai-khoan/nhan-vien', component: Index, layout: AdminLayout },
     { path: '/admin/tai-khoan/nhan-vien/add', component: Add, layout: AdminLayout },
     { path: '/admin/tai-khoan/nhan-vien/edit/:id', component: Edit, layout: AdminLayout }
