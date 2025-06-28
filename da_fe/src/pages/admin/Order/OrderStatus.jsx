@@ -35,7 +35,7 @@ function OrderStatus() {
     const [checkOut, setCheckOuts] = useState(location.state?.checkOut || []);
     const [currentOrderStatus, setCurrentOrderStatus] = useState(orderData.trangThai || 3);
 
-    console.log("blabal: ", orderDetailDatas)
+    console.log('blabal: ', orderDetailDatas);
 
     const updateQuantity = async (orderDetailId, newQuantity) => {
         try {
@@ -434,6 +434,7 @@ function OrderStatus() {
                     handleQuantityChange={handleQuantityChange}
                     isLiked={isLiked}
                     setIsLiked={setIsLiked}
+                    isOrderInTransit={currentOrderStatus === 3} // Truyền trạng thái đơn hàng
                 />
             </div>
             {showProductModal && (

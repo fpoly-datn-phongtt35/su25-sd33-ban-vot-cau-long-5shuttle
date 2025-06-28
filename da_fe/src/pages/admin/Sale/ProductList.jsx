@@ -2,7 +2,9 @@
 import React from 'react';
 import { Plus, Minus, Star, Heart } from 'lucide-react';
 
-const ProductList = ({ orderDetailDatas, handleOpenProductModal, handleQuantityChange, isLiked, setIsLiked }) => {
+const ProductList = ({ orderDetailDatas, handleQuantityChange, isLiked, setIsLiked }) => {
+
+    console.log("orderdetial: ", orderDetailDatas)
     return (
         <div className="bg-gray-50 p-4">
             <div className="max-w-6xl mx-auto">

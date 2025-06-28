@@ -1,8 +1,7 @@
-// ProductList.js
 import React from 'react';
 import { Plus, Minus, Star, Heart } from 'lucide-react';
 
-const ProductList = ({ orderDetailDatas, handleOpenProductModal, handleQuantityChange, isLiked, setIsLiked }) => {
+const ProductList = ({ orderDetailDatas, handleOpenProductModal, handleQuantityChange, isLiked, setIsLiked, isOrderInTransit }) => {
     return (
         <div className="bg-gray-50 p-4">
             <div className="max-w-6xl mx-auto">
@@ -10,8 +9,9 @@ const ProductList = ({ orderDetailDatas, handleOpenProductModal, handleQuantityC
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-2xl font-bold text-gray-800">Danh sách sản phẩm</h1>
                     <button
-                        onClick={handleOpenProductModal} // Mở ProductModal khi nhấn nút
-                        className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                        onClick={handleOpenProductModal}
+                        disabled={isOrderInTransit} // Vô hiệu hóa nút nếu đơn hàng đang vận chuyển
+                        className={`bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg transition-colors duration-200 flex items-center gap-2 ${isOrderInTransit ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                         <Plus size={18} />
                         Thêm sản phẩm
@@ -56,10 +56,6 @@ const ProductList = ({ orderDetailDatas, handleOpenProductModal, handleQuantityC
                                                 <span className="text-sm text-red-500 ">
                                                     {orderDetail.sanPhamCT.donGia.toLocaleString()} VNĐ
                                                 </span>
-                                                {/* sau này khi xong giảm giá cần dùng đến (Tạm thời thì chưa) */}
-                                                {/* <span className="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full font-medium">
-                                                                    -11%
-                                                                </span> */}
                                             </div>
                                             <div className="flex items-center gap-1 mb-3">
                                                 {[...Array(5)].map((_, i) => (
@@ -96,7 +92,8 @@ const ProductList = ({ orderDetailDatas, handleOpenProductModal, handleQuantityC
                                             <div className="flex items-center gap-3 mb-4">
                                                 <button
                                                     onClick={() => handleQuantityChange(-1, orderDetail.id)}
-                                                    className="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors duration-200"
+                                                    disabled={isOrderInTransit} // Vô hiệu hóa nút nếu đơn hàng đang vận chuyển
+                                                    className={`w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors duration-200 ${isOrderInTransit ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 >
                                                     <Minus size={14} />
                                                 </button>
@@ -105,7 +102,8 @@ const ProductList = ({ orderDetailDatas, handleOpenProductModal, handleQuantityC
                                                 </span>
                                                 <button
                                                     onClick={() => handleQuantityChange(1, orderDetail.id)}
-                                                    className="w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors duration-200"
+                                                    disabled={isOrderInTransit} // Vô hiệu hóa nút nếu đơn hàng đang vận chuyển
+                                                    className={`w-8 h-8 rounded-full border-2 border-gray-300 flex items-center justify-center hover:border-blue-500 hover:text-blue-500 transition-colors duration-200 ${isOrderInTransit ? 'opacity-50 cursor-not-allowed' : ''}`}
                                                 >
                                                     <Plus size={14} />
                                                 </button>
@@ -117,7 +115,6 @@ const ProductList = ({ orderDetailDatas, handleOpenProductModal, handleQuantityC
                         </div>
                     </div>
                 ))}
-                {/* Additional Product Cards */}
             </div>
         </div>
     );

@@ -71,12 +71,14 @@ public class HoaDonService {
 
             // Thực hiện áp dụng voucher (tuỳ logic giảm giá của bạn)
             // Ví dụ: tongTien = tongTien - voucher.getGiaTri();
+            hoaDon.setVoucher(voucher);
+
         }
 
         // 4. Cập nhật thông tin hóa đơn
         hoaDon.setTongTien(tongTien);
         hoaDon.setPhuongThucThanhToan(phuongThucThanhToan);
-        hoaDon.setTrangThai(6); // 2 = Đã thanh toán
+        hoaDon.setTrangThai(6); // 6 = Đã thanh toán
         hoaDon.setNgaySua(new Date());
 
         // 5. Lưu hóa đơn
