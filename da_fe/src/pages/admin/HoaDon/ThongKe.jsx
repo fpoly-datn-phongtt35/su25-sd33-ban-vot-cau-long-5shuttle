@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography, Skeleton } from '@mui/material';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
@@ -62,9 +62,13 @@ const ThongKe = () => {
     const [toDate, setToDate] = useState(dayjs());
     const [allCardsData, setAllCardsData] = useState([]);
     const [pieChartData, setPieChartData] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isTableLoading, setIsTableLoading] = useState(false);
+    const [isChartLoading, setIsChartLoading] = useState(false);
 
     useEffect(() => {
         const fetchAllCards = async () => {
+            setIsLoading(true);
             const cards = await Promise.all(
                 FILTERS.map(async (filter) => {
                     try {
@@ -104,6 +108,7 @@ const ThongKe = () => {
                 })
             );
             setAllCardsData(cards);
+            setIsLoading(false);
         };
 
         fetchAllCards();
@@ -111,6 +116,7 @@ const ThongKe = () => {
 
     useEffect(() => {
         const fetchPieChartData = async () => {
+            setIsChartLoading(true);
             try {
                 const url = getApiUrl(selectedFilter, fromDate, toDate);
                 const res = await axios.get(url);
@@ -126,6 +132,8 @@ const ThongKe = () => {
                     { name: 'Đơn hủy', value: 0 },
                     { name: 'Đơn trả', value: 0 },
                 ]);
+            } finally {
+                setIsChartLoading(false);
             }
         };
         fetchPieChartData();
@@ -133,6 +141,12 @@ const ThongKe = () => {
 
     const handleFilterChange = (newFilter) => {
         setSelectedFilter(newFilter);
+        // Khi thay đổi filter, bắt đầu loading cho table
+        setIsTableLoading(true);
+        // Tự động tắt loading sau 0.5 giây (thời gian API call)
+        setTimeout(() => {
+            setIsTableLoading(false);
+        }, 500);
     };
     
     const handleExport = () => {
@@ -146,7 +160,17 @@ const ThongKe = () => {
             </Typography>
 
             <Box mb={3}>
-                <StatisticCardsGroup cards={allCardsData} />
+                {isLoading ? (
+                    <Grid container spacing={3}>
+                        {[1, 2, 3, 4, 5].map((item) => (
+                            <Grid item xs={12} md={6} key={item}>
+                                <Skeleton variant="rectangular" height={200} sx={{ borderRadius: 2 }} />
+                            </Grid>
+                        ))}
+                    </Grid>
+                ) : (
+                    <StatisticCardsGroup cards={allCardsData} />
+                )}
             </Box>
 
             <FilterBar
@@ -162,22 +186,50 @@ const ThongKe = () => {
 
             <Grid container spacing={3} alignItems="stretch">
                 <Grid item xs={12} md={8} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                    <TableBestSelling 
-                        filterLabel={selectedFilter} 
-                        fromDate={fromDate}
-                        toDate={toDate}
-                    />
+                    <Box 
+                        sx={{ 
+                            backgroundColor: '#ffffff',
+                            borderRadius: 3,
+                            p: 3,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            height: '100%',
+                            minHeight: '500px',
+                            width: '100%',
+                            flexShrink: 0,
+                            transition: 'all 0.3s ease'
+                        }}
+                    >
+                        <TableBestSelling 
+                            filterLabel={selectedFilter} 
+                            fromDate={fromDate}
+                            toDate={toDate}
+                            loading={isTableLoading}
+                        />
+                    </Box>
                 </Grid>
                 <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                    <StatusPieChart
-                        data={pieChartData}
-                        label={selectedFilter.toLowerCase()}
-                        colors={[
-                            COLOR_CARDS[selectedFilter] || '#00838f',
-                            '#f44336',
-                            '#9c27b0',
-                        ]}
-                    />
+                    <Box 
+                        sx={{ 
+                            backgroundColor: '#ffffff',
+                            borderRadius: 3,
+                            p: 3,
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            height: '100%',
+                            minHeight: '500px',
+                            transition: 'all 0.3s ease'
+                        }}
+                    >
+                        <StatusPieChart
+                            data={pieChartData}
+                            label={selectedFilter.toLowerCase()}
+                            colors={[
+                                COLOR_CARDS[selectedFilter] || '#00838f',
+                                '#f44336',
+                                '#9c27b0',
+                            ]}
+                            loading={isChartLoading}
+                        />
+                    </Box>
                 </Grid>
             </Grid>
 

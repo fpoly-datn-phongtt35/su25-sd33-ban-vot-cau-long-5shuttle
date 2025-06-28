@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   Table, TableHead, TableRow, TableCell, TableBody,
-  Avatar, TablePagination, Typography, CircularProgress, Alert, Box
+  Avatar, TablePagination, Typography, CircularProgress, Alert, Box, Skeleton
 } from '@mui/material';
 import axios from 'axios';
 import dayjs from 'dayjs';
@@ -23,16 +23,14 @@ const getTopSellingApiUrl = (filter, fromDate, toDate) => {
   }
 };
 
-const TableBestSelling = ({ filterLabel, fromDate, toDate }) => {
+const TableBestSelling = ({ filterLabel, fromDate, toDate, loading = false }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchTopSellingProducts = async () => {
-      setLoading(true);
       setError(null);
       try {
         const url = getTopSellingApiUrl(filterLabel, fromDate, toDate);
@@ -42,8 +40,6 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate }) => {
         console.error('Lỗi khi lấy dữ liệu top-selling:', err);
         setError('Không thể tải dữ liệu sản phẩm bán chạy');
         setProducts([]);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -55,14 +51,6 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate }) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  if (loading) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '20px' }}>
-        <CircularProgress />
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -77,7 +65,26 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate }) => {
       <Typography textAlign={'center'} variant="h6" gutterBottom sx={{ color: 'black' }}>
         Danh sách sản phẩm bán chạy theo {filterLabel}
       </Typography>
-      <Box sx={{ width: '100%', minWidth: 400, minHeight: 400 }}>
+      <Box sx={{ width: '100%', minWidth: 530, minHeight: 400, position: 'relative' }}>
+        {loading && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 1,
+              borderRadius: 1
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        )}
         <Table>
           <TableHead>
             <TableRow>
@@ -90,7 +97,14 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate }) => {
             {products.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} align="center">
-                  Không có dữ liệu
+                  {loading ? (
+                    <Box sx={{ py: 2 }}>
+                      <Skeleton variant="text" width="60%" />
+                      <Skeleton variant="text" width="40%" />
+                    </Box>
+                  ) : (
+                    "Không có dữ liệu"
+                  )}
                 </TableCell>
               </TableRow>
             ) : (
@@ -101,12 +115,12 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate }) => {
                     <TableCell>
                       <Typography
                         variant="body2"
-                        sx={{ maxWidth: 300, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}
+                        sx={{ maxWidth: 300, whiteSpace: 'normal', wordBreak: 'break-word' }}
                       >
                         {product.name || product.tenSanPham}
                       </Typography>
                     </TableCell>
-                    <TableCell>{product.quantity || product.soLuong}</TableCell>
+                    <TableCell>{product.quantity || product.soLuongDaBan}</TableCell>
                     <TableCell>{(product.price || product.giaTien || 0).toLocaleString()} ₫</TableCell>
                   </TableRow>
               ))
