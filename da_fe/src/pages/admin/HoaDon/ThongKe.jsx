@@ -42,15 +42,15 @@ const COLOR_CARDS = {
 const getApiUrl = (filter, fromDate, toDate) => {
   switch (filter) {
     case 'Ngày':
-      return 'http://localhost:8080/shuttle/thong-ke/ngay';
+      return 'http://localhost:8080/shuttle/thong-ke/overall/ngay';
     case 'Tuần':
-      return 'http://localhost:8080/shuttle/thong-ke/tuan';
+      return 'http://localhost:8080/shuttle/thong-ke/overall/tuan';
     case 'Tháng':
-      return 'http://localhost:8080/shuttle/thong-ke/thang';
+      return 'http://localhost:8080/shuttle/thong-ke/overall/thang';
     case 'Năm':
-      return 'http://localhost:8080/shuttle/thong-ke/nam';
+      return 'http://localhost:8080/shuttle/thong-ke/overall/nam';
     case 'Tùy chỉnh':
-      return `http://localhost:8080/shuttle/thong-ke/tuy-chinh?fromDate=${fromDate.format('YYYY-MM-DD')}&toDate=${toDate.format('YYYY-MM-DD')}`;
+      return `http://localhost:8080/shuttle/thong-ke/overall/tuy-chinh?fromDate=${fromDate.format('YYYY-MM-DD')}&toDate=${toDate.format('YYYY-MM-DD')}`;
     default:
       return '';
   }
@@ -160,18 +160,22 @@ const ThongKe = () => {
                 onExport={handleExport}
             />
 
-            <Grid container spacing={3} mt={0.1}>
-                <Grid item xs={12} md={8}>
-                    <TableBestSelling filterLabel={selectedFilter} />
+            <Grid container spacing={3} alignItems="stretch">
+                <Grid item xs={12} md={8} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    <TableBestSelling 
+                        filterLabel={selectedFilter} 
+                        fromDate={fromDate}
+                        toDate={toDate}
+                    />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                     <StatusPieChart
                         data={pieChartData}
                         label={selectedFilter.toLowerCase()}
                         colors={[
-                            COLOR_CARDS[selectedFilter] || '#00838f', // Thành công
-                            '#f44336', // Đơn hủy
-                            '#9c27b0', // Đơn trả
+                            COLOR_CARDS[selectedFilter] || '#00838f',
+                            '#f44336',
+                            '#9c27b0',
                         ]}
                     />
                 </Grid>

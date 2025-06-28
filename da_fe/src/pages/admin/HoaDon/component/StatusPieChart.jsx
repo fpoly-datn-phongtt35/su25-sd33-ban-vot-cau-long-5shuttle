@@ -13,7 +13,7 @@ const COLORS = ['#4caf50', '#f44336', '#9c27b0'];
 const StatusPieChart = ({ data, label, colors }) => {
   const total = data.reduce((sum, item) => sum + item.value, 0) || 1;
   return (
-    <>
+    <Box sx={{ width: '100%', minWidth: 350, minHeight: 400 }}>
       <Typography variant="h6" gutterBottom sx={{ color: 'black', mb: 2 }}>
         Biểu đồ trạng thái {label}
       </Typography>
@@ -45,7 +45,7 @@ const StatusPieChart = ({ data, label, colors }) => {
           );
         })}
       </Box>
-    </>
+    </Box>
   );
 };
 
