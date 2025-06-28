@@ -3,6 +3,7 @@ package com.example.da_be.repository;
 import com.example.da_be.entity.HoaDon;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -107,7 +108,10 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         ) AS hdct_agg ON h.Id = hdct_agg.IdHoaDon
         WHERE DATE(h.NgayTao) >= :fromDate AND DATE(h.NgayTao) <= :toDate
     """, nativeQuery = true)
-    OrderStatsProjection getStatsByDateRange(Date fromDate, Date toDate);
+    OrderStatsProjection getStatsByDateRange(@Param("fromDate") Date fromDate, @Param("toDate") Date toDate);
+
+
+    // === TRUY VẤN CHO SẢN PHẨM BÁN CHẠY (TOP SELLING PRODUCTS) ===
 
     @Query(value = """
         SELECT
