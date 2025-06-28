@@ -17,6 +17,7 @@
     "@headlessui/react": "^2.2.4",
     "@heroicons/react": "^2.2.0",
     "@mui/icons-material": "^7.1.0",
+
     "@mui/material": "^7.1.0",
     "@mui/x-charts": "^8.5.3",
     "@mui/x-data-grid": "^8.5.0",

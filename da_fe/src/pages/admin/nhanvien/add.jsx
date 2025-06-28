@@ -138,6 +138,7 @@ function Add() {
                                         px: 1,
                                         py: 0.5,
                                         boxSizing: 'border-box',
+
                                     }}
                                 >
                                     <FormLabel sx={{ fontSize: 14, mb: 0.5 }}>Giới tính</FormLabel>

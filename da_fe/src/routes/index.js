@@ -8,13 +8,19 @@ import Material from '../pages/admin/Material';
 import SanPham from '../pages/admin/Product';
 import Stiff from '../pages/admin/Stiff';
 import Weight from '../pages/admin/Weight';
-import Update from '../pages/admin/Giảm Giá/PhieuGiamGia/update.jsx';
+
+import PhieuGiamGia from '../pages/admin/Giảm Giá/Phiếu Giảm Giá/index.jsx';
+import AddPhieuGiamGia from '../pages/admin/Giảm Giá/Phiếu Giảm Giá/add.jsx';
+import Update from '../pages/admin/Giảm Giá/Phiếu Giảm Giá/update.jsx';
 import ModalKhachHang from '../pages/admin/khuyenmai/ModalKhachHang';
 import Index from '../pages/admin/nhanvien';
 import Add from '../pages/admin/nhanvien/add';
 import Edit from '../pages/admin/nhanvien/edit';
 import Home from '../pages/users/Home';
+
+
 import ThongKe from '../pages/admin/HoaDon/ThongKe';
+
 import Product from '../pages/users/Product/Product';
 import ProductAdmin from '../pages/admin/Product';
 import AddProduct from '../pages/admin/Product/Add';
@@ -27,6 +33,10 @@ import Order from '../pages/admin/Order';
 import Indexx from '../pages/admin/Giảm Giá/PhieuGiamGia/index.jsx';
 import AddVoucher from '../pages/admin/Giảm Giá/PhieuGiamGia/add.jsx';
 import OfflineSale from '../pages/admin/Sale/index.jsx';
+import DotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/index.jsx';
+import AddDotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/add.jsx';
+import UpdateDotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/update.jsx';
+
 
 // Public routes
 const publicRoutes = [
@@ -34,6 +44,7 @@ const publicRoutes = [
     { path: '/admin', component: Admin, layout: AdminLayout },
     { path: '/admin/thong-ke', component: ThongKe, layout: AdminLayout },
     { path: '/admin/ban-hang-tai-quay', component: OfflineSale, layout: AdminLayout },
+
     { path: '/admin/quan-ly-san-pham/mau-sac', component: Color, layout: AdminLayout },
     { path: '/admin/quan-ly-san-pham/san-pham', component: SanPham, layout: AdminLayout },
     { path: '/admin/quan-ly-san-pham/diem-can-bang', component: Balance, layout: AdminLayout },
@@ -50,10 +61,12 @@ const publicRoutes = [
     { path: '/admin/quan-ly-don-hang', component: Order, layout: AdminLayout },
     { path: '/admin/quan-ly-don-hang/order-status', component: OrderStatus, layout: AdminLayout },
     { path: '/gio-hang/checkout', component: CheckOut },
-    { path: '/admin/giam-gia/phieu-giam-gia', component: Indexx, layout: AdminLayout },
     { path: '/admin/giam-gia/phieu-giam-gia/add', component: AddVoucher, layout: AdminLayout },
+    { path: '/admin/giam-gia/phieu-giam-gia', component: PhieuGiamGia, layout: AdminLayout },
     { path: `/admin/giam-gia/phieu-giam-gia/:id/detail`, component: Update, layout: AdminLayout },
-
+    { path: '/admin/giam-gia/dot-giam-gia', component: DotGiamGia, layout: AdminLayout },
+    { path: '/admin/giam-gia/dot-giam-gia/add', component: AddDotGiamGia, layout: AdminLayout },
+    { path: '/admin/giam-gia/dot-giam-gia/:id/detail', component: UpdateDotGiamGia, layout: AdminLayout },
     { path: '/admin/tai-khoan/nhan-vien', component: Index, layout: AdminLayout },
     { path: '/admin/tai-khoan/nhan-vien/add', component: Add, layout: AdminLayout },
     { path: '/admin/tai-khoan/nhan-vien/edit/:id', component: Edit, layout: AdminLayout }

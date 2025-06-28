@@ -11,6 +11,7 @@ import dayjs from 'dayjs';
 import swal from 'sweetalert';
 
 function AddVoucher() {
+
     const initialVoucher = {
         ma: '',
         ten: '',
@@ -499,3 +500,4 @@ function AddVoucher() {
 }
 
 export default AddVoucher;
+

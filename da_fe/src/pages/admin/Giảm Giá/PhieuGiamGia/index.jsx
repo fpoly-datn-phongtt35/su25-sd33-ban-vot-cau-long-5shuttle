@@ -13,7 +13,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import ExcelJS from 'exceljs'
 
-function Indexx() {
+
+function PhieuGiamGia() {
    const navigate = useNavigate();
    const [listVoucher, setListVoucher] = useState([]);
 
@@ -377,4 +378,5 @@ function Indexx() {
   );
 };
 
-export default Indexx
+
+export default PhieuGiamGia
