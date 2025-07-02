@@ -117,7 +117,7 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         SELECT
             CONCAT_WS(' - ', sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dc.Ten) as tenSanPham,
             SUM(hdct.SoLuong) as soLuongDaBan,
-            COALESCE(MIN(hdct.GiaBan), 0) as giaTien  -- Sửa từ hdct.DonGia thành hdct.GiaBan
+            COALESCE(MIN(hdct.GiaBan), 0) as giaTien
         FROM 5SHUTTLE.HoaDonCT hdct
         JOIN 5SHUTTLE.HoaDon hd ON hdct.IdHoaDon = hd.Id
         JOIN 5SHUTTLE.SanPhamCT spct ON hdct.IdSanPhamCT = spct.Id
@@ -131,7 +131,6 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         WHERE hd.NgayTao >= CURDATE() AND hd.NgayTao < CURDATE() + INTERVAL 1 DAY
         GROUP BY spct.Id, sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dcb.Ten, dc.Ten
         ORDER BY soLuongDaBan DESC
-        LIMIT 10
     """, nativeQuery = true)
     List<TopSellingProductProjection> findTopSellingProductsByCurrentDate();
 
@@ -139,7 +138,7 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         SELECT
             CONCAT_WS(' - ', sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dc.Ten) as tenSanPham,
             SUM(hdct.SoLuong) as soLuongDaBan,
-            COALESCE(MIN(hdct.GiaBan), 0) as giaTien 
+            COALESCE(MIN(hdct.GiaBan), 0) as giaTien
         FROM 5SHUTTLE.HoaDonCT hdct
         JOIN 5SHUTTLE.HoaDon hd ON hdct.IdHoaDon = hd.Id
         JOIN 5SHUTTLE.SanPhamCT spct ON hdct.IdSanPhamCT = spct.Id
@@ -154,7 +153,6 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
           AND hd.NgayTao < DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY)
         GROUP BY spct.Id, sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dcb.Ten, dc.Ten
         ORDER BY soLuongDaBan DESC
-        LIMIT 10
     """, nativeQuery = true)
     List<TopSellingProductProjection> findTopSellingProductsByCurrentWeek();
 
@@ -162,7 +160,7 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         SELECT
             CONCAT_WS(' - ', sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dc.Ten) as tenSanPham,
             SUM(hdct.SoLuong) as soLuongDaBan,
-            COALESCE(MIN(hdct.GiaBan), 0) as giaTien  -- Sửa từ hdct.DonGia thành hdct.GiaBan
+            COALESCE(MIN(hdct.GiaBan), 0) as giaTien
         FROM 5SHUTTLE.HoaDonCT hdct
         JOIN 5SHUTTLE.HoaDon hd ON hdct.IdHoaDon = hd.Id
         JOIN 5SHUTTLE.SanPhamCT spct ON hdct.IdSanPhamCT = spct.Id
@@ -177,7 +175,6 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         AND hd.NgayTao < DATE_FORMAT(CURDATE() + INTERVAL 1 MONTH, '%Y-%m-01')
         GROUP BY spct.Id, sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dcb.Ten, dc.Ten
         ORDER BY soLuongDaBan DESC
-        LIMIT 10
     """, nativeQuery = true)
     List<TopSellingProductProjection> findTopSellingProductsByCurrentMonth();
 
@@ -185,7 +182,7 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         SELECT
             CONCAT_WS(' - ', sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dc.Ten) as tenSanPham,
             SUM(hdct.SoLuong) as soLuongDaBan,
-            COALESCE(MIN(hdct.GiaBan), 0) as giaTien  -- Sửa từ hdct.DonGia thành hdct.GiaBan
+            COALESCE(MIN(hdct.GiaBan), 0) as giaTien
         FROM 5SHUTTLE.HoaDonCT hdct
         JOIN 5SHUTTLE.HoaDon hd ON hdct.IdHoaDon = hd.Id
         JOIN 5SHUTTLE.SanPhamCT spct ON hdct.IdSanPhamCT = spct.Id
@@ -200,7 +197,6 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         AND hd.NgayTao < DATE_FORMAT(CURDATE() + INTERVAL 1 YEAR, '%Y-01-01')
         GROUP BY spct.Id, sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dcb.Ten, dc.Ten
         ORDER BY soLuongDaBan DESC
-        LIMIT 10
     """, nativeQuery = true)
     List<TopSellingProductProjection> findTopSellingProductsByCurrentYear();
 
@@ -208,7 +204,7 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         SELECT
             CONCAT_WS(' - ', sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dc.Ten) as tenSanPham,
             SUM(hdct.SoLuong) as soLuongDaBan,
-            COALESCE(MIN(hdct.GiaBan), 0) as giaTien  -- Sửa từ hdct.DonGia thành hdct.GiaBan
+            COALESCE(MIN(hdct.GiaBan), 0) as giaTien
         FROM 5SHUTTLE.HoaDonCT hdct
         JOIN 5SHUTTLE.HoaDon hd ON hdct.IdHoaDon = hd.Id
         JOIN 5SHUTTLE.SanPhamCT spct ON hdct.IdSanPhamCT = spct.Id
@@ -222,7 +218,6 @@ public interface ThongKeRepository extends JpaRepository<HoaDon, Integer> {
         WHERE DATE(hd.NgayTao) >= :fromDate AND DATE(hd.NgayTao) <= :toDate
         GROUP BY spct.Id, sp.Ten, ms.Ten, cl.Ten, th.Ten, tl.Ten, dcb.Ten, dc.Ten
         ORDER BY soLuongDaBan DESC
-        LIMIT 10
     """, nativeQuery = true)
-    List<TopSellingProductProjection> findTopSellingProductsByDateRange(Date fromDate, Date toDate);
+    List<TopSellingProductProjection> findTopSellingProductsByDateRange(@Param("fromDate") Date fromDate, @Param("toDate") Date toDate);
 }

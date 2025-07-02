@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import com.example.da_be.repository.OrderStatsProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class ThongKeService {
 
     ThongKeRepository thongKeRepository;

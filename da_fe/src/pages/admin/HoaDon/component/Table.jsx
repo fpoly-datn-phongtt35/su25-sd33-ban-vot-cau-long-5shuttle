@@ -1,3 +1,7 @@
+// =============================
+// Bảng danh sách sản phẩm bán chạy
+// =============================
+
 import React, { useState, useEffect } from 'react';
 import {
   Table, TableHead, TableRow, TableCell, TableBody,
@@ -6,6 +10,7 @@ import {
 import axios from 'axios';
 import dayjs from 'dayjs';
 
+// Hàm lấy URL API cho top sản phẩm bán chạy theo filter
 const getTopSellingApiUrl = (filter, fromDate, toDate) => {
   switch (filter) {
     case 'Ngày':
@@ -23,12 +28,18 @@ const getTopSellingApiUrl = (filter, fromDate, toDate) => {
   }
 };
 
+// Props:
+// - filterLabel: Nhãn filter (ngày, tuần, tháng...)
+// - fromDate, toDate: Ngày bắt đầu, kết thúc
+// - loading: Trạng thái loading (hiển thị overlay khi đang tải dữ liệu)
 const TableBestSelling = ({ filterLabel, fromDate, toDate, loading = false }) => {
+  // State phân trang và dữ liệu
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(null);
 
+  // Gọi API lấy danh sách sản phẩm bán chạy khi filter hoặc ngày thay đổi
   useEffect(() => {
     const fetchTopSellingProducts = async () => {
       setError(null);
@@ -46,12 +57,15 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate, loading = false }) =>
     fetchTopSellingProducts();
   }, [filterLabel, fromDate, toDate]);
 
+  // Xử lý đổi trang
   const handleChangePage = (event, newPage) => setPage(newPage);
+  // Xử lý đổi số dòng/trang
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
+  // Nếu có lỗi thì hiển thị Alert
   if (error) {
     return (
       <Alert severity="error" sx={{ mb: 2 }}>
@@ -62,10 +76,12 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate, loading = false }) =>
 
   return (
     <>
+      {/* Tiêu đề bảng */}
       <Typography textAlign={'center'} variant="h6" gutterBottom sx={{ color: 'black' }}>
         Danh sách sản phẩm bán chạy theo {filterLabel}
       </Typography>
       <Box sx={{ width: '100%', minWidth: 530, minHeight: 400, position: 'relative' }}>
+        {/* Overlay loading khi đang tải dữ liệu */}
         {loading && (
           <Box
             sx={{
@@ -85,6 +101,7 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate, loading = false }) =>
             <CircularProgress />
           </Box>
         )}
+        {/* Bảng sản phẩm */}
         <Table>
           <TableHead>
             <TableRow>
@@ -94,6 +111,7 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate, loading = false }) =>
             </TableRow>
           </TableHead>
           <TableBody>
+            {/* Nếu không có dữ liệu */}
             {products.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} align="center">
@@ -108,10 +126,12 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate, loading = false }) =>
                 </TableCell>
               </TableRow>
             ) : (
+              // Hiển thị danh sách sản phẩm
               products
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((product, index) => (
                   <TableRow key={index}>
+                    {/* Tên sản phẩm cho phép xuống dòng */}
                     <TableCell>
                       <Typography
                         variant="body2"
@@ -127,6 +147,7 @@ const TableBestSelling = ({ filterLabel, fromDate, toDate, loading = false }) =>
             )}
           </TableBody>
         </Table>
+        {/* Phân trang */}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

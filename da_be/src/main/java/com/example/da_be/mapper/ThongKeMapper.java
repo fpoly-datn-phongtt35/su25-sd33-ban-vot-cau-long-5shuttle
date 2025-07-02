@@ -2,7 +2,6 @@ package com.example.da_be.mapper;
 
 import com.example.da_be.dto.response.ThongKeResponse;
 import com.example.da_be.dto.response.TopSellingProductResponse;
-import com.example.da_be.entity.HoaDon;
 import com.example.da_be.repository.OrderStatsProjection;
 import com.example.da_be.repository.TopSellingProductProjection;
 import org.mapstruct.Mapper;

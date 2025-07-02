@@ -1,20 +1,27 @@
+// =============================
+// Trang Thống kê tổng quan cho Admin
+// =============================
+
 import React, { useState, useEffect } from 'react';
 import { Box, Grid, Typography, Skeleton } from '@mui/material';
 import dayjs from 'dayjs';
 import axios from 'axios';
 
+// Import các component con
 import FilterBar from './component/FilterBar';
 import StatisticCardsGroup from './component/StatisticCardsGroup';
 import StatusPieChart from './component/StatusPieChart';
 import TableBestSelling from './component/Table';
 import TableOutOfStock from './component/TableOutOfStock';
 
+// Import icon cho các filter
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import DateRangeIcon from '@mui/icons-material/DateRange';
 
+// Danh sách các filter thời gian
 const FILTERS = [
     { label: 'NGÀY', value: 'Ngày' },
     { label: 'TUẦN', value: 'Tuần' },
@@ -23,6 +30,7 @@ const FILTERS = [
     { label: 'TÙY CHỈNH', value: 'Tùy chỉnh' },
 ];
 
+// Map icon cho từng filter
 const ICONS = {
     'Ngày': <CalendarTodayIcon />,
     'Tuần': <CalendarViewWeekIcon />,
@@ -31,6 +39,7 @@ const ICONS = {
     'Tùy chỉnh': <EditCalendarIcon />,
 };
 
+// Màu sắc cho từng card thống kê
 const COLOR_CARDS = {
     'Ngày': '#00838f',
     'Tuần': '#f57c00',
@@ -39,6 +48,7 @@ const COLOR_CARDS = {
     'Tùy chỉnh': '#3399FF',
 };
 
+// Hàm lấy URL API theo filter
 const getApiUrl = (filter, fromDate, toDate) => {
   switch (filter) {
     case 'Ngày':
@@ -57,15 +67,21 @@ const getApiUrl = (filter, fromDate, toDate) => {
 };
 
 const ThongKe = () => {
-    const [selectedFilter, setSelectedFilter] = useState('Ngày');
-    const [fromDate, setFromDate] = useState(dayjs());
-    const [toDate, setToDate] = useState(dayjs());
-    const [allCardsData, setAllCardsData] = useState([]);
-    const [pieChartData, setPieChartData] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isTableLoading, setIsTableLoading] = useState(false);
-    const [isChartLoading, setIsChartLoading] = useState(false);
+    // =============================
+    // State quản lý dữ liệu và loading
+    // =============================
+    const [selectedFilter, setSelectedFilter] = useState('Ngày'); // Filter đang chọn
+    const [fromDate, setFromDate] = useState(dayjs()); // Ngày bắt đầu
+    const [toDate, setToDate] = useState(dayjs());     // Ngày kết thúc
+    const [allCardsData, setAllCardsData] = useState([]); // Dữ liệu cho các card tổng quan
+    const [pieChartData, setPieChartData] = useState([]);  // Dữ liệu cho biểu đồ trạng thái
+    const [isLoading, setIsLoading] = useState(false);     // Loading cho card tổng quan
+    const [isTableLoading, setIsTableLoading] = useState(false); // Loading cho bảng sản phẩm
+    const [isChartLoading, setIsChartLoading] = useState(false); // Loading cho biểu đồ
 
+    // =============================
+    // Lấy dữ liệu tổng quan cho các card
+    // =============================
     useEffect(() => {
         const fetchAllCards = async () => {
             setIsLoading(true);
@@ -110,10 +126,12 @@ const ThongKe = () => {
             setAllCardsData(cards);
             setIsLoading(false);
         };
-
         fetchAllCards();
     }, [fromDate, toDate]);
 
+    // =============================
+    // Lấy dữ liệu cho biểu đồ trạng thái
+    // =============================
     useEffect(() => {
         const fetchPieChartData = async () => {
             setIsChartLoading(true);
@@ -139,26 +157,35 @@ const ThongKe = () => {
         fetchPieChartData();
     }, [selectedFilter, fromDate, toDate]);
 
+    // =============================
+    // Xử lý khi đổi filter (ngày/tuần/tháng...)
+    // =============================
     const handleFilterChange = (newFilter) => {
         setSelectedFilter(newFilter);
-        // Khi thay đổi filter, bắt đầu loading cho table
-        setIsTableLoading(true);
-        // Tự động tắt loading sau 0.5 giây (thời gian API call)
+        setIsTableLoading(true); // Bắt đầu loading cho bảng
         setTimeout(() => {
-            setIsTableLoading(false);
+            setIsTableLoading(false); // Tắt loading sau 0.5s (giả lập thời gian API)
         }, 500);
     };
     
+    // =============================
+    // Xử lý export Excel (hiện tại chỉ log ra console)
+    // =============================
     const handleExport = () => {
         console.log("Đã nhấn nút Export Excel");
     };
 
+    // =============================
+    // Render giao diện
+    // =============================
     return (
         <Box sx={{ p: 3 }}>
-            <Typography variant="h4" gutterBottom>
+            {/* Tiêu đề trang */}
+            <Typography variant="h4" gutterBottom sx={{ color: 'black'}}>
                 Thống kê
             </Typography>
 
+            {/* Card thống kê tổng quan */}
             <Box mb={3}>
                 {isLoading ? (
                     <Grid container spacing={3}>
@@ -173,6 +200,7 @@ const ThongKe = () => {
                 )}
             </Box>
 
+            {/* Thanh filter chọn thời gian, xuất excel */}
             <FilterBar
                 filters={FILTERS}
                 selectedFilter={selectedFilter}
@@ -184,7 +212,9 @@ const ThongKe = () => {
                 onExport={handleExport}
             />
 
+            {/* Bảng sản phẩm bán chạy và biểu đồ trạng thái */}
             <Grid container spacing={3} alignItems="stretch">
+                {/* Bảng sản phẩm bán chạy */}
                 <Grid item xs={12} md={8} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                     <Box 
                         sx={{ 
@@ -207,6 +237,7 @@ const ThongKe = () => {
                         />
                     </Box>
                 </Grid>
+                {/* Biểu đồ trạng thái đơn hàng */}
                 <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
                     <Box 
                         sx={{ 
@@ -233,6 +264,7 @@ const ThongKe = () => {
                 </Grid>
             </Grid>
 
+            {/* Bảng sản phẩm sắp hết hàng */}
             <Box mt={4}>
                 <TableOutOfStock />
             </Box>
