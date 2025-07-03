@@ -15,6 +15,8 @@ import Profile from '../pages/users/TaiKhoan/profile.jsx';
 import Sign from '../pages/users/DangNhap/sign.jsx';
 import ForgotPassword from '../pages/users/DangNhap/forgot-password.jsx';
 import UserInfo from '../pages/users/TaiKhoan/userInfo.jsx';
+import Home from '../pages/users/Home';
+import ThongKe from '../pages/admin/HoaDon/ThongKe';
 
 // Public routes
 const publicRoutes = [
@@ -32,7 +34,8 @@ const publicRoutes = [
         { path: 'user', component: UserInfo }
     ] },
     { path: '/login', component: Sign },
-    { path: '/forgot-password', component: ForgotPassword }
+    { path: '/forgot-password', component: ForgotPassword },
+    { path: '/admin/thong-ke', component: ThongKe, layout: AdminLayout },
 ];
 
 const privateRoutes = [];
