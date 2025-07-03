@@ -22,7 +22,7 @@ import DriveFileRenameOutlineOutlinedIcon from "@mui/icons-material/DriveFileRen
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
-function Index() {
+function ListStaff() {
     const [gender, setGender] = React.useState("")
     const [staff, setStaff] = useState([])
 
@@ -345,4 +345,4 @@ function Index() {
         </div>
     );
 }
-export default Index;
+export default ListStaff;
