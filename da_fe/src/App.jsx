@@ -8,43 +8,51 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
     return (
         <Router>
-            <div className="App">
-                <Routes>
-                    {publicRoutes.map((route, index) => {
-                        const Page = route.component;
-                        let Layout = DefaultLayout;
+        <Routes>
+            {publicRoutes.map((route, index) => {
+                const Page = route.component;
+                const Layout = route.layout ?? DefaultLayout;
 
-                        if (route.layout) {
-                            Layout = route.layout;
-                        } else if (route.layout === null) {
-                            Layout = Fragment;
+                // Nếu route có children thì render nested Route
+                if (route.children) {
+                    return (
+                        <Route
+                            key={index}
+                            path={route.path}
+                            element={
+                                <Layout>
+                                    <Page />
+                                </Layout>
+                            }
+                        >
+                            {route.children.map((child, i) => {
+                                const ChildPage = child.component;
+                                return (
+                                    <Route
+                                        key={i}
+                                        path={child.path}
+                                        element={<ChildPage />}
+                                    />
+                                );
+                            })}
+                        </Route>
+                    );
+                }
+
+                // Route không có children
+                return (
+                    <Route
+                        key={index}
+                        path={route.path}
+                        element={
+                            <Layout>
+                                <Page />
+                            </Layout>
                         }
-
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
-                </Routes>
-                <ToastContainer
-                    position="top-right"
-                    autoClose={3000}
-                    hideProgressBar={false}
-                    newestOnTop
-                    closeOnClick
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="colored"
-                />
-            </div>
+                    />
+                );
+            })}
+        </Routes>
         </Router>
     );
 }
