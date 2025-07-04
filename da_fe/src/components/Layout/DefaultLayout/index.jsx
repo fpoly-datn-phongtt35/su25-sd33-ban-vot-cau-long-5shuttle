@@ -1,5 +1,3 @@
-import Navbar from './Navbar/Navbar';
-import Footer from './Footer/Footer';
 
 function DefaultLayout({ children }) {
     // const { setCartItemCount } = useContext(CartContext);
@@ -30,11 +28,11 @@ function DefaultLayout({ children }) {
 
     return (
         <div className="DefaultLayout">
-            <Navbar />
-            <div className="container mt-[70px]">
+            {/* <Navbar /> */}
+            <div className="container">
                 <div className="content">{children}</div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </div>
     );
 }
