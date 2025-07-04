@@ -19,7 +19,9 @@ import Profile from '../pages/users/TaiKhoan/profile.jsx';
 import Sign from '../pages/users/DangNhap/sign.jsx';
 import ForgotPassword from '../pages/users/DangNhap/forgot-password.jsx';
 import UserInfo from '../pages/users/TaiKhoan/userInfo.jsx';
-
+import customer from '../pages/admin/customer/index.jsx';
+import AddCustomer from '../pages/admin/customer/add.jsx';
+import EditCustomer from '../pages/admin/customer/edit.jsx';
 
 import ThongKe from '../pages/admin/HoaDon/ThongKe';
 
@@ -46,6 +48,9 @@ import UpdatePhieuGiamGia from '../pages/admin/Giảm Giá/PhieuGiamGia/update.j
 const publicRoutes = [
     { path: '/', component: Home },
     { path: '/admin', component: Admin, layout: AdminLayout },
+    { path: '/admin/tai-khoan/khach-hang', component: customer, layout: AdminLayout },
+    { path: '/admin/tai-khoan/khach-hang/add', component: AddCustomer, layout: AdminLayout },
+    { path: '/admin/tai-khoan/khach-hang/edit/:id', component: EditCustomer, layout: AdminLayout },
     { path: '/admin/thong-ke', component: ThongKe, layout: AdminLayout },
     { path: '/admin/ban-hang-tai-quay', component: OfflineSale, layout: AdminLayout },
 
