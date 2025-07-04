@@ -5,79 +5,6 @@ import DefaultLayout from './components/Layout/DefaultLayout';
 
 function App() {
     return (
-<<<<<<< HEAD
-        <Router>
-            <div className="App">
-                <Routes>
-                    {publicRoutes.map((route, index) => {
-                        const Page = route.component;
-                        let Layout = DefaultLayout;
-
-                        if (route.layout) {
-                            Layout = route.layout;
-                        } else if (route.layout === null) {
-                            Layout = Fragment;
-                        }
-
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
-                </Routes>
-            </div>
-=======
-        // <CartProvider>
-        //     {' '}
-        //     {/* Bọc toàn bộ ứng dụng trong CartProvider */}
-        //     <Router>
-        //         <div className="App">
-        //             <Routes>
-        //                 {publicRoutes.map((route, index) => {
-        //                     const Page = route.component;
-        //                     let Layout = DefaultLayout;
-
-        //                     if (route.layout) {
-        //                         Layout = route.layout;
-        //                     } else if (route.layout === null) {
-        //                         Layout = Fragment;
-        //                     }
-
-        //                     return (
-        //                         <Route
-        //                             key={index}
-        //                             path={route.path}
-        //                             element={
-        //                                 <Layout>
-        //                                     <Page />
-        //                                 </Layout>
-        //                             }
-        //                         />
-        //                     );
-        //                 })}
-        //             </Routes>
-        //             <ToastContainer
-        //             position="top-right"
-        //             autoClose={3000}
-        //             hideProgressBar={false}
-        //             newestOnTop
-        //             closeOnClick
-        //             pauseOnFocusLoss
-        //             draggable
-        //             pauseOnHover
-        //             theme="colored"
-        //         />
-        //         </div>
-        //     </Router>
-        // </CartProvider>
-
         <Router>
         <Routes>
             {publicRoutes.map((route, index) => {
@@ -110,21 +37,20 @@ function App() {
                     );
                 }
 
-                // Route không có children
-                return (
-                    <Route
-                        key={index}
-                        path={route.path}
-                        element={
-                            <Layout>
-                                <Page />
-                            </Layout>
-                        }
-                    />
-                );
-            })}
-        </Routes>
->>>>>>> origin/main
+                    // Route không có children
+                    return (
+                        <Route
+                            key={index}
+                            path={route.path}
+                            element={
+                                <Layout>
+                                    <Page />
+                                </Layout>
+                            }
+                        />
+                    );
+                })}
+            </Routes>
         </Router>
     );
 }
