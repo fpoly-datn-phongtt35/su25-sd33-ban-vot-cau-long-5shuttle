@@ -43,5 +43,5 @@ public class DiaChi {
     @ManyToOne
     @JoinColumn(name = "IdTaiKhoan")
     @JsonBackReference
-    private TaiKhoan taiKhoan;
+    private User IdUser;
 }
