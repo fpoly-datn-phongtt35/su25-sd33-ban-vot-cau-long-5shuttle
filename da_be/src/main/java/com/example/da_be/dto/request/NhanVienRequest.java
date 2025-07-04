@@ -24,7 +24,7 @@ public class NhanVienRequest {
     private LocalDate ngaySinh;
     private Integer gioiTinh;
     private MultipartFile avatar;
-    private Integer roleId = 3;
+    private Integer roleId = 1;
     private String cccd;
     private Integer trangThai = 0;
 
@@ -36,7 +36,6 @@ public class NhanVienRequest {
         nv.setNgaySinh(this.getNgaySinh());
         nv.setCccd(this.getCccd());
         nv.setTrangThai(this.getTrangThai());
-
         Set<Role> roles = new HashSet<>();
         roles.add(role);
         nv.setRoles(roles);

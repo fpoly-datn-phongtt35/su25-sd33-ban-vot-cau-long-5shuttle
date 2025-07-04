@@ -18,8 +18,10 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.text.ParseException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class NhanVienServiceImpl implements NhanVienService {
@@ -40,29 +42,42 @@ public class NhanVienServiceImpl implements NhanVienService {
     public User add(NhanVienRequest nhanVienRequest) throws ParseException {
         String setMaNV = "NV" + repository.findAll().size();
 
-        Role role = roleRepository.findById(nhanVienRequest.getRoleId())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+        Optional<Role> userRoleOptional = roleRepository.findByName("STAFF");
+
+        Role userRole;
+        if (userRoleOptional.isPresent()) {
+            userRole = userRoleOptional.get();
+        } else {
+            throw new RuntimeException("Role 'STAFF' not found in database.");
+        }
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
 
         User nv = User.builder()
                 .ma(setMaNV)
+                .hoTen(nhanVienRequest.getHoTen())
+                .sdt(nhanVienRequest.getSdt())
+                .email(nhanVienRequest.getEmail())
+                .ngaySinh(nhanVienRequest.getNgaySinh())
+                .gioiTinh(nhanVienRequest.getGioiTinh())
+                .cccd(nhanVienRequest.getCccd())
+                .trangThai(nhanVienRequest.getTrangThai())
                 .build();
 
-        nv = nhanVienRequest.tranStaff(nv, role);
-
-        if (nhanVienRequest.getAvatar() != null) {
+        if(nhanVienRequest.getAvatar() != null) {
             nv.setAvatar(cloudinaryImage.uploadAvatar(nhanVienRequest.getAvatar()));
         }
 
 //        String matKhau = generatePassword();
 //        String[] toMail = {nhanVienRequest.getEmail()};
 //        Email email = new Email();
-//        email.setBody("<b style=\"text-align: center;\">" + matKhau + "</b>");
+//        email.setBody("<b style="text-align: center;">" + matKhau + "</b>");
 //        email.setToEmail(toMail);
 //        email.setSubject("Tạo tài khoản thành công");
 //        email.setTitleEmail("Mật khẩu đăng nhập là:");
 //        emailSender.sendEmail(email);
 //        nv.setMatKhau(matKhau);
-
         return repository.save(nv);
     }
 

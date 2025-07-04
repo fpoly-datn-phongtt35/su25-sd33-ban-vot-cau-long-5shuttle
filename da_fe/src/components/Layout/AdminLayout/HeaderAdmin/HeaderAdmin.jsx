@@ -6,10 +6,24 @@ import { LogOut, LogIn, User } from 'react-feather';
 import Swal from 'sweetalert2';
 import defaultAvatar from '../../../Assets/user_icon.png';
 
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        return {};
+    }
+}
+
 function HeaderAdmin() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [user, setUser] = useState(null);
+    const [role, setRole] = useState("");
 
     const menuRef = useRef(null);
     const navigate = useNavigate();
@@ -36,6 +50,15 @@ function HeaderAdmin() {
                     console.error(err);
                     setIsLoggedIn(false);
                 });
+
+
+            let decoded;
+            try {
+                decoded = parseJwt(token);
+                setRole(decoded.scope);
+            } catch (e) {
+                setRole("");
+            }
         }
     }, []);
 
@@ -72,6 +95,12 @@ function HeaderAdmin() {
         navigate('/');
     };
 
+    const roleMap = {
+        "ROLE_ADMIN": "Admin",
+        "ROLE_USER": "Người dùng",
+        "ROLE_Staff": "Nhân viên"
+    };
+
     return (
         <header className="flex items-center justify-between w-full h-[70px] bg-white px-6 shadow-md">
             {/* Search Input */}
@@ -94,7 +123,7 @@ function HeaderAdmin() {
                 <div className="flex items-center space-x-1 pr-5">
                     <div className="mr-4 text-center">
                         <p className="text-gray-800 text-base font-semibold">{user?.hoTen || "..."}</p>
-                        <p className="text-gray-500 text-sm">-<span className="mx-1">{user?.vaiTro || ""}</span>-</p>
+                        <p className="text-gray-500 text-sm">-<span className="mx-1">{roleMap[role] || role || ""}</span>-</p>
                     </div>
 
                     <div className='relative'>

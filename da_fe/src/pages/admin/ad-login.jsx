@@ -39,7 +39,7 @@ function AdLogin() {
             const data = await res.json();
             console.log("Login success:", data);
 
-            const accessToken  = data.result;
+            const accessToken  = data.result.token;
 
             localStorage.setItem("token", accessToken);
 
