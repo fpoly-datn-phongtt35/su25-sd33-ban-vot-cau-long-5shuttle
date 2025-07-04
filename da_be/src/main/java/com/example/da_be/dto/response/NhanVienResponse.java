@@ -18,7 +18,6 @@ public class NhanVienResponse {
     private String email;
     private String matKhau;
     private Integer gioiTinh;
-    private Integer vaiTro;
     private String avatar;
     private LocalDate ngaySinh;
     private String cccd;

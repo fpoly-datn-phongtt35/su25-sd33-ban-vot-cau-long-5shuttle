@@ -4,7 +4,7 @@ import com.example.da_be.dto.*;
 import com.example.da_be.entity.GioHang;
 import com.example.da_be.entity.HinhAnh;
 import com.example.da_be.entity.SanPhamCT;
-import com.example.da_be.entity.TaiKhoan;
+import com.example.da_be.entity.User;
 import com.example.da_be.exception.ResourceNotFoundException;
 import com.example.da_be.repository.GioHangRepository;
 import com.example.da_be.repository.HinhAnhRepository;
@@ -35,7 +35,7 @@ public class GioHangService {
 
     public GioHang themSanPhamVaoGioHang(Integer idTaiKhoan, Integer idSanPhamCT, Integer soLuong) {
         // 1. Validate input
-        TaiKhoan taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
+        User taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tài khoản với ID: " + idTaiKhoan));
 
         SanPhamCT sanPhamCT = sanPhamCTRepository.findById(idSanPhamCT)
@@ -78,7 +78,7 @@ public class GioHangService {
     }
 
     public List<GioHangDTO> getGioHangByTaiKhoan(Integer idTaiKhoan) {
-        TaiKhoan taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
+        User taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tài khoản với ID: " + idTaiKhoan));
         List<GioHang> gioHangList = gioHangRepository.findByTaiKhoan(taiKhoan);
         return gioHangList.stream()
@@ -155,7 +155,7 @@ public class GioHangService {
 
 
     public void xoaGioHangByTaiKhoan(Integer idTaiKhoan) {
-        TaiKhoan taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
+        User taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tài khoản với ID: " + idTaiKhoan));
 
         List<GioHang> gioHangList = gioHangRepository.findByTaiKhoan(taiKhoan);

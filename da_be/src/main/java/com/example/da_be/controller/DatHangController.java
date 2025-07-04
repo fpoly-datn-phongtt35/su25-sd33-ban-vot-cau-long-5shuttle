@@ -52,7 +52,7 @@ public class DatHangController {
             log.info("Đặt hàng với thông tin: {}", orderRequest);
 
             // 1. Lấy tài khoản người đặt hàng
-            TaiKhoan taiKhoan = taiKhoanRepository.findById(orderRequest.getIdTaiKhoan())
+            User taiKhoan = taiKhoanRepository.findById(orderRequest.getIdTaiKhoan())
                     .orElseThrow(() -> new ResourceNotFoundException("Tài khoản không tồn tại"));
 
             List<DatHangRequestDTO.CartItemDTO> cartItems = orderRequest.getCartItems();

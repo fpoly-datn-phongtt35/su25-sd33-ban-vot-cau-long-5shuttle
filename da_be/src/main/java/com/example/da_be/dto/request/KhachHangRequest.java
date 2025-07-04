@@ -1,12 +1,14 @@
 package com.example.da_be.dto.request;
 
-import com.example.da_be.entity.TaiKhoan;
+import com.example.da_be.entity.Role;
+import com.example.da_be.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,15 +28,20 @@ public class KhachHangRequest {
     private String avatar;
 
     private Integer vaiTro;
+
     private Integer trangThai;
 
-    public TaiKhoan newKhachHang(TaiKhoan kh){
+    public User newKhachHang(User kh, Role userRole){
         kh.setHoTen(this.getHoTen());
         kh.setEmail(this.getEmail());
         kh.setSdt(this.getSdt());
         kh.setNgaySinh(this.getNgaySinh());
         kh.setGioiTinh(this.getGioiTinh());
         kh.setTrangThai(this.getTrangThai());
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
+        kh.setRoles(roles);
         return kh;
     }
 }

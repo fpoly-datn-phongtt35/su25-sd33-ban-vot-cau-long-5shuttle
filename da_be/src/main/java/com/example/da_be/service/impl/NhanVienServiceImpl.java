@@ -3,8 +3,10 @@ package com.example.da_be.service.impl;
 import com.example.da_be.cloudinary.CloudinaryImage;
 import com.example.da_be.dto.request.NhanVienRequest;
 import com.example.da_be.dto.response.NhanVienResponse;
-import com.example.da_be.entity.TaiKhoan;
+import com.example.da_be.entity.Role;
+import com.example.da_be.entity.User;
 import com.example.da_be.repository.NhanVienRepository;
+import com.example.da_be.repository.RoleRepository;
 import com.example.da_be.service.NhanVienService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class NhanVienServiceImpl implements NhanVienService {
@@ -22,19 +26,33 @@ public class NhanVienServiceImpl implements NhanVienService {
     private NhanVienRepository repository;
     @Autowired
     private CloudinaryImage cloudinaryImage;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Override
     @Transactional
-    public TaiKhoan add(NhanVienRequest nhanVienRequest) throws ParseException {
+    public User add(NhanVienRequest nhanVienRequest) throws ParseException {
         String setMaNV = "NV" + repository.findAll().size();
-        TaiKhoan nv = TaiKhoan.builder()
+
+        Optional<Role> userRoleOptional = roleRepository.findByName("STAFF");
+
+        Role userRole;
+        if (userRoleOptional.isPresent()) {
+            userRole = userRoleOptional.get();
+        } else {
+            throw new RuntimeException("Role 'STAFF' not found in database.");
+        }
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(userRole);
+
+        User nv = User.builder()
                 .ma(setMaNV)
                 .hoTen(nhanVienRequest.getHoTen())
                 .sdt(nhanVienRequest.getSdt())
                 .email(nhanVienRequest.getEmail())
                 .ngaySinh(nhanVienRequest.getNgaySinh())
                 .gioiTinh(nhanVienRequest.getGioiTinh())
-                .vaiTro(nhanVienRequest.getVaiTro())
                 .cccd(nhanVienRequest.getCccd())
                 .trangThai(nhanVienRequest.getTrangThai())
                 .build();
@@ -66,8 +84,8 @@ public class NhanVienServiceImpl implements NhanVienService {
     }
 
     @Override
-    public TaiKhoan delete(Integer id) {
-        TaiKhoan nv = repository.findById(id).orElse(null);
+    public User delete(Integer id) {
+        User nv = repository.findById(id).orElse(null);
         assert nv != null;
         if (nv.getTrangThai() == 0) {
             nv.setTrangThai(1);
@@ -80,12 +98,17 @@ public class NhanVienServiceImpl implements NhanVienService {
     @Override
     @Transactional
     public Boolean update(NhanVienRequest request, Integer id) throws ParseException {
-        Optional<TaiKhoan> optional = repository.findById(id);
+        Optional<User> optional = repository.findById(id);
         if (optional.isPresent()) {
-            TaiKhoan nv = request.tranStaff(optional.get());
-            if (request.getAvatar() != null) {
-                nv.setAvatar(cloudinaryImage.uploadAvatar(request.getAvatar()));
+            User nv = optional.get();
+            Optional<Role> userRoleOptional = roleRepository.findByName("STAFF");
+            Role staffRole;
+            if (userRoleOptional.isPresent()) {
+                staffRole = userRoleOptional.get();
+            } else {
+                throw new RuntimeException("Role 'STAFF' not found in database for update operation.");
             }
+            nv = request.tranStaff(nv, staffRole);
             repository.save(nv);
             return true;
         } else {

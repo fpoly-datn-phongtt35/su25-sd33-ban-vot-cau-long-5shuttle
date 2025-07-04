@@ -12,7 +12,7 @@ public class ThongBao {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdKhachHang", nullable = false)
-    private TaiKhoan khachHang;
+    private User khachHang;
 
     @Column(name = "TieuDe", length = 255)
     private String tieuDe;
@@ -40,11 +40,11 @@ public class ThongBao {
         this.id = id;
     }
 
-    public TaiKhoan getKhachHang() {
+    public User getKhachHang() {
         return khachHang;
     }
 
-    public void setKhachHang(TaiKhoan khachHang) {
+    public void setKhachHang(User khachHang) {
         this.khachHang = khachHang;
     }
 

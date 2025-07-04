@@ -1,7 +1,7 @@
 package com.example.da_be.repository;
 
 import com.example.da_be.dto.response.KhachHangResponse;
-import com.example.da_be.entity.TaiKhoan;
+import com.example.da_be.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,18 +13,19 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface KhachHangRepository extends JpaRepository<TaiKhoan, Integer> {
+public interface KhachHangRepository extends JpaRepository<User, Integer> {
     @Query("""
-                SELECT new com.example.da_be.dto.response.KhachHangResponse(kh.id, kh.ma, kh.hoTen, kh.sdt, kh.email, kh.matKhau, kh.gioiTinh, kh.vaiTro, kh.avatar, kh.ngaySinh, kh.trangThai)
-                FROM TaiKhoan kh
-                WHERE kh.vaiTro = 2
+                SELECT new com.example.da_be.dto.response.KhachHangResponse(kh.id, kh.ma, kh.hoTen, kh.sdt, kh.email, kh.matKhau, kh.gioiTinh, kh.avatar, kh.ngaySinh, kh.trangThai)
+                FROM User kh
+                JOIN kh.roles r
+                WHERE r.name like "USER"
             """)
     List<KhachHangResponse> getAllKhachHang();
 
     @Query(
             """
-        SELECT new com.example.da_be.dto.response.KhachHangResponse(tk.id, tk.ma, tk.hoTen, tk.sdt, tk.email, tk.matKhau, tk.gioiTinh, tk.vaiTro, tk.avatar, tk.ngaySinh, tk.trangThai)
-        FROM TaiKhoan tk
+        SELECT new com.example.da_be.dto.response.KhachHangResponse(tk.id, tk.ma, tk.hoTen, tk.sdt, tk.email, tk.matKhau, tk.gioiTinh, tk.avatar, tk.ngaySinh, tk.trangThai)
+        FROM User tk
         WHERE tk.id = :id
 """
     )
@@ -33,9 +34,10 @@ public interface KhachHangRepository extends JpaRepository<TaiKhoan, Integer> {
     @Query("""
                 SELECT new com.example.da_be.dto.response.KhachHangResponse(
                     nv.id, nv.ma, nv.hoTen, nv.sdt, nv.email, nv.matKhau,
-                    nv.gioiTinh, nv.vaiTro, nv.avatar, nv.ngaySinh, nv.trangThai)
-                FROM TaiKhoan nv
-                WHERE nv.vaiTro = 2
+                    nv.gioiTinh, nv.avatar, nv.ngaySinh, nv.trangThai)
+                FROM User nv
+                            JOIN nv.roles r
+                WHERE r.name like "USER"
                   AND (:ten IS NULL OR nv.hoTen LIKE %:ten%)
                   AND (:email IS NULL OR nv.email LIKE %:email%)
                   AND (:sdt IS NULL OR nv.sdt LIKE %:sdt%)
@@ -51,7 +53,7 @@ public interface KhachHangRepository extends JpaRepository<TaiKhoan, Integer> {
             @Param("trangThai") Integer trangThai,
             Pageable pageable
     );
-    Optional<TaiKhoan> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
 

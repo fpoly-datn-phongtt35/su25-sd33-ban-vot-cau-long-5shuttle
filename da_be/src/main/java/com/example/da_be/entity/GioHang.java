@@ -20,7 +20,7 @@ public class GioHang {
 
     @ManyToOne
     @JoinColumn(name = "IdTaiKhoan")
-    private TaiKhoan taiKhoan;
+    private User taiKhoan;
 
     @Column(name = "SoLuong")
     private Integer soLuong;
@@ -35,7 +35,7 @@ public class GioHang {
     public GioHang() {
     }
 
-    public GioHang(Integer id, SanPhamCT sanPhamCT, TaiKhoan taiKhoan, Integer soLuong, java.util.Date ngayTao, java.util.Date ngaySua) {
+    public GioHang(Integer id, SanPhamCT sanPhamCT, User taiKhoan, Integer soLuong, java.util.Date ngayTao, java.util.Date ngaySua) {
         this.id = id;
         this.sanPhamCT = sanPhamCT;
         this.taiKhoan = taiKhoan;
@@ -60,11 +60,11 @@ public class GioHang {
         this.sanPhamCT = sanPhamCT;
     }
 
-    public TaiKhoan getTaiKhoan() {
+    public User getTaiKhoan() {
         return taiKhoan;
     }
 
-    public void setTaiKhoan(TaiKhoan taiKhoan) {
+    public void setTaiKhoan(User taiKhoan) {
         this.taiKhoan = taiKhoan;
     }
 

@@ -1,17 +1,17 @@
 package com.example.da_be.repository;
 
-import com.example.da_be.entity.TaiKhoan;
+import com.example.da_be.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, Integer> {
+public interface TaiKhoanRepository extends JpaRepository<User, Integer> {
 
-    Optional<TaiKhoan> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    Optional<TaiKhoan> findBySdt(String sdt);
+    Optional<User> findBySdt(String sdt);
 
     boolean existsByEmail(String email);
 

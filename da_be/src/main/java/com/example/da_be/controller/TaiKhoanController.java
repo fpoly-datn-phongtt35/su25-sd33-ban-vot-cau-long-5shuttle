@@ -1,6 +1,6 @@
 package com.example.da_be.controller;
 
-import com.example.da_be.entity.TaiKhoan;
+import com.example.da_be.entity.User;
 import com.example.da_be.exception.ResourceNotFoundException;
 import com.example.da_be.service.TaiKhoanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +20,14 @@ public class TaiKhoanController {
     private TaiKhoanService taiKhoanService;
 
     @GetMapping
-    public List<TaiKhoan> getAllTaiKhoan() {
+    public List<User> getAllTaiKhoan() {
         return taiKhoanService.getAllTaiKhoan();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaiKhoan> getTaiKhoanById(@PathVariable Integer id) {
+    public ResponseEntity<User> getTaiKhoanById(@PathVariable Integer id) {
         try {
-            TaiKhoan taiKhoan = taiKhoanService.getTaiKhoanById(id);
+            User taiKhoan = taiKhoanService.getTaiKhoanById(id);
             return new ResponseEntity<>(taiKhoan, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -35,9 +35,9 @@ public class TaiKhoanController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createTaiKhoan(@RequestBody TaiKhoan taiKhoan) {
+    public ResponseEntity<?> createTaiKhoan(@RequestBody User taiKhoan) {
         try {
-            TaiKhoan createdTaiKhoan = taiKhoanService.createTaiKhoan(taiKhoan);
+            User createdTaiKhoan = taiKhoanService.createTaiKhoan(taiKhoan);
             return new ResponseEntity<>(createdTaiKhoan, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -45,9 +45,9 @@ public class TaiKhoanController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaiKhoan> updateTaiKhoan(@PathVariable Integer id, @RequestBody TaiKhoan taiKhoan) {
+    public ResponseEntity<User> updateTaiKhoan(@PathVariable Integer id, @RequestBody User taiKhoan) {
         try {
-            TaiKhoan updatedTaiKhoan = taiKhoanService.updateTaiKhoan(id, taiKhoan);
+            User updatedTaiKhoan = taiKhoanService.updateTaiKhoan(id, taiKhoan);
             return new ResponseEntity<>(updatedTaiKhoan, HttpStatus.OK);
         } catch (ResourceNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -65,15 +65,15 @@ public class TaiKhoanController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<TaiKhoan> getTaiKhoanByEmail(@PathVariable String email) {
-        Optional<TaiKhoan> taiKhoan = taiKhoanService.findByEmail(email);
+    public ResponseEntity<User> getTaiKhoanByEmail(@PathVariable String email) {
+        Optional<User> taiKhoan = taiKhoanService.findByEmail(email);
         return taiKhoan.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("/sdt/{sdt}")
-    public ResponseEntity<TaiKhoan> getTaiKhoanBySdt(@PathVariable String sdt) {
-        Optional<TaiKhoan> taiKhoan = taiKhoanService.findBySdt(sdt);
+    public ResponseEntity<User> getTaiKhoanBySdt(@PathVariable String sdt) {
+        Optional<User> taiKhoan = taiKhoanService.findBySdt(sdt);
         return taiKhoan.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
