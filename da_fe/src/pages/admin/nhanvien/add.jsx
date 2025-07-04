@@ -13,7 +13,7 @@ import {
     Paper,
 } from "@mui/material";
 
-function Add() {
+function AddStaff() {
     const navigate = useNavigate();
     const [staff, setStaff] = useState({
         hoTen: "",
@@ -183,4 +183,4 @@ function Add() {
     );
 }
 
-export default Add;
+export default AddStaff;

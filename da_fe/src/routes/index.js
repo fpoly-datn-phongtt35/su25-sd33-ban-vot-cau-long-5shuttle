@@ -10,10 +10,15 @@ import Stiff from '../pages/admin/Stiff';
 import Weight from '../pages/admin/Weight';
 
 import ModalKhachHang from '../pages/admin/khuyenmai/ModalKhachHang';
-import Index from '../pages/admin/nhanvien';
-import Add from '../pages/admin/nhanvien/add';
-import Edit from '../pages/admin/nhanvien/edit';
+import ListStaff from '../pages/admin/nhanvien';
+import AddStaff from '../pages/admin/nhanvien/add';
+import EditStaff from '../pages/admin/nhanvien/edit';
 import Home from '../pages/users/Home';
+import AdLogin from '../pages/admin/ad-login.jsx';
+import Profile from '../pages/users/TaiKhoan/profile.jsx';
+import Sign from '../pages/users/DangNhap/sign.jsx';
+import ForgotPassword from '../pages/users/DangNhap/forgot-password.jsx';
+import UserInfo from '../pages/users/TaiKhoan/userInfo.jsx';
 
 
 import ThongKe from '../pages/admin/HoaDon/ThongKe';
@@ -66,9 +71,20 @@ const publicRoutes = [
     { path: '/admin/giam-gia/dot-giam-gia', component: DotGiamGia, layout: AdminLayout },
     { path: '/admin/giam-gia/dot-giam-gia/add', component: AddDotGiamGia, layout: AdminLayout },
     { path: '/admin/giam-gia/dot-giam-gia/:id/detail', component: UpdateDotGiamGia, layout: AdminLayout },
-    { path: '/admin/tai-khoan/nhan-vien', component: Index, layout: AdminLayout },
-    { path: '/admin/tai-khoan/nhan-vien/add', component: Add, layout: AdminLayout },
-    { path: '/admin/tai-khoan/nhan-vien/edit/:id', component: Edit, layout: AdminLayout }
+    // { path: '/admin/tai-khoan/nhan-vien', component: Index, layout: AdminLayout },
+    // { path: '/admin/tai-khoan/nhan-vien/add', component: Add, layout: AdminLayout },
+    // { path: '/admin/tai-khoan/nhan-vien/edit/:id', component: Edit, layout: AdminLayout },
+    // { path: '/admin/giam-gia/phieu-giam-gia/add', component: AddPhieuGiamGia, layout: AdminLayout },
+    // { path: `/admin/giam-gia/phieu-giam-gia/:id/detail`, component: Update, layout: AdminLayout },
+    { path: '/admin/tai-khoan/nhan-vien', component: ListStaff, layout: AdminLayout },
+    { path: '/admin/tai-khoan/nhan-vien/add', component: AddStaff, layout: AdminLayout },
+    { path: '/admin/tai-khoan/nhan-vien/edit/:id', component: EditStaff, layout: AdminLayout },
+    { path: '/admin/login', component: AdLogin },
+    { path: '/profile', component: Profile, children: [
+        { path: 'user', component: UserInfo }
+    ] },
+    { path: '/login', component: Sign },
+    { path: '/forgot-password', component: ForgotPassword }
 ];
 
 const privateRoutes = [];

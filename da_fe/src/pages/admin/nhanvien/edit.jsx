@@ -14,7 +14,7 @@ import {
   Paper,
 } from "@mui/material";
 
-function Edit() {
+function EditStaff() {
   const [previewImage, setPreviewImage] = useState(null)
   const navigate = useNavigate()
   const { id } = useParams()
@@ -231,4 +231,4 @@ function Edit() {
   );
 }
 
-export default Edit;
+export default EditStaff;
