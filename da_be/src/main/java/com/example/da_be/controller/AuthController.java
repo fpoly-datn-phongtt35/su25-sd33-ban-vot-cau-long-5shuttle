@@ -1,6 +1,6 @@
 package com.example.da_be.controller;
 
-import com.example.da_be.entity.TaiKhoan;
+import com.example.da_be.entity.User;
 import com.example.da_be.repository.KhachHangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class AuthController {
 
     @GetMapping("/check-mail")
     public ResponseEntity<?> checkEmail(@RequestParam String email) {
-        Optional<TaiKhoan> customer = khachHangRepository.findByEmail(email);
+        Optional<User> customer = khachHangRepository.findByEmail(email);
 
         if (customer.isPresent()) {
             return ResponseEntity.ok().body(customer.get());

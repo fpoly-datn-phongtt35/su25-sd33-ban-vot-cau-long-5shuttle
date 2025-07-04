@@ -1,6 +1,7 @@
 package com.example.da_be.dto.request;
 
-import com.example.da_be.entity.TaiKhoan;
+
+import com.example.da_be.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,16 +26,14 @@ public class KhachHangRequest {
 
     private String avatar;
 
-    private Integer vaiTro;
-    private Integer trangThai;
-
-    public TaiKhoan newKhachHang(TaiKhoan kh){
+    private String trangThai;
+    public User newKhachHang(User kh){
         kh.setHoTen(this.getHoTen());
         kh.setEmail(this.getEmail());
         kh.setSdt(this.getSdt());
         kh.setNgaySinh(this.getNgaySinh());
         kh.setGioiTinh(this.getGioiTinh());
-        kh.setTrangThai(this.getTrangThai());
+        kh.setRoles();
         return kh;
     }
 }
