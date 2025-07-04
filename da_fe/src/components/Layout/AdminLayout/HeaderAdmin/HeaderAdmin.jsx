@@ -1,29 +1,43 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Search, Notifications } from '@mui/icons-material';
-import user_icon from '../../../Assets/user_icon.png';
 import { Avatar } from '@mui/material';
 import { LogOut, LogIn, User } from 'react-feather';
 import Swal from 'sweetalert2';
+import defaultAvatar from '../../../Assets/user_icon.png';
 
 function HeaderAdmin() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [isLoggedIn, setIsLoggedIn] = useState(true); // Giả định đã đăng nhập
-    const [userRole, setUserRole] = useState("Admin");
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [user, setUser] = useState(null);
 
     const menuRef = useRef(null);
     const navigate = useNavigate();
 
-    // Thông tin giả lập cho admin, không cần useState vì không thay đổi
-    const admin = {
-        hoTen: "Nguyễn Văn A",
-        email: "admin@example.com",
-        sdt: "0123456789",
-        ngaySinh: "1990-01-01",
-        gioiTinh: 1,
-        vaiTro: "Admin",
-        avatar: user_icon,
-    };
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        console.log(token)
+        if (token) {
+            fetch("http://localhost:8080/shuttle/users/myInfo", {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error("Không thể lấy thông tin người dùng");
+                    return res.json();
+                })
+                .then(data => {
+                    setUser(data.result);
+                    setIsLoggedIn(true);
+                })
+                .catch(err => {
+                    console.error(err);
+                    setIsLoggedIn(false);
+                });
+        }
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -31,11 +45,8 @@ function HeaderAdmin() {
                 setIsMenuOpen(false);
             }
         };
-
         document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     const handleAccount = () => {
@@ -55,9 +66,9 @@ function HeaderAdmin() {
     };
 
     const handleConfirm = () => {
-        console.log('Đăng xuất thành công');
+        localStorage.removeItem("token");
         setIsLoggedIn(false);
-        setUserRole(null);
+        setUser(null);
         navigate('/');
     };
 
@@ -75,7 +86,6 @@ function HeaderAdmin() {
 
             {/* Notification Bell & User Info */}
             <div className="flex items-center space-x-5">
-                {/* Notification Icon */}
                 <div className="relative cursor-pointer">
                     <Notifications className="w-24 h-24 text-gray-600" />
                 </div>
@@ -83,24 +93,21 @@ function HeaderAdmin() {
                 {/* User Info */}
                 <div className="flex items-center space-x-1 pr-5">
                     <div className="mr-4 text-center">
-                        <p className="text-gray-800 text-base font-semibold">{admin.hoTen}</p>
-                        <p className="text-gray-500 text-sm">-<span className="mx-1">{admin.vaiTro}</span>-</p>
+                        <p className="text-gray-800 text-base font-semibold">{user?.hoTen || "..."}</p>
+                        <p className="text-gray-500 text-sm">-<span className="mx-1">{user?.vaiTro || ""}</span>-</p>
                     </div>
 
-                    {/* Avatar */}
                     <div className='relative'>
                         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="relative">
-                            <Avatar src={admin.avatar} alt="" className="w-10 h-8" />
+                            <Avatar src={user?.avatar || defaultAvatar} alt="avatar" className="w-10 h-8" />
                             {isMenuOpen && (
                                 <ul className="absolute right-0 mt-2 bg-white shadow-lg rounded-md w-48 py-2 text-gray-700 z-50" ref={menuRef}>
                                     {isLoggedIn ? (
                                         <>
-                                            {userRole === "Admin" && (
-                                                <li className="flex px-4 py-2 hover:bg-gray-100 space-x-3">
-                                                    <User className='h-5 w-5' />
-                                                    <Link to="/profile/user" onClick={() => setIsMenuOpen(false)}>Tài khoản của tôi</Link>
-                                                </li>
-                                            )}
+                                            <li className="flex px-4 py-2 hover:bg-gray-100 space-x-3">
+                                                <User className='h-5 w-5' />
+                                                <Link to="/profile/user" onClick={() => setIsMenuOpen(false)}>Tài khoản của tôi</Link>
+                                            </li>
                                             <li className="flex px-4 py-2 hover:bg-gray-100 space-x-3">
                                                 <LogOut className='w-5 h-5' />
                                                 <button onClick={handleAccount}>Đăng xuất</button>
@@ -109,7 +116,7 @@ function HeaderAdmin() {
                                     ) : (
                                         <li className="flex px-4 py-2 hover:bg-gray-100 space-x-3">
                                             <LogIn className='w-5 h-5' />
-                                            <Link to="/login" onClick={() => setIsMenuOpen(false)}>Đăng nhập</Link>
+                                            <Link to="/admin/login" onClick={() => setIsMenuOpen(false)}>Đăng nhập</Link>
                                         </li>
                                     )}
                                 </ul>

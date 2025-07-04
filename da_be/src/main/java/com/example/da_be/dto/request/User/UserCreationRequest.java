@@ -15,5 +15,4 @@ public class UserCreationRequest {
     String email;
     String matKhau;
 
-
 }

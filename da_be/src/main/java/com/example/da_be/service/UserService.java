@@ -33,7 +33,6 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     RoleRepository roleRepository;
 
-
     public UserResponse createUser(UserCreationRequest request){
         if(userRepository.existsTaiKhoanByEmail(request.getEmail()))
             throw new AppException(ErrorCode.EMAIL_EXISTS);
@@ -42,7 +41,7 @@ public class UserService {
 
         user.setMatKhau(passwordEncoder.encode(user.getMatKhau()));
 
-        var userRole = roleRepository.findByName("USER")
+        var userRole = roleRepository.findByName("Staff")
                 .orElseThrow(() -> new AppException(ErrorCode.ROLENAME_NOT_EXISTS));
 
         Set<Role> roles = new HashSet<>();
