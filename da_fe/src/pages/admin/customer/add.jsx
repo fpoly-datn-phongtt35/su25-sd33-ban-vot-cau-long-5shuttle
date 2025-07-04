@@ -319,18 +319,17 @@ function AddCustomer() {
         setErrors({});
 
         const customerData = {
-            fullName: formData.hoTen,
-            phone: formData.sdt,
+            hoTen: formData.hoTen,
+            sdt: formData.sdt,
             email: formData.email,
-            password: formData.matKhau,
-            gender: formData.gioiTinh,
-            dob: formData.ngaySinh,
+            gioiTinh: formData.gioiTinh,
+            ngaySinh: formData.ngaySinh,
             details: formData.details,
             status: 1,  
         };
 
         try {
-            const customerResponse = await fetch('http://localhost:8080/api/customers', {
+            const customerResponse = await fetch('http://localhost:8080/api/customers/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(customerData),
@@ -425,7 +424,7 @@ function AddCustomer() {
                         <h2 className="text-xl font-semibold text-gray-800 mb-5">Thông tin khách hàng</h2>
                         <hr />
                         {/* Ảnh đại diện */}
-                        <div className="flex justify-center items-center mt-4">
+                        {/* <div className="flex justify-center items-center mt-4">
                             <label className="cursor-pointer">
                                 <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                                 <div className="w-32 h-32 border-2 border-dashed border-gray-400 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 overflow-hidden">
@@ -436,7 +435,7 @@ function AddCustomer() {
                                     )}
                                 </div>
                             </label>
-                        </div>
+                        </div> */}
                         {/* Họ và tên */}
                         <div className="col-span-2 mt-4">
                             <label className="block text-sm font-medium text-gray-700">Họ Và Tên</label>
@@ -479,6 +478,7 @@ function AddCustomer() {
                                     <input
                                         type="radio"
                                         name="gender"
+                                        checked
                                         className={`mr-2 ${errors.gioiTinh ? 'border-red-500 hover:border-red-600' : ''
                                             }`}
                                         onChange={() => {

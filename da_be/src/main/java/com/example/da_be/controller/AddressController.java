@@ -1,9 +1,9 @@
 package com.example.da_be.controller;
 
-import com.example.da_be.entity.Address;
-import com.example.da_be.entity.Customer;
-import com.example.da_be.repository.AddressRepository;
-import com.example.da_be.repository.CustomerRepository;
+import com.example.da_be.entity.DiaChi;
+import com.example.da_be.entity.TaiKhoan;
+import com.example.da_be.repository.DiaChiRepository;
+import com.example.da_be.repository.KhachHangRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,20 +22,20 @@ import java.util.Optional;
 public class AddressController {
 
     @Autowired
-    private AddressRepository addressRepository;
+    private DiaChiRepository addressRepository;
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private KhachHangRepository customerRepository;
 
     @GetMapping("/getAllDiaChi")
     public ResponseEntity<?> getAllDiaChi(
-            @RequestParam("idTaiKhoan") Long customerId,
+            @RequestParam("idTaiKhoan") Integer customerId,
             @RequestParam(defaultValue = "0") int currentPage,
             @RequestParam(defaultValue = "5") int pageSize
     ) {
         Pageable pageable = PageRequest.of(currentPage, pageSize);
 
-        Page<Address> addressPage = addressRepository.findByCustomerId(customerId, pageable);
+        Page<DiaChi> addressPage = addressRepository.findByTaiKhoanId(customerId, pageable);
 
         return ResponseEntity.ok(addressPage);
     }
@@ -43,14 +43,14 @@ public class AddressController {
     @PostMapping("/create")
     public ResponseEntity<?> createAddress(@RequestBody Map<String, Object> payload) {
         try {
-            Long idTaiKhoan = Long.valueOf(payload.get("idTaiKhoan").toString());
+            Integer idTaiKhoan = Integer.valueOf(payload.get("idTaiKhoan").toString());
 
-            Optional<Customer> customerOpt = customerRepository.findById(idTaiKhoan);
+            Optional<TaiKhoan> customerOpt = customerRepository.findById(idTaiKhoan);
             if (!customerOpt.isPresent()) {
                 return ResponseEntity.status(404).body("Không tìm thấy khách hàng!");
             }
 
-            Address address = new Address();
+            DiaChi address = new DiaChi();
             address.setTen((String) payload.get("ten"));
             address.setSdt((String) payload.get("sdt"));
             address.setIdTinh((String) payload.get("idTinh"));
@@ -58,9 +58,9 @@ public class AddressController {
             address.setIdXa((String) payload.get("idXa"));
             address.setDiaChiCuThe((String) payload.get("diaChiCuThe"));
             address.setLoai((Integer) payload.getOrDefault("loai", 0));
-            address.setCustomer(customerOpt.get());
+            address.setTaiKhoan(customerOpt.get());
 
-            Address savedAddress = addressRepository.save(address);
+            DiaChi savedAddress = addressRepository.save(address);
             return ResponseEntity.ok(savedAddress);
 
         } catch (Exception e) {
@@ -70,13 +70,13 @@ public class AddressController {
 
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateAddress(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
-        Optional<Address> existingOpt = addressRepository.findById(id);
+    public ResponseEntity<?> updateAddress(@PathVariable Integer id, @RequestBody Map<String, Object> payload) {
+        Optional<DiaChi> existingOpt = addressRepository.findById(id);
         if (!existingOpt.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy địa chỉ!");
         }
 
-        Address address = existingOpt.get();
+        DiaChi address = existingOpt.get();
 
         address.setTen((String) payload.get("ten"));
         address.setSdt((String) payload.get("sdt"));
@@ -87,9 +87,9 @@ public class AddressController {
         address.setLoai((Integer) payload.getOrDefault("loai", 0));
 
         if (payload.get("idTaiKhoan") != null) {
-            Long idTaiKhoan = Long.valueOf(payload.get("idTaiKhoan").toString());
-            Optional<Customer> customerOpt = customerRepository.findById(idTaiKhoan);
-            customerOpt.ifPresent(address::setCustomer);
+            Integer idTaiKhoan = Integer.valueOf(payload.get("idTaiKhoan").toString());
+            Optional<TaiKhoan> customerOpt = customerRepository.findById(idTaiKhoan);
+            customerOpt.ifPresent(address::setTaiKhoan);
         }
 
         addressRepository.save(address);
@@ -98,7 +98,7 @@ public class AddressController {
 
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteAddress(@PathVariable Long id) {
+    public ResponseEntity<?> deleteAddress(@PathVariable Integer id) {
         if (!addressRepository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy địa chỉ!");
         }
@@ -108,17 +108,19 @@ public class AddressController {
 
     @PutMapping("/status")
     public ResponseEntity<?> updateDefaultAddress(
-            @RequestParam Long idTaiKhoan,
-            @RequestParam Long idDiaChi) {
+            @RequestParam Integer idTaiKhoan,
+            @RequestParam Integer idDiaChi) {
 
-        List<Address> addresses = addressRepository.findByCustomerId(idTaiKhoan);
+        List<DiaChi> addresses = addressRepository.findByTaiKhoanId(idTaiKhoan);
         if (addresses.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy địa chỉ cho khách hàng!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Không tìm thấy địa chỉ cho khách hàng!"));
+
         }
 
         boolean found = false;
-        for (Address addr : addresses) {
-            if (addr.getId().equals(idDiaChi)) {
+        for (DiaChi addr : addresses) {
+            if (addr.getId() == idDiaChi) {
                 addr.setLoai(1);
                 found = true;
             } else {
@@ -128,7 +130,9 @@ public class AddressController {
         }
 
         if (!found) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy địa chỉ để cập nhật!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Không tìm thấy địa chỉ để cập nhật!"));
+
         }
 
         return ResponseEntity.ok("Cập nhật địa chỉ mặc định thành công!");

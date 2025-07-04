@@ -34,7 +34,7 @@ function EditCustomer() {
         email: '',
         gioiTinh: 0,
         vaiTro: 'Customer',
-        avatar: null,
+        // avatar: null,
         ngaySinh: '',
         trangThai: 1,
     });
@@ -45,6 +45,7 @@ function EditCustomer() {
     const [initialEmail, setInitialEmail] = useState('');
 
     const checkMail = async (email) => {
+        console.log(123)
         try {
             const response = await axios.get(`http://localhost:8080/auth/check-mail?email=${email}`);
             console.log('Full response data:', response.data);
@@ -346,14 +347,14 @@ function EditCustomer() {
             .get(`http://localhost:8080/api/customers/${id}`)
             .then((response) => {
                 setFormData({
-                    hoTen: response.data.fullName || '',
-                    sdt: response.data.phone || '',
+                    hoTen: response.data.hoTen || '',
+                    sdt: response.data.sdt || '',
                     email: response.data.email || '',
-                    gioiTinh: response.data.gender || 0,
-                    vaiTro: response.data.role || 'Customer',
-                    avatar: response.data.avatar || null,
-                    ngaySinh: response.data.dob || '',
-                    trangThai: response.data.status || 1,
+                    gioiTinh: response.data.gioiTinh || 0,
+                    vaiTro: 2,
+                    // avatar: response.data.avatar || null,
+                    ngaySinh: response.data.ngaySinh || '',
+                    trangThai: response.data.trangThai || 0,
                 });
                 setInitialEmail(response.data.email);
             })
@@ -411,8 +412,8 @@ function EditCustomer() {
     };
 
     useEffect(() => {
+        loadData(id);
         if (provinces.length > 0) {
-            loadData(id);
             loadDiaChi(initPage - 1, id);
         }
     }, [id, initPage, provinces]);
@@ -474,12 +475,12 @@ function EditCustomer() {
         const text = 'Bạn có chắc chắn muốn cập nhật thông tin khách hàng này?';
 
         const dataToSend = {
-            fullName: formData.hoTen,
-            phone: formData.sdt,
+            hoTen: formData.hoTen,
+            sdt: formData.sdt,
             email: formData.email,
-            password: formData.matKhau,
-            gender: formData.gioiTinh,
-            dob: formData.ngaySinh,
+            gioiTinh: formData.gioiTinh,
+            ngaySinh: formData.ngaySinh,
+            trangThai: formData.trangThai,
         };
 
         swal({
@@ -493,7 +494,7 @@ function EditCustomer() {
         }).then(async (willConfirm) => {
             if (willConfirm) {
                 try {
-                    const response = await fetch(`http://localhost:8080/api/customers/${id}`, {
+                    const response = await fetch(`http://localhost:8080/api/customers/update/${id}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -619,16 +620,27 @@ function EditCustomer() {
     };
 
     const handleUpdateLoai = (idDC) => {
+        console.log("idTaiKhoan:", id);
+        console.log("idDiaChi:", idDC);
+
         axios
-            .put(`http://localhost:8080/api/dia-chi/status?idTaiKhoan=${id}&idDiaChi=${idDC}`)
+            .put(`http://localhost:8080/api/dia-chi/status`, null, {
+                params: {
+                    idTaiKhoan: id,
+                    idDiaChi: idDC
+                }
+            })
             .then(() => {
                 loadDiaChi(initPage - 1, id);
-                swal('Thành công!', 'Xét địa chỉ mặc định thành công!', 'success');
+                swal('Thành công!', 'Set địa chỉ mặc định thành công!', 'success');
             })
-            .catch(() => {
-                swal('Thất bại!', 'Có lỗi xảy ra khi xét địa chỉ mặc định.', 'error');
+            .catch((error) => {
+                console.error("Lỗi gọi API:", error);
+                const errMessage = error.response?.data?.message || error.response?.data || 'Lỗi không xác định';
+                swal('Thất bại!', errMessage, 'error');
             });
     };
+
 
     return (
         <div>
@@ -644,7 +656,7 @@ function EditCustomer() {
                         <h2 className="text-xl font-semibold text-gray-800 mb-8">Thông tin khách hàng</h2>
                         <hr />
                         {/* Ảnh đại diện */}
-                        <div className="flex justify-center items-center mt-4">
+                        {/* <div className="flex justify-center items-center mt-4">
                             <label className="cursor-pointer">
                                 <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
                                 <div className="w-32 h-32 border-2 border-dashed border-gray-400 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 overflow-hidden">
@@ -659,7 +671,7 @@ function EditCustomer() {
                                     )}
                                 </div>
                             </label>
-                        </div>
+                        </div> */}
                         {/* Họ và tên */}
                         <div className="col-span-2 mt-4">
                             <label className="block text-sm font-medium text-gray-700">Họ Và Tên</label>
@@ -782,6 +794,52 @@ function EditCustomer() {
                         {formErrors.gioiTinh && (
                             <p className="text-sm" style={{ color: 'red' }}>
                                 {formErrors.gioiTinh}
+                            </p>
+                        )}
+
+
+                        <div className="mt-4">
+                            <label className="block text-sm font-medium text-gray-700">Trạng thái</label>
+                            <div className="flex items-center gap-4">
+                                <label className="flex items-center">
+                                    <input
+                                        type="radio"
+                                        name="trangThai"
+                                        value={1}
+                                        checked={formData.trangThai === 1}
+                                        onChange={(e) => {
+                                            setFormData({
+                                                ...formData,
+                                                trangThai: parseInt(e.target.value),
+                                            });
+                                            setAddressErrors({ ...formErrors, trangThai: '' });
+                                        }}
+                                        className="mr-2 outline-blue-500"
+                                    />
+                                    Hoạt động
+                                </label>
+                                <label className="flex items-center">
+                                    <input
+                                        type="radio"
+                                        name="trangThai"
+                                        value={0}
+                                        checked={formData.trangThai === 0}
+                                        onChange={(e) => {
+                                            setFormData({
+                                                ...formData,
+                                                gioiTinh: parseInt(e.target.value),
+                                            });
+                                            setAddressErrors({ ...formErrors, trangThai: '' });
+                                        }}
+                                        className="mr-2"
+                                    />
+                                    Không hoạt động
+                                </label>
+                            </div>
+                        </div>
+                        {formErrors.trangThai && (
+                            <p className="text-sm" style={{ color: 'red' }}>
+                                {formErrors.trangThai}
                             </p>
                         )}
 

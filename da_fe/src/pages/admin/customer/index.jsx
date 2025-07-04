@@ -1,269 +1,214 @@
-import AddIcon from '@mui/icons-material/Add';
-import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { Avatar } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import swal from 'sweetalert';
-import ReactPaginate from 'react-paginate';
 import axios from 'axios';
+import { TrashIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { useNavigate } from 'react-router-dom';
+import swal from 'sweetalert';
 
-function Customer() {
-    const [customer, setCustomer] = useState([]);
-    const [pageCount, setPageCount] = useState(0);
-    const [currentPage, setCurrentPage] = useState(0);
-    const navigate = useNavigate();
-    const size = 5;
+function CustomerList() {
+  const [customers, setCustomers] = useState([]);
+  const [searchName, setSearchName] = useState('');
+  const [searchEmail, setSearchEmail] = useState('');
+  const [searchPhone, setSearchPhone] = useState('');
+  const [gender, setGender] = useState('');
+  const [status, setStatus] = useState('');
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const navigate = useNavigate();
 
-    const [searchKhachHang, setSeachKhachHang] = useState({
-        tenSearch: "",
-        emailSearch: "",
-        sdtSearch: "",
-        gioiTinhSearch: "",
-        trangThaiSearch: ""
+  useEffect(() => {
+    fetchCustomers();
+  }, [page, searchName, searchEmail, searchPhone, gender, status]);
+
+  const fetchCustomers = async () => {
+    try {
+      const res = await axios.get('http://localhost:8080/api/customers/search', {
+        params: {
+          hoTen: searchName,
+          email: searchEmail,
+          sdt: searchPhone,
+          gioiTinh: gender,
+          trangThai: status,
+          page,
+          size: 5,
+        },
+      });
+      setCustomers(res.data.content);
+      setTotalPages(res.data.totalPages);
+    } catch (err) {
+      console.error('Lỗi khi lấy dữ liệu:', err);
+    }
+  };
+
+  const handleChangeStatus = async (id, currentStatus) => {
+    const newStatus = currentStatus === 1 ? 0 : 1;
+    const confirm = await swal({
+      title: 'Xác nhận',
+      text: `Bạn có chắc muốn ${newStatus === 0 ? 'ngừng hoạt động' : 'kích hoạt lại'} khách hàng này?`,
+      icon: 'warning',
+      buttons: ['Hủy', 'Xác nhận'],
+      dangerMode: true,
     });
-
-    const loadKhachHangSearch = async (searchParams, page) => {
-        try {
-            const params = {
-                page: page,
-                size: size,
-                fullName: searchParams.tenSearch || undefined,
-                email: searchParams.emailSearch || undefined,
-                phone: searchParams.sdtSearch || undefined,
-                gender: searchParams.gioiTinhSearch !== "" ? Number(searchParams.gioiTinhSearch) : undefined,
-                status: searchParams.trangThaiSearch !== "" ? Number(searchParams.trangThaiSearch) : undefined,
-            };
-
-            Object.keys(params).forEach(key => params[key] === undefined && delete params[key]);
-
-            const response = await axios.get('http://localhost:8080/api/customers', { params });
-            const data = response.data;
-
-            const mappedData = data.content.map(c => ({
-                id: c.id,
-                hoTen: c.fullName,
-                email: c.email,
-                sdt: c.phone,
-                ngaySinh: c.dob,
-                gioiTinh: c.gender,
-                trangThai: c.status,
-                avatar: null
-            }));
-            console.log(mappedData)
-
-            setCustomer(mappedData);
-            setPageCount(data.totalPages);
-            setCurrentPage(data.number);
-        } catch (error) {
-            console.error('Failed to fetch customers', error);
-        }
-    };
-
-    useEffect(() => {
-        loadKhachHangSearch(searchKhachHang, currentPage);
-    }, [searchKhachHang, currentPage]);
-
-    const handleDelete = async (id) => {
-        swal({
-            title: 'Xác nhận xóa khách hàng?',
-            text: 'Bạn có chắc chắn muốn xóa khách hàng này?',
-            icon: 'warning',
-            buttons: {
-                cancel: "Hủy",
-                confirm: "Xác nhận",
-            },
-        }).then(async (willConfirm) => {
-            if (willConfirm) {
-                try {
-                    await axios.delete(`http://localhost:8080/api/customers/${id}`);
-
-                    swal("Thành công!", "Khách hàng đã được xóa.", "success");
-
-                    loadKhachHangSearch(searchKhachHang, currentPage);
-                } catch (error) {
-                    console.error("Error when deleting customer:", error);
-                    swal("Lỗi!", "Có lỗi xảy ra khi xóa khách hàng.", "error");
-                }
-            }
+    if (confirm) {
+      try {
+        await axios.put(`http://localhost:8080/api/customers/delete/${id}`, {
+          trangThai: newStatus,
         });
-    };
+        fetchCustomers();
+        swal('Thành công', 'Cập nhật trạng thái thành công.', 'success');
+      } catch {
+        swal('Lỗi', 'Không thể cập nhật trạng thái.', 'error');
+      }
+    }
+  };
 
+  return (
+    <div className="p-6">
+      <h1 className="mb-4">Khách hàng</h1>
 
-    const handleEdit = (id) => {
-        navigate(`/admin/tai-khoan/khach-hang/edit/${id}`);
-    };
-
-    const handlePageClick = (event) => {
-        const selectedPage = event.selected;
-        loadKhachHangSearch(searchKhachHang, selectedPage);
-    };
-
-    return (
-        <div>
-            <div className="font-bold text-sm mb-4">
-                Khách hàng
-            </div>
-            <div className="bg-white p-4 rounded-md shadow-lg">
-                <div className="flex space-x-4 mb-4">
-                    <input
-                        type="text"
-                        placeholder="Tìm theo tên"
-                        className="border border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-md px-4 py-2 text-gray-700 w-1/3"
-                        value={searchKhachHang.tenSearch}
-                        onChange={(e) =>
-                            setSeachKhachHang({ ...searchKhachHang, tenSearch: e.target.value })
-                        }
-                    />
-                    <input
-                        type="text"
-                        placeholder="Tìm theo email"
-                        className="border border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-md px-4 py-2 text-gray-700 w-1/3"
-                        value={searchKhachHang.emailSearch}
-                        onChange={(e) =>
-                            setSeachKhachHang({ ...searchKhachHang, emailSearch: e.target.value })
-                        }
-                    />
-                    <input
-                        type="text"
-                        placeholder="Tìm theo SĐT"
-                        className="border border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-200 rounded-md px-4 py-2 text-gray-700 w-1/3"
-                        value={searchKhachHang.sdtSearch}
-                        onChange={(e) =>
-                            setSeachKhachHang({ ...searchKhachHang, sdtSearch: e.target.value })
-                        }
-                    />
-                </div>
-
-                <div className="flex space-x-4 pt-2 pb-4">
-                    <div className="flex items-center space-x-2">
-                        <label className="text-gray-700 font-semibold">Giới tính:</label>
-                        <select
-                            value={searchKhachHang.gioiTinhSearch}
-                            onChange={(e) =>
-                                setSeachKhachHang({ ...searchKhachHang, gioiTinhSearch: e.target.value })
-                            }
-                            className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                        >
-                            <option value="">Tất cả</option>
-                            <option value={0}>Nam</option>
-                            <option value={1}>Nữ</option>
-                        </select>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                        <label className="text-gray-700 font-semibold">Trạng thái:</label>
-                        <select
-                            value={searchKhachHang.trangThaiSearch}
-                            onChange={(e) =>
-                                setSeachKhachHang({ ...searchKhachHang, trangThaiSearch: e.target.value })
-                            }
-                            className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gray-200"
-                        >
-                            <option value="">Tất cả</option>
-                            <option value={1}>Hoạt động</option>
-                            <option value={0}>Không hoạt động</option>
-                        </select>
-                    </div>
-
-                    <div className="ml-auto flex space-x-4">
-                        <Link to={'/admin/tai-khoan/khach-hang/add'}>
-                            <button className="hover:bg-gray-400 border border-gray-300 font-medium py-2 px-4 rounded flex items-center space-x-1">
-                                <AddIcon fontSize="small" /> <span>Tạo khách hàng</span>
-                            </button>
-                        </Link>
-                    </div>
-                </div>
-
-                <table className="min-w-full text-center table-auto border-collapse border border-gray-200">
-                    <thead>
-                        <tr className="bg-gray-100 text-gray-700">
-                            <th className="py-2 px-4 border-b">STT</th>
-                            <th className="py-2 px-4 border-b">Ảnh</th>
-                            <th className="py-2 px-4 border-b">Họ tên</th>
-                            <th className="py-2 px-4 border-b">Email</th>
-                            <th className="py-2 px-4 border-b">SĐT</th>
-                            <th className="py-2 px-4 border-b">Ngày sinh</th>
-                            <th className="py-2 px-4 border-b">Giới tính</th>
-                            <th className="py-2 px-4 border-b">Trạng thái</th>
-                            <th className="py-2 px-4 border-b">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {customer.map((customer, index) => (
-                            <tr key={customer.id} className="hover:bg-gray-100">
-                                <td className="py-2 px-4 border-b">{currentPage * size + index + 1}</td>
-                                <td className="py-4 px-4 border-b">
-                                    {customer.avatar ? (
-                                        <img className="w-10 h-10 rounded-full" src={customer.avatar} alt="avatar" />
-                                    ) : (
-                                        <Avatar />
-                                    )}
-                                </td>
-                                <td className="py-2 px-4 border-b">{customer.hoTen}</td>
-                                <td className="py-2 px-4 border-b">{customer.email}</td>
-                                <td className="py-2 px-4 border-b">{customer.sdt}</td>
-                                <td className="py-2 px-4 border-b">
-                                    {customer.ngaySinh
-                                        ? new Date(customer.ngaySinh).toLocaleDateString('vi-VN')
-                                        : ''}
-                                </td>
-                                <td className="py-2 px-4 border-b">
-                                    {customer.gioiTinh === 0 ? 'Nam' : 'Nữ'}
-                                </td>
-                                <td className="py-2 px-4 border-b">
-                                    <span
-                                        className={`py-1 px-3 rounded-full text-xs ${customer.trangThai === 1
-                                            ? 'bg-green-200 text-green-700 border border-green-800'
-                                            : 'bg-red-200 text-red-700 border border-red-800'
-                                            }`}
-                                    >
-                                        {customer.trangThai === 1 ? 'Hoạt động' : 'Không hoạt động'}
-                                    </span>
-                                </td>
-                                <td className="py-2 px-4 border-b">
-                                    <div className="flex space-x-2 justify-center">
-                                        <button
-                                            onClick={() => handleEdit(customer.id)}
-                                            className="hover:bg-gray-400 font-medium py-2 px-4 rounded"
-                                            title="Chỉnh sửa"
-                                        >
-                                            <PencilIcon className="h-5 w-5" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(customer.id)}
-                                            className="hover:bg-gray-400 font-medium py-2 px-4 rounded"
-                                            title="Thay đổi trạng thái"
-                                        >
-                                            <TrashIcon className="h-5 w-5" />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-                {/* Pagination */}
-                <div className="flex justify-end mt-4">
-                    <ReactPaginate
-                        previousLabel={"<"}
-                        nextLabel={">"}
-                        onPageChange={handlePageClick}
-                        pageRangeDisplayed={3}
-                        marginPagesDisplayed={2}
-                        pageCount={pageCount}
-                        containerClassName="pagination flex space-x-2"
-                        pageLinkClassName="px-3 py-1 border rounded cursor-pointer"
-                        activeClassName="bg-blue-500 text-white"
-                        previousLinkClassName="px-3 py-1 border rounded cursor-pointer"
-                        nextLinkClassName="px-3 py-1 border rounded cursor-pointer"
-                        breakLinkClassName="px-3 py-1 border rounded cursor-pointer"
-                        forcePage={currentPage}
-                    />
-                </div>
-            </div>
+      <div className="bg-white p-4 rounded shadow mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          <input
+            type="text"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+            placeholder="Tìm theo họ tên..."
+            className="border p-2 rounded w-full"
+          />
+          <input
+            type="text"
+            value={searchEmail}
+            onChange={(e) => setSearchEmail(e.target.value)}
+            placeholder="Tìm theo email..."
+            className="border p-2 rounded w-full"
+          />
+          <input
+            type="text"
+            value={searchPhone}
+            onChange={(e) => setSearchPhone(e.target.value)}
+            placeholder="Tìm theo số điện thoại..."
+            className="border p-2 rounded w-full"
+          />
+          <button
+            onClick={() => navigate('/admin/tai-khoan/khach-hang/add')}
+            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+          >
+            + Tạo khách hàng
+          </button>
         </div>
-    );
+
+        <div className="flex gap-4 mb-2">
+          <div>
+            <label className="mr-2">Giới tính:</label>
+            <select
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              className="border p-2 rounded"
+            >
+              <option value="">Tất cả</option>
+              <option value="0">Nam</option>
+              <option value="1">Nữ</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="mr-2">Trạng thái:</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="border p-2 rounded"
+            >
+              <option value="">Tất cả</option>
+              <option value="1">Hoạt động</option>
+              <option value="0">Không hoạt động</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-auto rounded shadow">
+        <table className="min-w-full bg-white text-sm text-left">
+          <thead className="bg-gray-100 font-semibold text-gray-700">
+            <tr>
+              <th className="px-3 py-2">STT</th>
+              {/* <th className="px-3 py-2">Ảnh</th> */}
+              <th className="px-3 py-2">Họ tên</th>
+              <th className="px-3 py-2">Email</th>
+              <th className="px-3 py-2">SĐT</th>
+              <th className="px-3 py-2">Ngày sinh</th>
+              <th className="px-3 py-2">Giới tính</th>
+              <th className="px-3 py-2">Trạng thái</th>
+              <th className="px-3 py-2 text-center">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {customers.length === 0 ? (
+              <tr>
+                <td colSpan="9" className="text-center py-4 text-gray-500">
+                  Không có dữ liệu
+                </td>
+              </tr>
+            ) : (
+              customers.map((c, idx) => (
+                <tr key={c.id} className="border-t hover:bg-gray-50">
+                  <td className="px-3 py-2">{idx + 1 + page * 5}</td>
+                  {/* <td className="px-3 py-2">
+                    <img src={c.anh || '/default-avatar.png'} alt="avatar" className="w-8 h-8 rounded-full" />
+                  </td> */}
+                  <td className="px-3 py-2">{c.hoTen}</td>
+                  <td className="px-3 py-2">{c.email}</td>
+                  <td className="px-3 py-2">{c.sdt}</td>
+                  <td className="px-3 py-2">{c.ngaySinh || '—'}</td>
+                  <td className="px-3 py-2">{c.gioiTinh === 0 ? 'Nam' : 'Nữ'}</td>
+                  <td className="px-3 py-2">
+                    <span
+                      className={`px-2 py-1 text-xs rounded-full ${c.trangThai === 1
+                        ? 'bg-green-200 text-green-700'
+                        : 'bg-red-200 text-red-700'
+                        }`}
+                    >
+                      {c.trangThai === 1 ? 'Hoạt động' : 'Không hoạt động'}
+                    </span>
+                  </td>
+                  <td className="px-3 py-2 flex justify-center gap-2">
+                    <button
+                      onClick={() => navigate(`/admin/tai-khoan/khach-hang/edit/${c.id}`)}
+                      className="text-blue-600 hover:bg-gray-100 rounded p-1"
+                    >
+                      <PencilIcon className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleChangeStatus(c.id, c.trangThai)}
+                      className="text-red-600 hover:bg-gray-100 rounded p-1"
+                    >
+                      <TrashIcon className="w-5 h-5" />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-4 gap-2">
+        <button
+          onClick={() => setPage((p) => Math.max(p - 1, 0))}
+          disabled={page === 0}
+          className="px-3 py-1 border rounded"
+        >
+          &lt;
+        </button>
+        <button
+          onClick={() => setPage((p) => Math.min(p + 1, totalPages - 1))}
+          disabled={page >= totalPages - 1}
+          className="px-3 py-1 border rounded"
+        >
+          &gt;
+        </button>
+      </div>
+    </div>
+  );
 }
 
-export default Customer;
+export default CustomerList;
