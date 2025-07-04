@@ -8,7 +8,6 @@ import ProductModal from './ProductModal';
 import ProductList from './ProductList';
 import PaymentSummary from './PaymentSummary'; // Adjust the path as necessary
 
-
 function OfflineSale() {
     const [bills, setBills] = useState([]);
     const [selectedBill, setSelectedBill] = useState(null);
@@ -39,7 +38,7 @@ function OfflineSale() {
     };
 
     const handleAddBill = async (values) => {
-        const filteredBills = bills.filter(bill => bill.loaiHoaDon === 'Tại quầy' && bill.trangThai === 1);
+        const filteredBills = bills.filter((bill) => bill.loaiHoaDon === 'Tại quầy' && bill.trangThai === 1);
 
         if (filteredBills.length >= 6) {
             swal('Thất bại!', 'Chỉ được tạo tối đa 6 hóa đơn "Tại quầy" với trạng thái 1!', 'warning');
@@ -77,7 +76,7 @@ function OfflineSale() {
         setSubtotal(newSubtotal); // Update subtotal whenever billDetails change
     }, [billDetails]);
 
-    console.log("subtotal in offlinesale: ", subtotal)
+    console.log('billDetails in offlinesale: ', billDetails);
 
     const handleProductModal = () => {
         setShowProductModal(true);
@@ -88,6 +87,14 @@ function OfflineSale() {
     };
 
     const handleAddBillDetail = (billDetail) => {
+        // Kiểm tra xem sản phẩm đã tồn tại trong billDetails chưa
+        const productExists = billDetails.some((detail) => detail.sanPhamCT.id === billDetail.idSanPhamCT);
+
+        if (productExists) {
+            swal('Thất bại!', 'Sản phẩm đã tồn tại trong hóa đơn!', 'warning');
+            return; // Không thêm sản phẩm nếu đã tồn tại
+        }
+
         const newBillDetail = {
             sanPhamCT: { id: billDetail.idSanPhamCT },
             hoaDon: { id: billDetail.idHoaDon },
@@ -99,6 +106,7 @@ function OfflineSale() {
         axios
             .post('http://localhost:8080/api/hoa-don-ct', newBillDetail)
             .then((response) => {
+                // Chỉ hiển thị thông báo thành công nếu sản phẩm được thêm thành công
                 setBillDetails((prev) => [...prev, response.data]);
                 swal('Thành công!', 'Sản phẩm đã được thêm vào hóa đơn!', 'success');
             })

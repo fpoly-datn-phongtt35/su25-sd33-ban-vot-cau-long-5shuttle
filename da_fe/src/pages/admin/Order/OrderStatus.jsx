@@ -4,12 +4,14 @@ import { Plus, Minus, ShoppingCart, Star, Heart } from 'lucide-react';
 import { Calculator, Percent, Receipt } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import { X, Banknote } from 'lucide-react';
-import ProductModal from './ProductModal';
 import PaymentModal from './PaymentModal';
 import OrderInfo from './OrderInfor';
 import OrderProgress from './OrderProgress';
 import ProductList from './ProductList';
 import PaymentDetails from './PaymentDetai';
+import swal from 'sweetalert';
+import axios from 'axios';
+import ProductModal from '../Sale/ProductModal';
 
 function OrderStatus() {
     // Trạng thái hiện tại của đơn hàng
@@ -34,6 +36,12 @@ function OrderStatus() {
     const [orderDetailDatas, setOrderDetailDatas] = useState(location.state?.orderDetails || []);
     const [checkOut, setCheckOuts] = useState(location.state?.checkOut || []);
     const [currentOrderStatus, setCurrentOrderStatus] = useState(orderData.trangThai || 3);
+
+    // State để lưu tổng tiền
+    const [subtotal, setSubtotal] = useState(0);
+    const [discountAmount, setDiscountAmount] = useState(0);
+    const [total, setTotal] = useState(0);
+    const shippingFee = 30000; // Phí ship cố định
 
     console.log('blabal: ', orderDetailDatas);
 
@@ -83,6 +91,7 @@ function OrderStatus() {
     }, [orderData]);
 
     console.log('hahahah', orderData);
+
     // const calculateTotalAmount = () => {
     //     const shippingFee = 30000; // Phí ship mặc định
     //     const totalAmount = orderDetailDatas.reduce((total, orderDetail) => {
@@ -92,21 +101,19 @@ function OrderStatus() {
     // };
     // const total = calculateTotalAmount();
 
-    const calculateDiscountAmount = (subtotal, discountPercent) => {
-        return (subtotal * discountPercent) / 100;
-    };
-    const calculateTotalAmount = (subtotal, discountAmount) => {
-        const shippingFee = 30000; // Phí ship mặc định
-        return subtotal - discountAmount + shippingFee; // Cộng phí ship
-    };
-    // Tính toán tổng tiền hàng
-    const subtotal = orderDetailDatas.reduce((total, orderDetail) => {
-        return total + orderDetail.sanPhamCT.donGia * orderDetail.soLuong; // Cộng giá bán của từng sản phẩm
-    }, 0);
-    // Tính toán giá trị giảm giá
-    const discountAmount = calculateDiscountAmount(subtotal, discountPercent);
-    // Tính toán tổng tiền
-    const total = calculateTotalAmount(subtotal, discountAmount);
+    // Tính toán lại tổng tiền khi có thay đổi
+    useEffect(() => {
+        const newSubtotal = orderDetailDatas.reduce((sum, item) => {
+            return sum + item.sanPhamCT.donGia * item.soLuong;
+        }, 0);
+
+        const newDiscountAmount = (newSubtotal * discountPercent) / 100;
+        const newTotal = newSubtotal - newDiscountAmount + shippingFee;
+
+        setSubtotal(newSubtotal);
+        setDiscountAmount(newDiscountAmount);
+        setTotal(newTotal);
+    }, [orderDetailDatas, discountPercent]);
 
     // Hàm mở ProductModal
     const handleOpenProductModal = () => {
@@ -308,6 +315,62 @@ function OrderStatus() {
         }
     };
 
+    // const handleAddProduct = async (product) => {
+    //     const newBillDetail = {
+    //         sanPhamCT: { id: product.id },
+    //         hoaDon: { id: orderData.id },
+    //         soLuong: 1, // Hoặc số lượng mặc định bạn muốn
+    //         giaBan: product.donGia,
+    //         trangThai: 1,
+    //     };
+    //     try {
+    //         const response = await fetch('http://localhost:8080/api/hoa-don-ct', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(newBillDetail),
+    //         });
+    //         if (!response.ok) {
+    //             throw new Error('Không thể thêm sản phẩm vào hóa đơn');
+    //         }
+    //         const addedProduct = await response.json();
+    //         setOrderDetailDatas((prev) => [...prev, addedProduct]); // Cập nhật danh sách sản phẩm
+    //     } catch (error) {
+    //         console.error('Error adding product to invoice:', error);
+    //     }
+    // };
+
+    const handleAddBillDetail = (billDetail) => {
+        // Kiểm tra xem sản phẩm đã tồn tại trong billDetails chưa
+        const productExists = orderDetailDatas.some((detail) => detail.sanPhamCT.id === billDetail.idSanPhamCT);
+
+        if (productExists) {
+            swal('Thất bại!', 'Sản phẩm đã tồn tại trong hóa đơn!', 'warning');
+            return; // Không thêm sản phẩm nếu đã tồn tại
+        }
+
+        const newBillDetail = {
+            sanPhamCT: { id: billDetail.idSanPhamCT },
+            hoaDon: { id: billDetail.idHoaDon },
+            soLuong: billDetail.soLuong,
+            giaBan: billDetail.giaBan,
+            trangThai: 1,
+        };
+
+        axios
+            .post('http://localhost:8080/api/hoa-don-ct', newBillDetail)
+            .then((response) => {
+                // Chỉ hiển thị thông báo thành công nếu sản phẩm được thêm thành công
+
+                swal('Thành công!', 'Sản phẩm đã được thêm vào hóa đơn!', 'success');
+            })
+            .catch((error) => {
+                console.error('Lỗi khi thêm chi tiết hóa đơn:', error);
+                swal('Lỗi!', 'Không thể thêm sản phẩm vào hóa đơn', 'error');
+            });
+    };
+
     const handleClose = () => {
         setIsAnimating(true);
         setTimeout(() => {
@@ -438,7 +501,12 @@ function OrderStatus() {
                 />
             </div>
             {showProductModal && (
-                <ProductModal showProductModal={showProductModal} handleCloseProductModal={handleCloseProductModal} />
+                <ProductModal
+                    showProductModal={showProductModal}
+                    handleCloseProductModal={handleCloseProductModal}
+                    selectedBill={orderData}
+                    onAddBillDetail={handleAddBillDetail}
+                />
             )}
             <PaymentDetails
                 discountCode={discountCode}

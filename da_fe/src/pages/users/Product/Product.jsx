@@ -94,17 +94,52 @@ export default function Product() {
         }
     };
 
+    // const loadProducts = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await axios.get('http://localhost:8080/api/san-pham-ct/summary');
+    //         setProducts(response.data);
+    //     } catch (error) {
+    //         console.error('Failed to fetch Products', error);
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
+
     const loadProducts = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:8080/api/san-pham-ct/summary');
-            setProducts(response.data);
+            const [productsResponse, promotionsResponse] = await Promise.all([
+                axios.get('http://localhost:8080/api/san-pham-ct/summary'),
+                axios.get('http://localhost:8080/api/san-pham-khuyen-mai'),
+            ]);
+
+            const products = productsResponse.data;
+            const promotions = promotionsResponse.data;
+
+            console.log('products: ', products);
+            console.log('promotions: ', promotions);
+
+            // Kết hợp dữ liệu sản phẩm với thông tin khuyến mãi
+            const combinedProducts = products.map((product) => {
+                // Tìm khuyến mãi dựa trên ID sản phẩm
+                const promotion = promotions.find((p) => p.sanPhamCT.sanPham.id === product.id);
+                return {
+                    ...product,
+                    khuyenMai: promotion ? promotion.giaKhuyenMai : null,
+                    giaTriKhuyenMai: promotion ? promotion.khuyenMai.giaTri : null,
+                };
+            });
+
+            setProducts(combinedProducts);
         } catch (error) {
             console.error('Failed to fetch Products', error);
         } finally {
             setLoading(false);
         }
     };
+
+    console.log('combines: ', products);
 
     useEffect(() => {
         const fetchData = async () => {

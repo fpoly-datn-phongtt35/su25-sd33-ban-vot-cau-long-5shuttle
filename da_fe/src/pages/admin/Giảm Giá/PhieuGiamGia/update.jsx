@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import numeral from 'numeral';
 import swal from 'sweetalert';
 
-function Update() {
+function UpdatePhieuGiamGia() {
     const initialVoucher = {
         ma: '',
         ten: '',
@@ -572,4 +572,4 @@ function Update() {
     )
 }
 
-export default Update;
+export default UpdatePhieuGiamGia;

@@ -1,18 +1,14 @@
 import swal from 'sweetalert';
 import { useState, useEffect, useContext } from 'react';
-import { IconButton } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import classNames from 'classnames';
-import ProductCard from '../Product/ProductCard';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import { CartContext } from '../Cart/CartContext';
+import ProductCard from '../Product/ProductCard';
+import classNames from 'classnames';
 
 export default function ProductDetail() {
     const { id } = useParams(); // Lấy ID từ URL
     const [product, setProduct] = useState(null);
-
     const [selectedColor, setSelectedColor] = useState('');
     const [selectedWeight, setSelectedWeight] = useState('');
     const [quantity, setQuantity] = useState(1);
@@ -20,64 +16,61 @@ export default function ProductDetail() {
     const [mainImage, setMainImage] = useState('');
     const [currentPrice, setCurrentPrice] = useState(0);
     const [currentQuantity, setCurrentQuantity] = useState(0);
-
-    // State cho bình luận và đánh giá
+    const [discountPercentage, setDiscountPercentage] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [newRating, setNewRating] = useState(1);
-
     const { setCartItemCount } = useContext(CartContext);
-
-    const relatedProducts = [
-        {
-            id: 2,
-            tenSanPham: 'Yonex Arcsaber 1 Clear',
-            hinhAnhDaiDien:
-                'https://cdn.shopvnb.com/uploads/gallery/vot-cau-long-yonex-arcsaber-1-clear-blue-chinh-hang_1715112569.webp',
-            donGia: 559000,
-        },
-        {
-            id: 3,
-            tenSanPham: 'Yonex Voltric Lite 40i',
-            hinhAnhDaiDien:
-                'https://cdn.shopvnb.com/uploads/gallery/vot-cau-long-yonex-voltric-lite-40i-chinh-hang_1706659551.webp',
-            donGia: 689000,
-        },
-        {
-            id: 4,
-            tenSanPham: 'Yonex Arcsaber 0 Ability',
-            hinhAnhDaiDien:
-                'https://cdn.shopvnb.com/uploads/gallery/vot-cau-long-yonex-arcsaber-0-ability_1739223521.webp',
-            donGia: 559000,
-        },
-        {
-            id: 5,
-            tenSanPham: 'Yonex Nanoflare 001A 2024',
-            hinhAnhDaiDien:
-                'https://cdn.shopvnb.com/uploads/gallery/vot-cau-long-yonex-nanoflare-001a-2024-black-red-chinh-hang_1731869229.webp',
-            donGia: 959000,
-        },
-    ];
 
     // Lấy dữ liệu sản phẩm từ API
     useEffect(() => {
         const fetchProductDetail = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/san-pham-ct/${id}/detaill`);
-                setProduct(response.data);
-                setSelectedColor(response.data.mauSac[0]); // Chọn màu sắc đầu tiên
-                setSelectedWeight(response.data.trongLuong[0]); // Chọn trọng lượng đầu tiên
-                setCurrentImages(response.data.hinhAnhUrls);
-                setMainImage(response.data.hinhAnhUrls[0]);
-                setCurrentPrice(response.data.donGia);
-                setCurrentQuantity(response.data.soLuong);
+                const [productResponse, promotionsResponse] = await Promise.all([
+                    axios.get(`http://localhost:8080/api/san-pham-ct/${id}/detaill`),
+                    axios.get('http://localhost:8080/api/san-pham-khuyen-mai'),
+                ]);
+                const productData = productResponse.data;
+                const promotions = promotionsResponse.data;
+
+                // Tìm khuyến mãi dựa trên ID sản phẩm
+                const promotionMap = {};
+                promotions.forEach((p) => {
+                    promotionMap[p.sanPhamCT.id] = {
+                        giaKhuyenMai: p.giaKhuyenMai,
+                        giaTriKhuyenMai: p.khuyenMai.giaTri,
+                    };
+                });
+
+                // Cập nhật thông tin sản phẩm
+                const updatedVariants = productData.variants.map((variant) => {
+                    const promotion = promotionMap[variant.id];
+                    return {
+                        ...variant,
+                        giaKhuyenMai: promotion ? promotion.giaKhuyenMai : variant.donGia,
+                        giaTriKhuyenMai: promotion ? promotion.giaTriKhuyenMai : null,
+                    };
+                });
+
+                setProduct({
+                    ...productData,
+                    variants: updatedVariants,
+                });
+
+                // Chọn màu sắc và trọng lượng đầu tiên
+                setSelectedColor(productData.mauSac[0]);
+                setSelectedWeight(productData.trongLuong[0]);
+                setCurrentImages(productData.hinhAnhUrls);
+                setMainImage(productData.hinhAnhUrls[0]);
+                setCurrentQuantity(productData.soLuong);
+                setDiscountPercentage(promotions.khuyenMai.giaTri);
             } catch (error) {
                 console.error('Failed to fetch product detail', error);
             }
         };
 
         fetchProductDetail();
-    }, []);
+    }, [id]);
 
     // Cập nhật hình ảnh, giá và số lượng dựa trên màu sắc và trọng lượng đã chọn
     useEffect(() => {
@@ -89,7 +82,7 @@ export default function ProductDetail() {
             if (selectedVariant) {
                 setCurrentImages(selectedVariant.hinhAnhUrls);
                 setMainImage(selectedVariant.hinhAnhUrls[0]);
-                setCurrentPrice(selectedVariant.donGia);
+                setCurrentPrice(selectedVariant.giaKhuyenMai); // Sử dụng giá khuyến mãi
                 setCurrentQuantity(selectedVariant.soLuong);
                 setQuantity(1);
             }
@@ -211,12 +204,7 @@ export default function ProductDetail() {
                                 </p>
                                 <p>
                                     Số lượng trong kho:
-                                    <span className="text-[#2f19ae]">
-                                        {/* {product.variants.find(
-                                            (v) => v.mauSacTen === selectedColor && v.trongLuongTen === selectedWeight,
-                                        )?.soLuong || 0} */}
-                                        {currentQuantity}
-                                    </span>
+                                    <span className="text-[#2f19ae]">{currentQuantity}</span>
                                 </p>
                             </div>
                         </div>
@@ -224,14 +212,43 @@ export default function ProductDetail() {
                         {/* Price */}
                         <div className="mt-4 lg:row-span-3 lg:mt-0">
                             <h2 className="sr-only">Product information</h2>
-                            <div className="flex space-x-5 items-center text-2xl lg:text-3xl text-gray-900 mt-2">
-                                <p className="font-semibold text-red-600">{currentPrice.toLocaleString()} ₫</p>
+                            <div className="flex items-center space-x-4">
+                                {product && product.variants.length > 0 && (
+                                    <>
+                                        {product.variants.map((variant) => {
+                                            if (
+                                                variant.mauSacTen === selectedColor &&
+                                                variant.trongLuongTen === selectedWeight
+                                            ) {
+                                                return (
+                                                    <div key={variant.id} className="flex items-center space-x-2">
+                                                        {/* Giá khuyến mãi */}
+                                                        <span className="text-3xl font-bold text-red-600">
+                                                            {variant.giaKhuyenMai.toLocaleString()} ₫
+                                                        </span>
+
+                                                        {/* Giá gốc và % giảm */}
+                                                        {variant.giaTriKhuyenMai && (
+                                                            <>
+                                                                <span className="text-[17px] text-gray-500 line-through">
+                                                                    {variant.donGia.toLocaleString()} ₫
+                                                                </span>
+                                                                <span className="bg-red-500 text-white text-sm font-medium px-2 py-1 rounded">
+                                                                    -{variant.giaTriKhuyenMai}%
+                                                                </span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        })}
+                                    </>
+                                )}
                             </div>
 
                             <form className="mt-5">
-                                {/* Phần filter màu sắc dùng product.mauSac */}
-                                {/* Phần form chọn màu sắc hiện tại trong form bán hàng */}
-                                {/* Color Selection - Enhanced */}
+                                {/* Color Selection */}
                                 <div className="bg-white border border-gray-200 rounded-2xl p-4">
                                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                                         <div className="w-4 h-4 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full mr-2"></div>
@@ -257,7 +274,7 @@ export default function ProductDetail() {
                                                     if (foundVariant) {
                                                         setCurrentImages(foundVariant.hinhAnhUrls);
                                                         setMainImage(foundVariant.hinhAnhUrls[0]);
-                                                        setCurrentPrice(foundVariant.donGia);
+                                                        setCurrentPrice(foundVariant.giaKhuyenMai); // Sử dụng giá khuyến mãi
                                                         setCurrentQuantity(foundVariant.soLuong);
                                                         setQuantity(1);
                                                     }
@@ -293,17 +310,24 @@ export default function ProductDetail() {
                                                     <span className="text-lg font-bold text-red-600">
                                                         {product.variants
                                                             .find((v) => v.mauSacTen === color)
-                                                            ?.donGia.toLocaleString() || ''}
+                                                            ?.giaKhuyenMai.toLocaleString() || ''}
                                                         <span className="text-sm ml-1">₫</span>
                                                     </span>
+                                                    {product.variants.find((v) => v.mauSacTen === color)?.donGia && (
+                                                        <span className="text-sm text-gray-500 line-through">
+                                                            {product.variants
+                                                                .find((v) => v.mauSacTen === color)
+                                                                ?.donGia.toLocaleString() || ''}
+                                                            <span className="text-sm ml-1">₫</span>
+                                                        </span>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                {/* Weights */}
-                                {/* Weight Selection - Enhanced */}
+                                {/* Weight Selection */}
                                 <div className="bg-white border border-gray-200 rounded-2xl p-4">
                                     <div className="flex items-center justify-between mb-4">
                                         <h3 className="text-lg font-semibold text-gray-900 flex items-center">
@@ -366,7 +390,7 @@ export default function ProductDetail() {
                                     </fieldset>
                                 </div>
 
-                                {/* Quantity Selector - Enhanced */}
+                                {/* Quantity Selector */}
                                 <div className="bg-gray-20 rounded-2xl p-4 h-[50px] flex items-center justify-between">
                                     <div className="flex items-center space-x-4">
                                         <button
@@ -498,16 +522,6 @@ export default function ProductDetail() {
                         ) : (
                             <p>Chưa có bình luận nào.</p>
                         )}
-                    </div>
-                </div>
-
-                {/* Sản phẩm liên quan */}
-                <div className="mt-10 px-4">
-                    <h2 className="text-lg font-semibold">Sản phẩm liên quan</h2>
-                    <div className="flex flex-wrap">
-                        {relatedProducts.map((relatedProduct) => (
-                            <ProductCard key={relatedProduct.id} product={relatedProduct} />
-                        ))}
                     </div>
                 </div>
             </div>
