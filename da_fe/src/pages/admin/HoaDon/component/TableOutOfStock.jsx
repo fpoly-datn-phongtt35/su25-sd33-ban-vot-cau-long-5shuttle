@@ -1,7 +1,3 @@
-// =============================
-// Bảng danh sách sản phẩm sắp hết hàng
-// =============================
-
 import React, { useState } from 'react';
 import {
   Table, TableHead, TableRow, TableCell, TableBody,
@@ -9,16 +5,13 @@ import {
 } from '@mui/material';
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 
-// Dữ liệu mẫu (mock) cho sản phẩm sắp hết hàng
 const mockOutOfStock = []; // Để mảng rỗng để test giao diện No Data
 
 const TableOutOfStock = () => {
-  // State quản lý số dòng/trang
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   return (
     <Box sx={{ mt: 4, p: 2, border: '1px solid #eee', borderRadius: 2 }}>
-      {/* Tiêu đề và chọn số dòng/trang */}
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Typography variant="h6" sx={{ flex: 1 }}>
           Danh sách sản phẩm sắp hết hàng
@@ -32,8 +25,7 @@ const TableOutOfStock = () => {
             <MenuItem key={opt} value={opt}>{opt}</MenuItem>
           ))}
         </Select>
-      </Box>
-      {/* Bảng sản phẩm sắp hết hàng */}
+    </Box>
       <Table>
         <TableHead>
           <TableRow sx={{ background: '#ff7800' }}>
@@ -45,7 +37,6 @@ const TableOutOfStock = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {/* Nếu không có dữ liệu thì hiển thị icon và text "No Data Found" */}
           {mockOutOfStock.length === 0 ? (
             <TableRow>
               <TableCell colSpan={5} align="center">
@@ -56,7 +47,6 @@ const TableOutOfStock = () => {
               </TableCell>
             </TableRow>
           ) : (
-            // Hiển thị danh sách sản phẩm sắp hết hàng
             mockOutOfStock.slice(0, rowsPerPage).map((product, idx) => (
               <TableRow key={idx}>
                 <TableCell>

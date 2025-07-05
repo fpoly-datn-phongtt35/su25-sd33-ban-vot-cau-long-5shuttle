@@ -14,7 +14,7 @@ public class HoaDon {
 
     @ManyToOne
     @JoinColumn(name = "IdTaiKhoan")
-    private User taiKhoan;
+    private TaiKhoan taiKhoan;
 
     @ManyToOne
     @JoinColumn(name = "IdVoucher")
@@ -73,11 +73,11 @@ public class HoaDon {
         this.id = id;
     }
 
-    public User getTaiKhoan() {
+    public TaiKhoan getTaiKhoan() {
         return taiKhoan;
     }
 
-    public void setTaiKhoan(User taiKhoan) {
+    public void setTaiKhoan(TaiKhoan taiKhoan) {
         this.taiKhoan = taiKhoan;
     }
 

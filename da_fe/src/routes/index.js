@@ -1,10 +1,14 @@
-
 // Pages
 import AdminLayout from '../components/Layout/AdminLayout';
 import Admin from '../pages/admin';
-import Index from '../pages/admin/Giảm Giá/Phiếu Giảm Giá/index.jsx';
-import Add from '../pages/admin/Giảm Giá/Phiếu Giảm Giá/add.jsx';
-import Update from '../pages/admin/Giảm Giá/Phiếu Giảm Giá/update.jsx';
+import Balance from '../pages/admin/Balance';
+import Brand from '../pages/admin/Brand';
+import Color from '../pages/admin/Color';
+import Material from '../pages/admin/Material';
+import SanPham from '../pages/admin/Product';
+import Stiff from '../pages/admin/Stiff';
+import Weight from '../pages/admin/Weight';
+
 import ModalKhachHang from '../pages/admin/khuyenmai/ModalKhachHang';
 import ListStaff from '../pages/admin/nhanvien';
 import AddStaff from '../pages/admin/nhanvien/add';
@@ -15,16 +19,35 @@ import Profile from '../pages/users/TaiKhoan/profile.jsx';
 import Sign from '../pages/users/DangNhap/sign.jsx';
 import ForgotPassword from '../pages/users/DangNhap/forgot-password.jsx';
 import UserInfo from '../pages/users/TaiKhoan/userInfo.jsx';
-import Home from '../pages/users/Home';
+
+
 import ThongKe from '../pages/admin/HoaDon/ThongKe';
+
+import Product from '../pages/users/Product/Product';
+import ProductAdmin from '../pages/admin/Product';
+import AddProduct from '../pages/admin/Product/Add';
+import Cart from '../pages/users/Cart/Cart';
+import ProductDetail from '../pages/users/ProductDetail/ProductDetail';
+import CheckOut from '../pages/users/CheckOut/CheckOut';
+import SuccessOrder from '../pages/users/SuccessOrder/SuccessOrder';
+import OrderStatus from '../pages/admin/Order/OrderStatus';
+import Order from '../pages/admin/Order';
+import Indexx from '../pages/admin/Giảm Giá/PhieuGiamGia/index.jsx';
+import AddVoucher from '../pages/admin/Giảm Giá/PhieuGiamGia/add.jsx';
+import OfflineSale from '../pages/admin/Sale/index.jsx';
+import DotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/index.jsx';
+import AddDotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/add.jsx';
+import UpdateDotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/update.jsx';
+import PhieuGiamGia from '../pages/admin/Giảm Giá/PhieuGiamGia/index.jsx';
+import UpdatePhieuGiamGia from '../pages/admin/Giảm Giá/PhieuGiamGia/update.jsx';
+
 
 // Public routes
 const publicRoutes = [
     { path: '/', component: Home },
     { path: '/admin', component: Admin, layout: AdminLayout },
-    { path: '/admin/giam-gia/phieu-giam-gia', component: Index, layout: AdminLayout },
-    { path: '/admin/giam-gia/phieu-giam-gia/add', component: Add, layout: AdminLayout },
-    { path: `/admin/giam-gia/phieu-giam-gia/:id/detail`, component: Update, layout: AdminLayout },
+    { path: '/admin/thong-ke', component: ThongKe, layout: AdminLayout },
+    { path: '/admin/ban-hang-tai-quay', component: OfflineSale, layout: AdminLayout },
 
     { path: '/admin/quan-ly-san-pham/mau-sac', component: Color, layout: AdminLayout },
     { path: '/admin/quan-ly-san-pham/san-pham', component: SanPham, layout: AdminLayout },
@@ -61,8 +84,7 @@ const publicRoutes = [
         { path: 'user', component: UserInfo }
     ] },
     { path: '/login', component: Sign },
-    { path: '/forgot-password', component: ForgotPassword },
-    { path: '/admin/thong-ke', component: ThongKe, layout: AdminLayout },
+    { path: '/forgot-password', component: ForgotPassword }
 ];
 
 const privateRoutes = [];
