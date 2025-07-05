@@ -8,7 +8,9 @@ const CartItem = ({ cart, onQuantityChange = () => {}, onDeleteCart = () => {} }
     const [isFavorite, setIsFavorite] = useState(false);
 
     // Calculate total price
-    const totalPrice = cart.sanPhamCT.donGia * quantity;
+
+    const totalPrice = cart.sanPhamCT.giaKhuyenMai ? cart.sanPhamCT.giaKhuyenMai * quantity : cart.sanPhamCT.donGia * quantity;
+
 
     const handleQuantityChange = (e) => {
         const newValue = e.target.value;
@@ -120,9 +122,21 @@ const CartItem = ({ cart, onQuantityChange = () => {}, onDeleteCart = () => {} }
                     {/* Price Section - Inline */}
                     <div className="flex items-center justify-between mb-3">
                         <div className="flex flex-col">
-                            <span className="text-lg font-bold text-red-600">
-                                {cart.sanPhamCT.donGia.toLocaleString()}₫
-                            </span>
+
+                            {cart.sanPhamCT.giaKhuyenMai ? (
+                                <>
+                                    <span className="text-lg font-bold text-red-600">
+                                        {cart.sanPhamCT.giaKhuyenMai.toLocaleString()}₫
+                                    </span>
+                                    <span className="text-xs text-gray-500 line-through">
+                                        {cart.sanPhamCT.donGia.toLocaleString()}₫
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="text-lg font-bold text-red-600">
+                                    {cart.sanPhamCT.donGia.toLocaleString()}₫
+                                </span>
+                            )}
                             <span className="text-xs text-gray-500">Đơn giá</span>
                         </div>
                         <div className="flex flex-col text-right">

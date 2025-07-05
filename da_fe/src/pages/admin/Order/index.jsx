@@ -114,14 +114,14 @@ function Order() {
 
     const statusOptions = [
         { label: 'TẤT CẢ', value: 'all' },
-        { label: 'ĐÃ HUỶ', value: '8' },
+        { label: 'ĐÃ HUỶ', value: '7' },
         { label: 'CHỜ XÁC NHẬN', value: '1' },
         { label: 'CHỜ GIAO HÀNG', value: '2' },
         { label: 'ĐANG VẬN CHUYỂN', value: '3' },
         { label: 'ĐÃ GIAO HÀNG', value: '4' },
-        { label: 'CHỜ THANH TOÁN', value: '5' },
-        { label: 'ĐÃ THANH TOÁN', value: '6' },
-        { label: 'HOÀN THÀNH', value: '7' },
+        { label: 'ĐÃ THANH TOÁN', value: '5' },
+        { label: 'HOÀN THÀNH', value: '6' },
+        { label: 'TRẢ HÀNG', value: '8' },
     ];
 
     const indexOfLastOrder = currentPage * ordersPerPage;

@@ -6,18 +6,50 @@ import {
     IconButton,
     Button
 } from "@mui/material";
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import LockOutlineIcon from '@mui/icons-material/LockOutlined';
 import shuttlecockImg from '../../components/Assets/closeup-shuttlecock.jpg';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AdLogin() {
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [matKhau, setMatKhau] = useState("");
+
+    const navigate = useNavigate();
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleMouseDownPassword = (event) => event.preventDefault();
+
+    const handleLogin = async () => {
+        try {
+            const res = await fetch("http://localhost:8080/shuttle/auth/token", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, matKhau })
+            });
+
+            if (!res.ok) throw new Error("Đăng nhập thất bại");
+
+            const data = await res.json();
+            console.log("Login success:", data);
+
+            const accessToken  = data.result.token;
+
+            localStorage.setItem("token", accessToken);
+
+            navigate('/admin');
+            window.location.reload();
+        } catch (err) {
+            console.error(err);
+            toast.error("Email hoặc mật khẩu không chính xác!");
+        }
+    };
 
     return (
         <Box
@@ -43,6 +75,8 @@ function AdLogin() {
                         fullWidth
                         label="Email"
                         variant="standard"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                 </Box>
 
@@ -53,6 +87,8 @@ function AdLogin() {
                         label="Mật khẩu"
                         variant="standard"
                         type={showPassword ? 'text' : 'password'}
+                        value={matKhau}
+                        onChange={(e) => setMatKhau(e.target.value)}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
@@ -72,16 +108,14 @@ function AdLogin() {
                 <Button
                     variant="contained"
                     fullWidth
+                    onClick={handleLogin}
                     sx={{
                         borderRadius: 2,
                         py: 1,
                         backgroundColor: '#212121',
                         '&:hover': {
                             backgroundColor: '#212121',
-                        },
-                        '&:focus': { outline: 'none', boxShadow: 'none' },
-                        '&:focus-visible': { outline: 'none', boxShadow: 'none' },
-
+                        }
                     }}
                 >
                     Đăng nhập

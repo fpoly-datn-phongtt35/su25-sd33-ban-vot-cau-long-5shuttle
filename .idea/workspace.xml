@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1fbebf94-5295-406f-9147-391720987b96" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/da_fe/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/da_fe/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/da_fe/src/App.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/src/App.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/da_fe/src/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/src/routes/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/da_fe/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/src/index.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/da_fe/src/pages/admin/customer/add.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/src/pages/admin/customer/add.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/da_fe/src/pages/admin/customer/index.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/da_fe/src/pages/admin/customer/index.jsx" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Hoangdev04&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/fpoly-datn-phongtt35/su25-sd33-ban-vot-cau-long-5shuttle.git&quot;,
+    &quot;accountId&quot;: &quot;10b5f6ea-6f73-4eb7-9c04-218b2cf550c8&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2xlrZmj0oLpEBSiGuJdRxfmG43l" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.DaBeApplication.executor&quot;: &quot;Run&quot;,
+    &quot;Spring Boot.da_beApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/hoang/Documents/GitHub/su25-sd33-ban-vot-cau-long-5shuttle&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Program Files\\JetBrains\\WebStorm 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "Spring Boot.DaBeApplication.executor": "Run",
+    "Spring Boot.da_beApplication.executor": "Run",
+    "git-widget-placeholder": "Hoàng",
+    "git-widget-placeholder": "TrungHieu",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/hoang/Documents/GitHub/su25-sd33-ban-vot-cau-long-5shuttle",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\WebStorm 2024.2.4\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="Spring Boot.da_beApplication">
+    <configuration name="DaBeApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="da_be" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.da_be.DaBeApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="da_beApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="da_be" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.example.da_be.da_beApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1fbebf94-5295-406f-9147-391720987b96" name="Changes" comment="" />
+      <created>1748523558222</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1748523558222</updated>
+      <workItem from="1748523559391" duration="679000" />
+      <workItem from="1748527706365" duration="1161000" />
+      <workItem from="1748612231031" duration="238000" />
+      <workItem from="1748612642500" duration="10810000" />
+      <workItem from="1748662403042" duration="1095000" />
+      <workItem from="1749771573000" duration="2537000" />
+      <workItem from="1750087232146" duration="1104000" />
+      <workItem from="1750698448843" duration="1588000" />
+      <workItem from="1750745861438" duration="4246000" />
+      <workItem from="1751031831896" duration="10870000" />
+
+      <workItem from="1750698448843" duration="641000" />
+      <workItem from="1751475690778" duration="98000" />
+
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

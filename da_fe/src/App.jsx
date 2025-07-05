@@ -52,7 +52,9 @@ function App() {
         //     </Router>
         // </CartProvider>
 
-        <Router>
+<CartProvider>
+<Router>
+
         <Routes>
             {publicRoutes.map((route, index) => {
                 const Page = route.component;
@@ -99,6 +101,8 @@ function App() {
             })}
         </Routes>
         </Router>
+</CartProvider>
+
     );
 }
 
