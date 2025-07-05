@@ -52,6 +52,9 @@ function App() {
         // </CartProvider>
 
          <CartProvider>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         <Router>
             <Routes>
