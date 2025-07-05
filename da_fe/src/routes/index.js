@@ -40,6 +40,8 @@ import AddDotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/add.jsx
 import UpdateDotGiamGia from '../pages/admin/Giảm Giá/Đợt Giảm Giá/update.jsx';
 import PhieuGiamGia from '../pages/admin/Giảm Giá/PhieuGiamGia/index.jsx';
 import UpdatePhieuGiamGia from '../pages/admin/Giảm Giá/PhieuGiamGia/update.jsx';
+import UserOrder from '../pages/users/TaiKhoan/order.jsx';
+import OrderDetail from '../pages/users/TaiKhoan/orderDetail.jsx';
 
 
 // Public routes
@@ -81,7 +83,9 @@ const publicRoutes = [
     { path: '/admin/tai-khoan/nhan-vien/edit/:id', component: EditStaff, layout: AdminLayout },
     { path: '/admin/login', component: AdLogin },
     { path: '/profile', component: Profile, children: [
-        { path: 'user', component: UserInfo }
+        { path: 'user', component: UserInfo },
+        { path: 'order', component: UserOrder, layout: null},
+        { path: 'order-detail/:id', component: OrderDetail, layout: null },
     ] },
     { path: '/login', component: Sign },
     { path: '/forgot-password', component: ForgotPassword }
