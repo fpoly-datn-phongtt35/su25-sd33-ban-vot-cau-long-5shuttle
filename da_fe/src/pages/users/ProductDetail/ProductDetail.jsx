@@ -16,7 +16,6 @@ export default function ProductDetail() {
     const [mainImage, setMainImage] = useState('');
     const [currentPrice, setCurrentPrice] = useState(0);
     const [currentQuantity, setCurrentQuantity] = useState(0);
-    const [discountPercentage, setDiscountPercentage] = useState(null);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [newRating, setNewRating] = useState(1);
@@ -26,36 +25,10 @@ export default function ProductDetail() {
     useEffect(() => {
         const fetchProductDetail = async () => {
             try {
-                const [productResponse, promotionsResponse] = await Promise.all([
-                    axios.get(`http://localhost:8080/api/san-pham-ct/${id}/detaill`),
-                    axios.get('http://localhost:8080/api/san-pham-khuyen-mai'),
-                ]);
-                const productData = productResponse.data;
-                const promotions = promotionsResponse.data;
+                const response = await axios.get(`http://localhost:8080/api/san-pham-ct/${id}/detaill-with-promotion`);
+                const productData = response.data;
 
-                // Tìm khuyến mãi dựa trên ID sản phẩm
-                const promotionMap = {};
-                promotions.forEach((p) => {
-                    promotionMap[p.sanPhamCT.id] = {
-                        giaKhuyenMai: p.giaKhuyenMai,
-                        giaTriKhuyenMai: p.khuyenMai.giaTri,
-                    };
-                });
-
-                // Cập nhật thông tin sản phẩm
-                const updatedVariants = productData.variants.map((variant) => {
-                    const promotion = promotionMap[variant.id];
-                    return {
-                        ...variant,
-                        giaKhuyenMai: promotion ? promotion.giaKhuyenMai : variant.donGia,
-                        giaTriKhuyenMai: promotion ? promotion.giaTriKhuyenMai : null,
-                    };
-                });
-
-                setProduct({
-                    ...productData,
-                    variants: updatedVariants,
-                });
+                setProduct(productData);
 
                 // Chọn màu sắc và trọng lượng đầu tiên
                 setSelectedColor(productData.mauSac[0]);
@@ -63,7 +36,14 @@ export default function ProductDetail() {
                 setCurrentImages(productData.hinhAnhUrls);
                 setMainImage(productData.hinhAnhUrls[0]);
                 setCurrentQuantity(productData.soLuong);
-                setDiscountPercentage(promotions.khuyenMai.giaTri);
+                
+                // Tìm variant đầu tiên để set giá ban đầu
+                const firstVariant = productData.variants.find(
+                    v => v.mauSacTen === productData.mauSac[0] && v.trongLuongTen === productData.trongLuong[0]
+                );
+                if (firstVariant) {
+                    setCurrentPrice(firstVariant.giaKhuyenMai || firstVariant.donGia);
+                }
             } catch (error) {
                 console.error('Failed to fetch product detail', error);
             }
@@ -82,7 +62,7 @@ export default function ProductDetail() {
             if (selectedVariant) {
                 setCurrentImages(selectedVariant.hinhAnhUrls);
                 setMainImage(selectedVariant.hinhAnhUrls[0]);
-                setCurrentPrice(selectedVariant.giaKhuyenMai); // Sử dụng giá khuyến mãi
+                setCurrentPrice(selectedVariant.giaKhuyenMai || selectedVariant.donGia);
                 setCurrentQuantity(selectedVariant.soLuong);
                 setQuantity(1);
             }
@@ -224,11 +204,11 @@ export default function ProductDetail() {
                                                     <div key={variant.id} className="flex items-center space-x-2">
                                                         {/* Giá khuyến mãi */}
                                                         <span className="text-3xl font-bold text-red-600">
-                                                            {variant.giaKhuyenMai.toLocaleString()} ₫
+                                                            {(variant.giaKhuyenMai || variant.donGia).toLocaleString()} ₫
                                                         </span>
 
                                                         {/* Giá gốc và % giảm */}
-                                                        {variant.giaTriKhuyenMai && (
+                                                        {variant.giaKhuyenMai && variant.giaTriKhuyenMai && (
                                                             <>
                                                                 <span className="text-[17px] text-gray-500 line-through">
                                                                     {variant.donGia.toLocaleString()} ₫
@@ -274,7 +254,7 @@ export default function ProductDetail() {
                                                     if (foundVariant) {
                                                         setCurrentImages(foundVariant.hinhAnhUrls);
                                                         setMainImage(foundVariant.hinhAnhUrls[0]);
-                                                        setCurrentPrice(foundVariant.giaKhuyenMai); // Sử dụng giá khuyến mãi
+                                                        setCurrentPrice(foundVariant.giaKhuyenMai || foundVariant.donGia);
                                                         setCurrentQuantity(foundVariant.soLuong);
                                                         setQuantity(1);
                                                     }
@@ -310,10 +290,13 @@ export default function ProductDetail() {
                                                     <span className="text-lg font-bold text-red-600">
                                                         {product.variants
                                                             .find((v) => v.mauSacTen === color)
-                                                            ?.giaKhuyenMai.toLocaleString() || ''}
+                                                            ?.giaKhuyenMai?.toLocaleString() || 
+                                                            product.variants
+                                                            .find((v) => v.mauSacTen === color)
+                                                            ?.donGia.toLocaleString()}
                                                         <span className="text-sm ml-1">₫</span>
                                                     </span>
-                                                    {product.variants.find((v) => v.mauSacTen === color)?.donGia && (
+                                                    {product.variants.find((v) => v.mauSacTen === color)?.giaKhuyenMai && (
                                                         <span className="text-sm text-gray-500 line-through">
                                                             {product.variants
                                                                 .find((v) => v.mauSacTen === color)

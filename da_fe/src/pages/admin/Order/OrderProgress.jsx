@@ -10,6 +10,7 @@ const OrderProgress = ({
     handleActionButtonClick,
     getActionButtonStyle,
     getActionButtonText,
+    handleCancelOrder
 }) => {
     // State cho modal confirm
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -203,10 +204,13 @@ const OrderProgress = ({
 
                 <div className="flex items-center space-x-4">
                     {(currentOrderStatus === 1 || currentOrderStatus === 2 || currentOrderStatus === 3) && (
-                        <button className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg font-medium">
-                            Hủy đơn
-                        </button>
-                    )}
+                    <button
+                        className="px-8 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 shadow-lg font-medium"
+                        onClick={handleCancelOrder} // Gọi hàm hủy đơn
+                    >
+                        Hủy đơn
+                    </button>
+                )}
 
                     <button className="text-purple-600 hover:text-purple-800 transition-colors duration-300 font-medium px-4 py-2 rounded-lg hover:bg-purple-50">
                         Chi tiết →

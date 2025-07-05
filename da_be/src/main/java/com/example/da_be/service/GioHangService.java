@@ -95,6 +95,15 @@ public class GioHangService {
         sanPhamCTDTO.setTen(sanPhamCT.getSanPham().getTen());
         sanPhamCTDTO.setDonGia(sanPhamCT.getDonGia());
         sanPhamCTDTO.setSoLuong(sanPhamCT.getSoLuong());
+
+        // Lấy giá khuyến mãi
+        sanPhamCTDTO.setGiaKhuyenMai(sanPhamCT.getGiaKhuyenMai());
+
+        // Lấy giá trị khuyến mãi từ bảng KhuyenMai
+        sanPhamCTDTO.setGiaTriKhuyenMai(sanPhamCT.getGiaTriKhuyenMai());
+
+
+
         // Lấy URL ảnh từ bảng HinhAnh (ví dụ: lấy ảnh đầu tiên)
         String hinhAnhUrl = hinhAnhRepository.findFirstBySanPhamCT_Id(sanPhamCT.getId())
                 .map(HinhAnh::getLink)
@@ -121,9 +130,16 @@ public class GioHangService {
     public double calculateTotalPrice(Integer idTaiKhoan) {
         List<GioHangDTO> gioHangList = getGioHangByTaiKhoan(idTaiKhoan);
         return gioHangList.stream()
-                .mapToDouble(item -> item.getSanPhamCT().getDonGia() * item.getSoLuong())
+                .mapToDouble(item -> {
+                    // Kiểm tra xem sản phẩm có giá khuyến mãi hay không
+                    double price = item.getSanPhamCT().getGiaKhuyenMai() != null ?
+                            item.getSanPhamCT().getGiaKhuyenMai() :
+                            item.getSanPhamCT().getDonGia();
+                    return price * item.getSoLuong();
+                })
                 .sum();
     }
+
 
     public void xoaSanPhamKhoiGioHang(Integer id) {
         gioHangRepository.deleteById(id);

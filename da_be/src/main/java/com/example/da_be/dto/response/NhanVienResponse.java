@@ -1,6 +1,5 @@
 package com.example.da_be.dto.response;
 
-import com.example.da_be.constant.VaiTro;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,7 @@ public class NhanVienResponse {
     private String email;
     private String matKhau;
     private Integer gioiTinh;
-    private Integer vaiTro;
+    private Integer roleId;
     private String avatar;
     private LocalDate ngaySinh;
     private String cccd;

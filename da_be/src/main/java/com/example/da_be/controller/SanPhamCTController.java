@@ -1,10 +1,7 @@
 package com.example.da_be.controller;
 
 
-import com.example.da_be.dto.SanPhamCTDetailDTO;
-import com.example.da_be.dto.SanPhamCTFullDTO;
-import com.example.da_be.dto.SanPhamCTListDTO;
-import com.example.da_be.dto.VariantDTO;
+import com.example.da_be.dto.*;
 import com.example.da_be.entity.HinhAnh;
 import com.example.da_be.entity.SanPham;
 import com.example.da_be.entity.SanPhamCT;
@@ -167,6 +164,12 @@ public class SanPhamCTController {
         return ResponseEntity.ok(dtoList);
     }
 
+    @GetMapping("/summaryy")
+    public ResponseEntity<List<SanPhamCTListDTOo>> getAllSanPhamCTSummaryy() {
+        List<SanPhamCTListDTOo> dtoList = sanPhamCTService.getAllSanPhamCTSummaryy();
+        return ResponseEntity.ok(dtoList);
+    }
+
 
 
     @GetMapping("/{id}/detaill")
@@ -239,6 +242,15 @@ public class SanPhamCTController {
                     .body("Error adding product: " + e.getMessage());
         }
     }
+
+    @GetMapping("/{id}/detaill-with-promotion")
+    public ResponseEntity<SanPhamCTDetailDTO> getSanPhamCTDetailWithPromotion(@PathVariable int id) {
+        SanPhamCTDetailDTO detailDTO = sanPhamCTService.getSanPhamCTDetailWithPromotion(id);
+        return new ResponseEntity<>(detailDTO, HttpStatus.OK);
+    }
+
+
+
 
     // Thêm DTO cho request
     @Data

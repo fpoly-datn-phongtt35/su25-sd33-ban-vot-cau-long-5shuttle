@@ -1,22 +1,42 @@
+// =============================
+// Card thống kê tổng quan (dùng trong StatisticCardsGroup)
+// =============================
+
 import React from 'react';
 import { Card, CardContent, Typography, Box } from '@mui/material';
 
+// Props:
+// - title: Tiêu đề card (ví dụ: Tổng quan ngày)
+// - icon: Icon đại diện cho card
+// - amount: Tổng tiền
+// - stats: Các chỉ số phụ (sản phẩm, thành công, hủy, trả)
+// - color: Màu nền card
+// - customWidth: Độ rộng riêng cho card (nếu có)
 const StatisticCard = ({ title, icon, amount, stats, color, customWidth }) => {
   return (
     <Card
       sx={{
-        backgroundColor: color,
-        color: '#fff',
-        borderRadius: 2,
-        height: '100%',
+        backgroundColor: color, // Màu nền
+        color: '#fff',          // Màu chữ
+        borderRadius: 2,        // Bo góc
+        height: '100%',         // Chiều cao full
         display: 'flex',
         flexDirection: 'column',
-        width: customWidth ? customWidth : '100%',
-        maxWidth: customWidth ? undefined : 1170,
-        minWidth: customWidth ? undefined : 575,
+        width: customWidth ? customWidth : '100%', // Độ rộng riêng nếu có
+        maxWidth: customWidth ? undefined : 1170,  // Giới hạn max width
+        minWidth: customWidth ? undefined : 575,   // Giới hạn min width
       }}
     >
-      <CardContent sx={{ textAlign: 'center', flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      <CardContent 
+        sx={{ 
+          textAlign: 'center', 
+          flexGrow: 1, 
+          display: 'flex', 
+          flexDirection: 'column', 
+          justifyContent: 'space-between' 
+        }}
+      >
+        {/* Phần icon, tiêu đề, tổng tiền */}
         <Box>
             <Box display="flex" justifyContent="center" alignItems="center" mb={1}>
               {icon}
@@ -29,6 +49,7 @@ const StatisticCard = ({ title, icon, amount, stats, color, customWidth }) => {
             </Typography>
         </Box>
 
+        {/* Các chỉ số phụ: sản phẩm, thành công, hủy, trả */}
         <Box display="flex" justifyContent="space-around" flexWrap="wrap" mt={2}>
           <Box textAlign="center" flex="1" p={0.5}>
             <Typography variant="body2" sx={{ fontSize: '0.8rem' }}>Sản phẩm</Typography>

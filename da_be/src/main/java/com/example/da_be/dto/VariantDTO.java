@@ -9,6 +9,8 @@ public class VariantDTO {
     private Double donGia;
     private Integer soLuong;
     private List<String> hinhAnhUrls;
+    private Double giaKhuyenMai;
+    private Integer giaTriKhuyenMai;
 
     // Getters and Setters
 
@@ -58,5 +60,21 @@ public class VariantDTO {
 
     public void setHinhAnhUrls(List<String> hinhAnhUrls) {
         this.hinhAnhUrls = hinhAnhUrls;
+    }
+
+    public Double getGiaKhuyenMai() {
+        return giaKhuyenMai;
+    }
+
+    public void setGiaKhuyenMai(Double giaKhuyenMai) {
+        this.giaKhuyenMai = giaKhuyenMai;
+    }
+
+    public Integer getGiaTriKhuyenMai() {
+        return giaTriKhuyenMai;
+    }
+
+    public void setGiaTriKhuyenMai(Integer giaTriKhuyenMai) {
+        this.giaTriKhuyenMai = giaTriKhuyenMai;
     }
 }

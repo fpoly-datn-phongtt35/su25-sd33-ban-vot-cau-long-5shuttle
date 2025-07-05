@@ -1,5 +1,6 @@
 package com.example.da_be.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,29 +12,36 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
+@Table(name = "DiaChi")
+
 public class DiaChi {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String tinh;
+    @Column(name = "Ten")
+    private String ten;
 
-    private String huyen;
+    @Column(name = "Sdt")
+    private String sdt;
 
-    private String xa;
+    @Column(name = "id_tinh")
+    private String idTinh;
 
+    @Column(name = "id_huyen")
+    private String idHuyen;
+
+    @Column(name = "id_xa")
+    private String idXa;
+
+    @Column(name = "dia_chi_cu_the")
     private String diaChiCuThe;
 
+    @Column(name = "LoaiDiaChi")
+    private Integer loai;
+
     @ManyToOne
-    @JoinColumn(name = "id_tai_khoan", referencedColumnName = "id")
+    @JoinColumn(name = "IdTaiKhoan")
+    @JsonBackReference
     private TaiKhoan taiKhoan;
-
-    public DiaChi newDiaChi(DiaChi diaChi) {
-        diaChi.setTinh(this.tinh);
-        diaChi.setHuyen(this.huyen);
-        diaChi.setXa(this.xa);
-        diaChi.setDiaChiCuThe(this.diaChiCuThe);
-        return diaChi;
-    }
-
 }

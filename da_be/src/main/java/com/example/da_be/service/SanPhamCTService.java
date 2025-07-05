@@ -1,15 +1,14 @@
 package com.example.da_be.service;
 
-import com.example.da_be.dto.SanPhamCTDetailDTO;
-import com.example.da_be.dto.SanPhamCTFullDTO;
-import com.example.da_be.dto.SanPhamCTListDTO;
-import com.example.da_be.dto.VariantDTO;
+import com.example.da_be.dto.*;
 import com.example.da_be.entity.HinhAnh;
 import com.example.da_be.entity.SanPham;
 import com.example.da_be.entity.SanPhamCT;
+import com.example.da_be.entity.SanPhamKhuyenMai;
 import com.example.da_be.exception.ResourceNotFoundException;
 import com.example.da_be.repository.HinhAnhRepository;
 import com.example.da_be.repository.SanPhamCTRepository;
+import com.example.da_be.repository.SanPhamKhuyenMaiRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +23,8 @@ public class SanPhamCTService {
 
     @Autowired
     private HinhAnhRepository hinhAnhRepository;
+    @Autowired
+    private SanPhamKhuyenMaiRepository sanPhamKhuyenMaiRepository;
 
     // Lấy tất cả sản phẩm chi tiết
     public List<SanPhamCT> getAllSanPhamCT() {
@@ -87,6 +88,8 @@ public class SanPhamCTService {
         sanPhamCT.setSoLuong(soLuong);
         sanPhamCTRepository.save(sanPhamCT);
     }
+
+
 
     // Lấy danh sách sản phẩm chi tiết tóm tắt
     public List<SanPhamCTListDTO> getAllSanPhamCTSummary() {
@@ -218,4 +221,165 @@ public class SanPhamCTService {
             );
         }).collect(Collectors.toList());
     }
+
+
+
+    public SanPhamCTDetailDTO getSanPhamCTDetailWithPromotion(Integer sanPhamId) {
+        // Lấy danh sách tất cả SanPhamCT theo sản phẩm cha
+        List<SanPhamCT> sanPhamCTList = sanPhamCTRepository.findBySanPham_Id(sanPhamId);
+        if (sanPhamCTList.isEmpty()) {
+            throw new ResourceNotFoundException("No SanPhamCT found for SanPham id " + sanPhamId);
+        }
+
+        // Lấy thông tin chung sản phẩm từ sản phẩm cha
+        SanPham sanPham = sanPhamCTList.get(0).getSanPham();
+        SanPhamCTDetailDTO detailDTO = new SanPhamCTDetailDTO();
+        detailDTO.setId(sanPham.getId());
+        detailDTO.setTenSanPham(sanPham.getTen());
+        SanPhamCT spctDauTien = sanPhamCTList.get(0);
+        detailDTO.setMoTa(spctDauTien.getMoTa());
+        detailDTO.setDonGia(spctDauTien.getDonGia());
+        detailDTO.setSoLuong(spctDauTien.getSoLuong());
+        detailDTO.setThuongHieu(spctDauTien.getThuongHieu() != null ? spctDauTien.getThuongHieu().getTen() : "");
+        detailDTO.setChatLieu(spctDauTien.getChatLieu() != null ? spctDauTien.getChatLieu().getTen() : "");
+        detailDTO.setDiemCanBang(spctDauTien.getDiemCanBang() != null ? spctDauTien.getDiemCanBang().getTen() : "");
+        detailDTO.setDoCung(spctDauTien.getDoCung() != null ? spctDauTien.getDoCung().getTen() : "");
+
+        // Lấy danh sách hình ảnh
+        Set<String> allImageUrls = sanPhamCTList.stream()
+                .flatMap(spct -> spct.getHinhAnh().stream())
+                .map(HinhAnh::getLink)
+                .collect(Collectors.toSet());
+        detailDTO.setHinhAnhUrls(new ArrayList<>(allImageUrls));
+
+        // Lấy danh sách màu sắc và trọng lượng duy nhất
+        Set<String> allColors = sanPhamCTList.stream()
+                .map(spct -> spct.getMauSac() != null ? spct.getMauSac().getTen() : null)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        detailDTO.setMauSac(new ArrayList<>(allColors));
+
+        Set<String> allWeights = sanPhamCTList.stream()
+                .map(spct -> spct.getTrongLuong() != null ? spct.getTrongLuong().getTen() : null)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        detailDTO.setTrongLuong(new ArrayList<>(allWeights));
+
+        // Tạo biến thể bằng tổ hợp màu và trọng lượng
+        List<VariantDTO> variants = new ArrayList<>();
+        for (String color : allColors) {
+            for (String weight : allWeights) {
+                Optional<SanPhamCT> variantOpt = sanPhamCTList.stream()
+                        .filter(spct -> spct.getMauSac() != null && spct.getMauSac().getTen().equals(color)
+                                && spct.getTrongLuong() != null && spct.getTrongLuong().getTen().equals(weight))
+                        .findFirst();
+                if (variantOpt.isPresent()) {
+                    SanPhamCT matched = variantOpt.get();
+                    VariantDTO variantDTO = new VariantDTO();
+                    variantDTO.setId(matched.getId());
+                    variantDTO.setMauSacTen(color);
+                    variantDTO.setTrongLuongTen(weight);
+                    variantDTO.setDonGia(matched.getDonGia());
+                    variantDTO.setSoLuong(matched.getSoLuong());
+                    variantDTO.setHinhAnhUrls(matched.getHinhAnh().stream()
+                            .map(HinhAnh::getLink)
+                            .collect(Collectors.toList()));
+
+                    // Lấy giá khuyến mãi và giá trị khuyến mãi
+                    getPromotionPrice(matched.getId(), variantDTO);
+
+                    variants.add(variantDTO);
+                }
+            }
+        }
+        detailDTO.setVariants(variants);
+        return detailDTO;
+    }
+
+
+    // Phương thức để lấy giá khuyến mãi
+    private Double getPromotionPrice(Integer sanPhamCTId, VariantDTO variantDTO) {
+        // Lấy danh sách khuyến mãi đang hoạt động cho sản phẩm chi tiết
+        List<SanPhamKhuyenMai> promotions = sanPhamKhuyenMaiRepository.findActivePromotionsBySanPhamCTId(sanPhamCTId);
+
+        if (promotions.isEmpty()) {
+            return null; // Không có khuyến mãi
+        }
+
+        // Giả sử mỗi sản phẩm chỉ có một khuyến mãi đang hoạt động
+        SanPhamKhuyenMai promotion = promotions.get(0);
+
+        // Gán giá trị khuyến mãi vào variantDTO
+        variantDTO.setGiaKhuyenMai(promotion.getGiaKhuyenMai().doubleValue());
+        variantDTO.setGiaTriKhuyenMai(promotion.getKhuyenMai().getGiaTri()); // Lấy giá trị khuyến mãi
+
+        // Nếu giá khuyến mãi đã được tính sẵn trong bảng SanPham_KhuyenMai
+        if (promotion.getGiaKhuyenMai() != null) {
+            return promotion.getGiaKhuyenMai().doubleValue(); // Trả về giá khuyến mãi
+        }
+
+        // Nếu không có giá khuyến mãi, có thể tính toán dựa trên loại khuyến mãi
+        SanPhamCT sanPhamCT = sanPhamCTRepository.findById(sanPhamCTId)
+                .orElseThrow(() -> new ResourceNotFoundException("SanPhamCT not found"));
+
+        double originalPrice = sanPhamCT.getDonGia();
+        int discountValue = promotion.getKhuyenMai().getGiaTri(); // Lấy giá trị khuyến mãi
+
+        // Kiểm tra loại khuyến mãi
+        if (promotion.getKhuyenMai().getLoai()) { // Nếu loại là true, giảm theo phần trăm
+            return originalPrice * (1 - discountValue / 100.0);
+        } else { // Nếu loại là false, giảm theo giá cố định
+            return originalPrice - discountValue;
+        }
+    }
+
+
+    public List<SanPhamCTListDTOo> getAllSanPhamCTWithPromotions() {
+        return sanPhamCTRepository.findAllWithPromotions();
+    }
+
+
+    public List<SanPhamCTListDTOo> getAllSanPhamCTSummaryy() {
+        List<SanPhamCT> sanPhamCTList = sanPhamCTRepository.findAll();
+
+        // Sử dụng Map để lưu trữ sản phẩm đã thấy
+        Map<Integer, SanPhamCTListDTOo> uniqueProducts = new HashMap<>();
+
+        for (SanPhamCT spct : sanPhamCTList) {
+            String tenSanPham = spct.getSanPham() != null ? spct.getSanPham().getTen() : null;
+
+            if (tenSanPham != null && !uniqueProducts.containsKey(spct.getSanPham().getId())) {
+                String anhDaiDien = null;
+                if (spct.getHinhAnh() != null && !spct.getHinhAnh().isEmpty()) {
+                    anhDaiDien = spct.getHinhAnh().get(0).getLink();
+                }
+
+                // Lấy giá khuyến mãi và giá trị khuyến mãi
+                Double giaKhuyenMai = null;
+                Integer giaTri = null;
+
+                // Lấy danh sách khuyến mãi đang hoạt động cho sản phẩm chi tiết
+                List<SanPhamKhuyenMai> promotions = sanPhamKhuyenMaiRepository.findActivePromotionsBySanPhamCTId(spct.getId());
+                if (!promotions.isEmpty()) {
+                    SanPhamKhuyenMai promotion = promotions.get(0);
+                    giaKhuyenMai = promotion.getGiaKhuyenMai() != null ? promotion.getGiaKhuyenMai().doubleValue() : null;
+                    giaTri = promotion.getKhuyenMai() != null ? promotion.getKhuyenMai().getGiaTri() : null;
+                }
+
+                SanPhamCTListDTOo dto = new SanPhamCTListDTOo(
+                        spct.getSanPham().getId(),
+                        tenSanPham,
+                        spct.getDonGia(),
+                        anhDaiDien,
+                        giaKhuyenMai,
+                        giaTri
+                );
+                uniqueProducts.put(spct.getSanPham().getId(), dto);
+            }
+        }
+
+        return new ArrayList<>(uniqueProducts.values());
+    }
+
+
 }

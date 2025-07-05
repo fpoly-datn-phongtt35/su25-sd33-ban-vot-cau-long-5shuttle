@@ -56,7 +56,7 @@ public class NhanVienController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(
-            nhanVienService.searchNhanVien(hoTen, email, sdt, gioiTinh, trangThai, pageable)
+                nhanVienService.searchNhanVien(hoTen, email, sdt, gioiTinh, trangThai, pageable)
         );
     }
 }

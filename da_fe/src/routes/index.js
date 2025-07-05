@@ -1,3 +1,4 @@
+
 // Pages
 import AdminLayout from '../components/Layout/AdminLayout';
 import Admin from '../pages/admin';
@@ -10,6 +11,7 @@ import Stiff from '../pages/admin/Stiff';
 import Weight from '../pages/admin/Weight';
 
 import ModalKhachHang from '../pages/admin/khuyenmai/ModalKhachHang';
+
 import ListStaff from '../pages/admin/nhanvien';
 import AddStaff from '../pages/admin/nhanvien/add';
 import EditStaff from '../pages/admin/nhanvien/edit';
@@ -20,6 +22,9 @@ import Sign from '../pages/users/DangNhap/sign.jsx';
 import ForgotPassword from '../pages/users/DangNhap/forgot-password.jsx';
 import UserInfo from '../pages/users/TaiKhoan/userInfo.jsx';
 
+import customer from '../pages/admin/customer/index.jsx';
+import AddCustomer from '../pages/admin/customer/add.jsx';
+import EditCustomer from '../pages/admin/customer/edit.jsx';
 
 import ThongKe from '../pages/admin/HoaDon/ThongKe';
 
@@ -42,12 +47,16 @@ import PhieuGiamGia from '../pages/admin/Giảm Giá/PhieuGiamGia/index.jsx';
 import UpdatePhieuGiamGia from '../pages/admin/Giảm Giá/PhieuGiamGia/update.jsx';
 import UserOrder from '../pages/users/TaiKhoan/order.jsx';
 import OrderDetail from '../pages/users/TaiKhoan/orderDetail.jsx';
+import ThongKe from '../pages/admin/HoaDon/ThongKe';
 
 
 // Public routes
 const publicRoutes = [
     { path: '/', component: Home },
     { path: '/admin', component: Admin, layout: AdminLayout },
+    { path: '/admin/tai-khoan/khach-hang', component: customer, layout: AdminLayout },
+    { path: '/admin/tai-khoan/khach-hang/add', component: AddCustomer, layout: AdminLayout },
+    { path: '/admin/tai-khoan/khach-hang/edit/:id', component: EditCustomer, layout: AdminLayout },
     { path: '/admin/thong-ke', component: ThongKe, layout: AdminLayout },
     { path: '/admin/ban-hang-tai-quay', component: OfflineSale, layout: AdminLayout },
 
@@ -73,11 +82,7 @@ const publicRoutes = [
     { path: '/admin/giam-gia/dot-giam-gia', component: DotGiamGia, layout: AdminLayout },
     { path: '/admin/giam-gia/dot-giam-gia/add', component: AddDotGiamGia, layout: AdminLayout },
     { path: '/admin/giam-gia/dot-giam-gia/:id/detail', component: UpdateDotGiamGia, layout: AdminLayout },
-    // { path: '/admin/tai-khoan/nhan-vien', component: Index, layout: AdminLayout },
-    // { path: '/admin/tai-khoan/nhan-vien/add', component: Add, layout: AdminLayout },
-    // { path: '/admin/tai-khoan/nhan-vien/edit/:id', component: Edit, layout: AdminLayout },
-    // { path: '/admin/giam-gia/phieu-giam-gia/add', component: AddPhieuGiamGia, layout: AdminLayout },
-    // { path: `/admin/giam-gia/phieu-giam-gia/:id/detail`, component: Update, layout: AdminLayout },
+
     { path: '/admin/tai-khoan/nhan-vien', component: ListStaff, layout: AdminLayout },
     { path: '/admin/tai-khoan/nhan-vien/add', component: AddStaff, layout: AdminLayout },
     { path: '/admin/tai-khoan/nhan-vien/edit/:id', component: EditStaff, layout: AdminLayout },
@@ -88,7 +93,9 @@ const publicRoutes = [
         { path: 'order-detail/:id', component: OrderDetail, layout: null },
     ] },
     { path: '/login', component: Sign },
-    { path: '/forgot-password', component: ForgotPassword }
+    { path: '/forgot-password', component: ForgotPassword },
+    { path: '/admin/thong-ke', component: ThongKe, layout: AdminLayout },
+
 ];
 
 const privateRoutes = [];

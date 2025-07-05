@@ -94,52 +94,21 @@ export default function Product() {
         }
     };
 
-    // const loadProducts = async () => {
-    //     try {
-    //         setLoading(true);
-    //         const response = await axios.get('http://localhost:8080/api/san-pham-ct/summary');
-    //         setProducts(response.data);
-    //     } catch (error) {
-    //         console.error('Failed to fetch Products', error);
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
     const loadProducts = async () => {
         try {
             setLoading(true);
-            const [productsResponse, promotionsResponse] = await Promise.all([
-                axios.get('http://localhost:8080/api/san-pham-ct/summary'),
-                axios.get('http://localhost:8080/api/san-pham-khuyen-mai'),
-            ]);
-
-            const products = productsResponse.data;
-            const promotions = promotionsResponse.data;
+            const response = await axios.get('http://localhost:8080/api/san-pham-ct/summaryy');
+            const products = response.data;
 
             console.log('products: ', products);
-            console.log('promotions: ', promotions);
 
-            // Kết hợp dữ liệu sản phẩm với thông tin khuyến mãi
-            const combinedProducts = products.map((product) => {
-                // Tìm khuyến mãi dựa trên ID sản phẩm
-                const promotion = promotions.find((p) => p.sanPhamCT.sanPham.id === product.id);
-                return {
-                    ...product,
-                    khuyenMai: promotion ? promotion.giaKhuyenMai : null,
-                    giaTriKhuyenMai: promotion ? promotion.khuyenMai.giaTri : null,
-                };
-            });
-
-            setProducts(combinedProducts);
+            setProducts(products);
         } catch (error) {
             console.error('Failed to fetch Products', error);
         } finally {
             setLoading(false);
         }
     };
-
-    console.log('combines: ', products);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -160,6 +129,8 @@ export default function Product() {
 
         fetchData();
     }, []);
+
+    console.log("orrrrrr: ", products);
 
     const filters = [
         {
@@ -246,7 +217,6 @@ export default function Product() {
                                 <div className="flex items-center justify-between px-6 pb-4 border-b border-gray-200">
                                     <div className="flex items-center gap-3">
                                         <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
-                                            {/* <AdjustmentsHorizontalIcon className="h-5 w-5 text-white" /> */}
                                         </div>
                                         <h2 className="text-xl font-bold text-gray-900">Bộ lọc</h2>
                                     </div>
@@ -333,9 +303,6 @@ export default function Product() {
                         <div className="flex items-center gap-3 flex-wrap">
                             {/* Search Bar */}
                             <div className="relative">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    {/* <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" /> */}
-                                </div>
                                 <input
                                     type="text"
                                     placeholder="Tìm kiếm sản phẩm..."
@@ -405,7 +372,6 @@ export default function Product() {
                                         'p-2 rounded-lg transition-all',
                                     )}
                                 >
-                                    {/* <ListBulletIcon className="h-5 w-5" /> */}
                                 </button>
                             </div>
 
@@ -432,7 +398,6 @@ export default function Product() {
                                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 w-[222px]">
                                     <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-3">
                                         <div className="p-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
-                                            {/* <AdjustmentsHorizontalIcon className="h-5 w-5 text-white" /> */}
                                         </div>
                                         Bộ lọc tìm kiếm
                                     </h3>
