@@ -3,6 +3,12 @@ package com.example.da_be.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+<<<<<<< Updated upstream
+=======
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
+>>>>>>> Stashed changes
 import java.util.List;
 
 @Entity
@@ -60,11 +66,15 @@ public class SanPhamCT {
     @JsonIgnore
     private List<HinhAnh> hinhAnh;
 
+    @OneToMany(mappedBy = "sanPhamCT")
+    @JsonIgnore
+    private List<SanPhamKhuyenMai> sanPhamKhuyenMais;
+
 
     public SanPhamCT() {
     }
 
-    public SanPhamCT(Integer id, SanPham sanPham, ThuongHieu thuongHieu, MauSac mauSac, ChatLieu chatLieu, TrongLuong trongLuong, DiemCanBang diemCanBang, DoCung doCung, String ma, Integer soLuong, Double donGia, String moTa, Integer trangThai, List<HinhAnh> hinhAnh) {
+    public SanPhamCT(Integer id, SanPham sanPham, ThuongHieu thuongHieu, MauSac mauSac, ChatLieu chatLieu, TrongLuong trongLuong, DiemCanBang diemCanBang, DoCung doCung, String ma, Integer soLuong, Double donGia, String moTa, Integer trangThai, List<HinhAnh> hinhAnh, List<SanPhamKhuyenMai> sanPhamKhuyenMais) {
         this.id = id;
         this.sanPham = sanPham;
         this.thuongHieu = thuongHieu;
@@ -79,6 +89,7 @@ public class SanPhamCT {
         this.moTa = moTa;
         this.trangThai = trangThai;
         this.hinhAnh = hinhAnh;
+        this.sanPhamKhuyenMais = sanPhamKhuyenMais;
     }
 
     public Integer getId() {
@@ -192,4 +203,36 @@ public class SanPhamCT {
     public void setHinhAnh(List<HinhAnh> hinhAnh) {
         this.hinhAnh = hinhAnh;
     }
+
+    public List<SanPhamKhuyenMai> getSanPhamKhuyenMais() {
+        return sanPhamKhuyenMais;
+    }
+
+    public void setSanPhamKhuyenMais(List<SanPhamKhuyenMai> sanPhamKhuyenMais) {
+        this.sanPhamKhuyenMais = sanPhamKhuyenMais;
+    }
+
+    public Integer getGiaKhuyenMai() {
+        // Lấy giá khuyến mãi hiện tại
+        LocalDateTime now = LocalDateTime.now(); // Lấy thời gian hiện tại
+        return sanPhamKhuyenMais.stream()
+                .filter(spKm -> spKm.getKhuyenMai().getTgBatDau().isBefore(now) &&
+                        spKm.getKhuyenMai().getTgKetThuc().isAfter(now))
+                .map(SanPhamKhuyenMai::getGiaKhuyenMai)
+                .findFirst()
+                .orElse(null); // Hoặc giá mặc định nếu không có khuyến mãi
+    }
+
+
+    public Integer getGiaTriKhuyenMai() {
+        // Lấy giá trị khuyến mãi hiện tại
+        LocalDateTime now = LocalDateTime.now();
+        return sanPhamKhuyenMais.stream()
+                .filter(spKm -> spKm.getKhuyenMai().getTgBatDau().isBefore(now) &&
+                        spKm.getKhuyenMai().getTgKetThuc().isAfter(now))
+                .map(spKm -> spKm.getKhuyenMai().getGiaTri())
+                .findFirst()
+                .orElse(null); // Hoặc giá mặc định nếu không có khuyến mãi
+    }
+
 }

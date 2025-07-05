@@ -11,7 +11,8 @@ const OrderSummary = ({
     setPromoCode,
     handleApplyPromoCode,
     promoDiscount,
-    discountedPrice
+    discountedPrice,
+    selectedDiscount
 }) => {
     const navigate = useNavigate();
 
@@ -55,24 +56,28 @@ const OrderSummary = ({
                                     <h3 className="font-semibold text-gray-800 text-sm mb-1">{item.sanPhamCT.ten}</h3>
                                     <div className="space-y-1 text-xs text-gray-600">
                                         <p>
-                                            💰 Giá:{' '}
-                                            <span className="font-semibold">
-                                                {item.sanPhamCT.donGia.toLocaleString()} VNĐ
-                                            </span>
-                                        </p>
-                                        <p>
                                             🎨 Màu: <span className="font-semibold">{item.sanPhamCT.mauSac.ten}</span>
                                         </p>
                                         <p>
-                                            ⚖️ Trọng lượng:{' '}
-                                            <span className="font-semibold">{item.sanPhamCT.trongLuong.ten}</span>
+                                            ⚖️ Trọng lượng: <span className="font-semibold">{item.sanPhamCT.trongLuong.ten}</span>
                                         </p>
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <p className="font-bold text-[#2f19ae]">
-                                        {(item.sanPhamCT.donGia * item.soLuong).toLocaleString()} VNĐ
-                                    </p>
+                                    {item.sanPhamCT.giaKhuyenMai ? (
+                                        <>
+                                            <p className="font-bold text-red-600">
+                                                {(item.sanPhamCT.giaKhuyenMai * item.soLuong).toLocaleString()} VNĐ
+                                            </p>
+                                            <p className="text-xs text-gray-500 line-through">
+                                                {(item.sanPhamCT.donGia * item.soLuong).toLocaleString()} VNĐ
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <p className="font-bold text-[#2f19ae]">
+                                            {(item.sanPhamCT.donGia * item.soLuong).toLocaleString()} VNĐ
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -88,9 +93,19 @@ const OrderSummary = ({
                     </div>
 
                     {promoDiscount > 0 && (
-                        <div>
-                            <p>Giảm giá: {promoDiscount.toLocaleString()} VNĐ</p>
-                            <p>Tổng tiền sau giảm: {discountedPrice.toLocaleString()} VNĐ</p>
+                        <div className="space-y-2 mb-4">
+                            <div className="flex justify-between">
+                                <span>Giảm giá:</span>
+                                <span className="text-red-600">-{promoDiscount.toLocaleString()} VNĐ</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span>Phần trăm giảm:</span>
+                                <span>{selectedDiscount ? selectedDiscount.giaTri : 0}%</span>
+                            </div>
+                            <div className="flex justify-between font-bold text-lg">
+                                <span>Tổng tiền sau giảm:</span>
+                                <span className="text-green-600">{discountedPrice.toLocaleString()} VNĐ</span>
+                            </div>
                         </div>
                     )}
 
@@ -100,12 +115,11 @@ const OrderSummary = ({
                         <div className="flex items-center">
                             <input
                                 type="text"
-                                value={promoCode} // Sử dụng promoCode từ state
+                                value={promoCode}
                                 onChange={(e) => setPromoCode(e.target.value)}
                                 className="w-full px-4 py-2 border-2 border-gray-200 rounded-xl focus:border-[#2f19ae] focus:ring-4 focus:ring-[#2f19ae]/20 transition-all duration-300 outline-none"
                                 placeholder="Nhập mã giảm giá"
                             />
-
                             <button
                                 onClick={handleApplyPromoCode}
                                 className="ml-2 bg-blue-500 text-white py-2 px-4 rounded-lg"

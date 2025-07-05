@@ -216,10 +216,8 @@ function OrderStatus() {
             case 6:
                 return 'Đơn hàng đã hoàn thành';
             case 7:
-                return 'Đơn hàng đã hoàn thành';
-            case 8:
                 return 'Đơn hàng đã hủy';
-            case 9:
+            case 8:
                 return 'Đơn hàng đã trả';
             default:
                 return 'Không xác định';
@@ -464,6 +462,16 @@ function OrderStatus() {
         progressPercentage = 100;
     }
 
+     const handleCancelOrder = async () => {
+        try {
+            await updateOrderStatus(7); // Cập nhật trạng thái thành "Đã hủy"
+            swal('Thành công!', 'Đơn hàng đã được hủy!', 'success');
+        } catch (error) {
+            console.error('Error canceling order:', error);
+            swal('Lỗi!', 'Không thể hủy đơn hàng', 'error');
+        }
+    };
+
     return (
         <>
             <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl shadow-xl border border-gray-100 p-8 max-w-5xl mx-auto">
@@ -477,6 +485,7 @@ function OrderStatus() {
                     handleActionButtonClick={handleActionButtonClick}
                     getActionButtonStyle={getActionButtonStyle}
                     getActionButtonText={getActionButtonText}
+                    handleCancelOrder={handleCancelOrder}
                 />
             </div>
 
