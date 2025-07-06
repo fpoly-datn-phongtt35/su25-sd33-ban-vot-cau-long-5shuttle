@@ -1,14 +1,9 @@
-
+// NhanVienServiceImpl.java
 package com.example.da_be.service.impl;
 
 import com.example.da_be.cloudinary.CloudinaryImage;
 import com.example.da_be.dto.request.NhanVienRequest;
 import com.example.da_be.dto.response.NhanVienResponse;
-
-import com.example.da_be.entity.TaiKhoan;
-import com.example.da_be.repository.NhanVienRepository;
-
-import com.example.da_be.email.Email;
 import com.example.da_be.entity.Role;
 import com.example.da_be.entity.User;
 import com.example.da_be.repository.NhanVienRepository;
@@ -20,11 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
-import java.text.ParseException;
-import java.util.List;
-import java.util.Optional;
-
 import java.security.SecureRandom;
 import java.text.ParseException;
 import java.util.HashSet;
@@ -32,21 +22,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-
 @Service
 public class NhanVienServiceImpl implements NhanVienService {
     @Autowired
     private NhanVienRepository repository;
-
-    @Autowired
-    private CloudinaryImage cloudinaryImage;
-
-    @Override
-    @Transactional
-    public TaiKhoan add(NhanVienRequest nhanVienRequest) throws ParseException {
-        String setMaNV = "NV" + repository.findAll().size();
-        TaiKhoan nv = TaiKhoan.builder()
-
 
     @Autowired
     private CloudinaryImage cloudinaryImage;
@@ -75,7 +54,6 @@ public class NhanVienServiceImpl implements NhanVienService {
         roles.add(userRole);
 
         User nv = User.builder()
-
                 .ma(setMaNV)
                 .hoTen(nhanVienRequest.getHoTen())
                 .sdt(nhanVienRequest.getSdt())
@@ -93,7 +71,6 @@ public class NhanVienServiceImpl implements NhanVienService {
 //        String matKhau = generatePassword();
 //        String[] toMail = {nhanVienRequest.getEmail()};
 //        Email email = new Email();
-//        email.setBody("<b style=\"text-align: center;\">" + matKhau + "</b>");
 //        email.setBody("<b style="text-align: center;">" + matKhau + "</b>");
 //        email.setToEmail(toMail);
 //        email.setSubject("Tạo tài khoản thành công");
@@ -113,10 +90,9 @@ public class NhanVienServiceImpl implements NhanVienService {
         return repository.findNhanVienById(id);
     }
 
-
+    @Override
     public User delete(Integer id) {
         User nv = repository.findById(id).orElse(null);
-
         assert nv != null;
         if (nv.getTrangThai() == 0) {
             nv.setTrangThai(1);
@@ -129,7 +105,6 @@ public class NhanVienServiceImpl implements NhanVienService {
     @Override
     @Transactional
     public Boolean update(NhanVienRequest request, Integer id) throws ParseException {
-
         Optional<User> optional = repository.findById(id);
         if (optional.isPresent()) {
             Role role = roleRepository.findById(request.getRoleId())
@@ -158,7 +133,6 @@ public class NhanVienServiceImpl implements NhanVienService {
         return repository.searchNhanVien(ten, email, sdt, gioiTinh, trangThai, pageable);
     }
 
-
     private String generatePassword() {
         String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder password = new StringBuilder();
@@ -170,5 +144,4 @@ public class NhanVienServiceImpl implements NhanVienService {
         }
         return password.toString();
     }
-}
 }

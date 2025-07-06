@@ -4,12 +4,12 @@ import com.example.da_be.dto.*;
 import com.example.da_be.entity.GioHang;
 import com.example.da_be.entity.HinhAnh;
 import com.example.da_be.entity.SanPhamCT;
-import com.example.da_be.entity.TaiKhoan;
+import com.example.da_be.entity.User;
 import com.example.da_be.exception.ResourceNotFoundException;
 import com.example.da_be.repository.GioHangRepository;
 import com.example.da_be.repository.HinhAnhRepository;
 import com.example.da_be.repository.SanPhamCTRepository;
-import com.example.da_be.repository.TaiKhoanRepository;
+import com.example.da_be.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class GioHangService {
     private GioHangRepository gioHangRepository;
 
     @Autowired
-    private TaiKhoanRepository taiKhoanRepository;
+    private UserRepository taiKhoanRepository;
 
     @Autowired
     private HinhAnhRepository hinhAnhRepository; // Inject HinhAnhRepository
@@ -35,7 +35,7 @@ public class GioHangService {
 
     public GioHang themSanPhamVaoGioHang(Integer idTaiKhoan, Integer idSanPhamCT, Integer soLuong) {
         // 1. Validate input
-        TaiKhoan taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
+        User taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tài khoản với ID: " + idTaiKhoan));
 
         SanPhamCT sanPhamCT = sanPhamCTRepository.findById(idSanPhamCT)
@@ -78,7 +78,7 @@ public class GioHangService {
     }
 
     public List<GioHangDTO> getGioHangByTaiKhoan(Integer idTaiKhoan) {
-        TaiKhoan taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
+        User taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tài khoản với ID: " + idTaiKhoan));
         List<GioHang> gioHangList = gioHangRepository.findByTaiKhoan(taiKhoan);
         return gioHangList.stream()
@@ -95,7 +95,6 @@ public class GioHangService {
         sanPhamCTDTO.setTen(sanPhamCT.getSanPham().getTen());
         sanPhamCTDTO.setDonGia(sanPhamCT.getDonGia());
         sanPhamCTDTO.setSoLuong(sanPhamCT.getSoLuong());
-
 
         // Lấy giá khuyến mãi
         sanPhamCTDTO.setGiaKhuyenMai(sanPhamCT.getGiaKhuyenMai());
@@ -131,12 +130,6 @@ public class GioHangService {
     public double calculateTotalPrice(Integer idTaiKhoan) {
         List<GioHangDTO> gioHangList = getGioHangByTaiKhoan(idTaiKhoan);
         return gioHangList.stream()
-
-                .mapToDouble(item -> item.getSanPhamCT().getDonGia() * item.getSoLuong())
-                .sum();
-    }
-
-
                 .mapToDouble(item -> {
                     // Kiểm tra xem sản phẩm có giá khuyến mãi hay không
                     double price = item.getSanPhamCT().getGiaKhuyenMai() != null ?
@@ -178,7 +171,7 @@ public class GioHangService {
 
 
     public void xoaGioHangByTaiKhoan(Integer idTaiKhoan) {
-        TaiKhoan taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
+        User taiKhoan = taiKhoanRepository.findById(idTaiKhoan)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tài khoản với ID: " + idTaiKhoan));
 
         List<GioHang> gioHangList = gioHangRepository.findByTaiKhoan(taiKhoan);
@@ -187,5 +180,4 @@ public class GioHangService {
         }
     }
 
-
-
+}
