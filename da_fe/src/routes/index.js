@@ -26,8 +26,6 @@ import customer from '../pages/admin/customer/index.jsx';
 import AddCustomer from '../pages/admin/customer/add.jsx';
 import EditCustomer from '../pages/admin/customer/edit.jsx';
 
-import ThongKe from '../pages/admin/HoaDon/ThongKe';
-
 import Product from '../pages/users/Product/Product';
 import ProductAdmin from '../pages/admin/Product';
 import AddProduct from '../pages/admin/Product/Add';

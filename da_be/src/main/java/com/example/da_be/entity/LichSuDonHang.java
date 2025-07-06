@@ -11,7 +11,7 @@ public class LichSuDonHang {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "IdTaiKhoan")
+    @Column(name = "IdUser")
     private Integer idTaiKhoan;
 
     @Column(name = "IdHoaDon")

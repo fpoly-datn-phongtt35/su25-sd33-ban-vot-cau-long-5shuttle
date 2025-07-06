@@ -32,23 +32,23 @@ public class SecurityConfig {
     @Value("${jwt.signerKey}")
     private String signerKey;
 
-        @Bean
-        public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-            httpSecurity.authorizeHttpRequests(request ->
-                    request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                            .anyRequest().authenticated());
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity.authorizeHttpRequests(request ->
+                //request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
+                        request.anyRequest().permitAll());
 
-            httpSecurity.oauth2ResourceServer(oauth2 ->
-                        oauth2.jwt(jwtConfigurer ->
+        httpSecurity.oauth2ResourceServer(oauth2 ->
+                oauth2.jwt(jwtConfigurer ->
                                 jwtConfigurer.decoder(jwtDecoder())
                                         .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                                .authenticationEntryPoint(new JWTAuthenticationEntryPoint())
-                    );
+                        .authenticationEntryPoint(new JWTAuthenticationEntryPoint())
+        );
 
-            httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
-            return httpSecurity.build();
-        }
+        return httpSecurity.build();
+    }
 
 //        @Bean
 //        JwtAuthenticationConverter jwtAuthenticationConverter() {
@@ -81,18 +81,18 @@ public class SecurityConfig {
 
 
     @Bean
-        JwtDecoder jwtDecoder() {
-            SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
-            return NimbusJwtDecoder
-                    .withSecretKey(secretKeySpec)
-                    .macAlgorithm(MacAlgorithm.HS512)
-                    .build();
-        }
+    JwtDecoder jwtDecoder() {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(signerKey.getBytes(), "HS512");
+        return NimbusJwtDecoder
+                .withSecretKey(secretKeySpec)
+                .macAlgorithm(MacAlgorithm.HS512)
+                .build();
+    }
 
-        @Bean
-        PasswordEncoder passwordEncoder() {
-            return new BCryptPasswordEncoder(10);
-            }
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(10);
+    }
 
 }
 

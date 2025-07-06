@@ -55,7 +55,7 @@ function AddStaff() {
                 formData.append("avatar", avatarFile) // gửi file avatar
             }
 
-            const res = await fetch("http://localhost:8080/shuttle/nhan-vien/add", {
+            const res = await fetch("http://localhost:8080/nhan-vien/add", {
                 method: "POST",
                 body: formData
             });

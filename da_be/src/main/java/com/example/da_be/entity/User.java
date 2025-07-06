@@ -1,5 +1,6 @@
 package com.example.da_be.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.*;
@@ -57,5 +58,6 @@ public class User {
             joinColumns = @JoinColumn(name = "IdUser"),
             inverseJoinColumns = @JoinColumn(name = "IdRole")
     )
+    @JsonIgnore
     Set<Role> roles;
 }

@@ -19,7 +19,7 @@ public class GioHang {
     private SanPhamCT sanPhamCT;
 
     @ManyToOne
-    @JoinColumn(name = "IdTaiKhoan")
+    @JoinColumn(name = "IdUser")
     private User taiKhoan;
 
     @Column(name = "SoLuong")

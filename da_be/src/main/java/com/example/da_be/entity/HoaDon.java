@@ -13,7 +13,7 @@ public class HoaDon {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "IdTaiKhoan")
+    @JoinColumn(name = "IdUser")
     private User taiKhoan;
 
     @ManyToOne

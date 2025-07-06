@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { Search, Bell, Settings, Moon, Sun } from 'react-feather';
+import { Bell, Settings, Moon, Sun } from 'react-feather';
 import user_icon from '../../../Assets/user_icon.png';
 
 import { Search, Notifications } from '@mui/icons-material';
@@ -31,6 +31,9 @@ function HeaderAdmin() {
     const [userRole, setUserRole] = useState('Admin');
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [user, setUser] = useState(null);
+    const [role, setRole] = useState('');
+
     const [notifications] = useState([
         { id: 1, title: 'Đơn hàng mới', message: 'Có 3 đơn hàng mới cần xử lý', time: '5 phút trước', unread: true },
         { id: 2, title: 'Sản phẩm hết hàng', message: 'Sản phẩm ABC sắp hết hàng', time: '1 giờ trước', unread: true },
@@ -53,7 +56,7 @@ function HeaderAdmin() {
         const token = localStorage.getItem("token");
         console.log(token)
         if (token) {
-            fetch("http://localhost:8080/shuttle/users/myInfo", {
+            fetch("http://localhost:8080/users/myInfo", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -81,7 +84,7 @@ function HeaderAdmin() {
                 setRole("");
             }
         }
-    }, []);
+}, []);
 
 
     const unreadCount = notifications.filter((n) => n.unread).length;
@@ -128,7 +131,7 @@ function HeaderAdmin() {
         navigate('/');
     };
     const roleMap = {
-        "ROLE_ADMIN": "Admin",
+        "ROLE_Admin": "Admin",
         "ROLE_USER": "Người dùng",
         "ROLE_Staff": "Nhân viên"
     };
@@ -160,7 +163,7 @@ function HeaderAdmin() {
 
                     <div className='relative'>
                         <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="relative">
-                            <Avatar src={user?.avatar || defaultAvatar} alt="avatar" className="w-10 h-8" />
+<Avatar src={user?.avatar || defaultAvatar} alt="avatar" className="w-10 h-8" />
                             {isMenuOpen && (
                                 <ul className="absolute right-0 mt-2 bg-white shadow-lg rounded-md w-48 py-2 text-gray-700 z-50" ref={menuRef}>
                                     {isLoggedIn ? (
@@ -200,7 +203,7 @@ function HeaderAdmin() {
                                             <div className="flex items-center space-x-1 mt-1">
                                                 <Shield className="w-3 h-3 text-[#2f19ae]" />
                                                 <span className="text-xs text-[#2f19ae] font-medium">
-                                                    {admin.vaiTro}
+{admin.vaiTro}
                                                 </span>
                                             </div>
                                         </div>
@@ -239,7 +242,7 @@ function HeaderAdmin() {
                                             </button>
                                         </li>
                                     </>
-                                ) : (
+) : (
                                     <li className="flex items-center px-4 py-3 hover:bg-gradient-to-r hover:from-[#2f19ae]/5 hover:to-purple-500/5 transition-all duration-200 group cursor-pointer">
                                         <LogIn className="w-5 h-5 text-gray-500 group-hover:text-[#2f19ae] transition-colors duration-200" />
                                         <Link

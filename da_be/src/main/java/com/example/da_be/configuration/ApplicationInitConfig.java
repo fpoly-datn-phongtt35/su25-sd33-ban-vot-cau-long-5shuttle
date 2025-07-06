@@ -2,6 +2,7 @@ package com.example.da_be.configuration;
 
 import com.example.da_be.entity.Role;
 import com.example.da_be.entity.User;
+// import com.example.da_be.enums.Role; // Xóa bỏ import này
 import com.example.da_be.repository.RoleRepository;
 import com.example.da_be.repository.UserRepository;
 import lombok.AccessLevel;
@@ -15,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
+import java.util.Set; // Thêm import này
 
 @Configuration
 @RequiredArgsConstructor
@@ -32,12 +33,12 @@ public class ApplicationInitConfig {
             // Kiểm tra nếu người dùng admin chưa tồn tại
             if(!userRepository.existsTaiKhoanByEmail("admin")) {
                 // Tìm hoặc tạo vai trò ADMIN
-                Optional<Role> adminRoleOpt = roleRepository.findByName("Admin");
+                Optional<Role> adminRoleOpt = roleRepository.findByName("ADMIN");
                 Role adminRole;
 
                 if (adminRoleOpt.isEmpty()) {
                     // Nếu vai trò ADMIN chưa tồn tại, tạo mới
-                    adminRole = Role.builder().name("Admin").description("ADMIN role").build();
+                    adminRole = Role.builder().name("ADMIN").description("ADMIN role").build();
                     roleRepository.save(adminRole);
                     log.info("Role 'ADMIN' created.");
                 } else {
