@@ -28,7 +28,7 @@ function EditStaff() {
   })
 
   useEffect(() => {
-    axios.get(`http://localhost:8080/shuttle/nhan-vien/${id}`)
+    axios.get(`http://localhost:8080/nhan-vien/${id}`)
       .then((response) => {
         const nv = response.data
         setData({

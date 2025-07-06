@@ -32,7 +32,7 @@ function HeaderAdmin() {
         const token = localStorage.getItem("token");
         console.log(token)
         if (token) {
-            fetch("http://localhost:8080/shuttle/users/myInfo", {
+            fetch("http://localhost:8080/users/myInfo", {
                 method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -43,7 +43,7 @@ function HeaderAdmin() {
                     return res.json();
                 })
                 .then(data => {
-                    setUser(data.result);
+                    setUser(data.result.token);
                     setIsLoggedIn(true);
                 })
                 .catch(err => {

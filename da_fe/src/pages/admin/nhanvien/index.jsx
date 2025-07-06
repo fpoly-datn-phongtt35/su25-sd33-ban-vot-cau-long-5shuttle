@@ -135,7 +135,7 @@ function ListStaff() {
             }
         }).then((result) => {
             if (result.isConfirmed) {
-                axios.put(`http://localhost:8080/shuttle/nhan-vien/delete/${id}`, {
+                axios.put(`http://localhost:8080/nhan-vien/delete/${id}`, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -159,7 +159,7 @@ function ListStaff() {
     useEffect(() => {
         const fetchStaffData = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/shuttle/nhan-vien`)
+                const response = await fetch(`http://localhost:8080/nhan-vien`)
                 const data = await response.json()
                 const mappedData = data
                     .reverse()

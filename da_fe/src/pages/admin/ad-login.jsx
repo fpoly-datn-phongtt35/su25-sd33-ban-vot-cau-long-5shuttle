@@ -28,7 +28,7 @@ function AdLogin() {
 
     const handleLogin = async () => {
         try {
-            const res = await fetch("http://localhost:8080/shuttle/auth/token", {
+            const res = await fetch("http://localhost:8080/auth/token", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, matKhau })

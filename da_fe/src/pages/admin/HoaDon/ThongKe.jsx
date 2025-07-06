@@ -52,15 +52,15 @@ const COLOR_CARDS = {
 const getApiUrl = (filter, fromDate, toDate) => {
   switch (filter) {
     case 'Ngày':
-      return 'http://localhost:8080/shuttle/thong-ke/overall/ngay';
+      return 'http://localhost:8080/thong-ke/overall/ngay';
     case 'Tuần':
-      return 'http://localhost:8080/shuttle/thong-ke/overall/tuan';
+      return 'http://localhost:8080/thong-ke/overall/tuan';
     case 'Tháng':
-      return 'http://localhost:8080/shuttle/thong-ke/overall/thang';
+      return 'http://localhost:8080/thong-ke/overall/thang';
     case 'Năm':
-      return 'http://localhost:8080/shuttle/thong-ke/overall/nam';
+      return 'http://localhost:8080/thong-ke/overall/nam';
     case 'Tùy chỉnh':
-      return `http://localhost:8080/shuttle/thong-ke/overall/tuy-chinh?fromDate=${fromDate.format('YYYY-MM-DD')}&toDate=${toDate.format('YYYY-MM-DD')}`;
+      return `http://localhost:8080/thong-ke/overall/tuy-chinh?fromDate=${fromDate.format('YYYY-MM-DD')}&toDate=${toDate.format('YYYY-MM-DD')}`;
     default:
       return '';
   }
